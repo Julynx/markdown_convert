@@ -40,11 +40,13 @@ class MarkdownFile(FileSystemEventHandler):
 
         try:  # Raise an error if the Markdown file is invalid.
             md_path = Path(md_path).resolve()
-            assert md_path.suffix == '.md'
-            assert md_path.is_file()
+            if not md_path.is_file():
+                raise ValueError("The path must be a file.")
+            if md_path.suffix != '.md':
+                raise ValueError("The path must be a Markdown file.")
             self.path_no_ext = md_path.with_suffix('')
             self.content = md_path.read_text(encoding='utf-8')
-        except (ValueError, TypeError, OSError, AssertionError) as error:
+        except (ValueError, TypeError, OSError) as error:
             raise ValueError(f'\n\nInvalid Markdown file \'{md_path}\'.\n') \
                 from error
 
