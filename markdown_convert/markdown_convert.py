@@ -123,7 +123,7 @@ class MarkdownFile(FileSystemEventHandler):
             self._add_page(page,
                            markdown_parser=markdown.markdown,
                            output_writer=output_writer,
-                           last_page=(idx == len(pages) - 1))
+                           last_page=idx == (len(pages) - 1))
 
         output_writer.close()
         document = fitz.open('pdf', output_stream)
