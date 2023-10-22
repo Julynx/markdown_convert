@@ -22,21 +22,26 @@ jobs:
         run: |
           pip install pylint pycodestyle bandit pytest pytest-custom_exit_code coverage pydocstyle
 
+      - name: Extract the repository name
+        run: |
+          repo_name="${GITHUB_REPOSITORY##*/}"
+          echo "The repository name is $repo_name"
+
       - name: Passes PyTest tests
         run: |
           pytest --suppress-no-test-exit-code .
 
       - name: Linting checks
         run: |
-          pylint `ls -R|grep .py$|xargs`
+          pylint $repo_name
       
       - name: Code style checks
         run: |
-          pycodestyle `ls -R|grep .py$|xargs`
+          pycodestyle $repo_name
 
       - name: Documentation checks
         run: |
-          pydocstyle `ls -R|grep .py$|xargs`
+          pydocstyle $repo_name
 
       - name: Security checks
         run: |
