@@ -1,11 +1,11 @@
-'''
+"""
 Markdown convert module.
 
 Overview:
     This module provides a class for converting Markdown files to PDF files,
     and updating the PDF file whenever the Markdown file is modified.
     Supports the <pagebreak> tag to insert page breaks in the PDF file.
-'''
+"""
 
 import io
 from time import sleep
@@ -16,22 +16,24 @@ import markdown
 import fitz
 
 
-class MarkdownFile(FileSystemEventHandler):
-    '''
+class MarkdownFile(FileSystemEventHandler): 
+    """
     MarkdownFile class, representing a file in Markdown format.
-    '''
+    """
 
     def __init__(self, md_path, *,
                  css_path='css/default.css',
                  margin_h=62,
                  margin_v=60):
-        '''
+        """
+        Constructor for the MarkdownFile class.
+
         Args:
             md_path (Path|str): Path to the Markdown file.
             css_path (Path|str='css/default.css'): Path to the CSS file.
             margin_h (int=62): Horizontal margin of the PDF file.
             margin_v (int=60): Vertical margin of the PDF file.
-        '''
+        """
         self.plugins = {'extra', 'sane_lists'}
         self.margin_h = margin_h
         self.margin_v = margin_v
@@ -58,7 +60,7 @@ class MarkdownFile(FileSystemEventHandler):
                   markdown_parser,
                   output_writer,
                   last_page=False):
-        '''
+        """
         Parses a Markdown page with the provided Markdown parser, and adds it
         to the output writer.
 
@@ -68,7 +70,7 @@ class MarkdownFile(FileSystemEventHandler):
             output_writer (DocumentWriter): The output writer to use.
             last_page (bool=False): Whether this is the last page.
                                     Will insert page breaks if False.
-        '''
+        """
         page_break_str = '\n\n<div style="page-break-after: always;"></div>'
         if last_page:
             page_break_str = ''
@@ -92,18 +94,18 @@ class MarkdownFile(FileSystemEventHandler):
             output_writer.end_page()
 
     def use(self, plugin):
-        '''
+        """
         Adds a plugin to the list of plugins to use.
         'extra' and 'sane_lists' are already included by default.
 
         Args:
             plugin (str): The name of the plugin to use.
-        '''
+        """
         self.plugins.add(plugin)
         return self
 
     def to_pdf(self, output_path=None):
-        '''
+        """
         Converts the Markdown file to a PDF file.
 
         Args:
@@ -111,7 +113,7 @@ class MarkdownFile(FileSystemEventHandler):
                                     If None, the PDF file will be saved in the
                                     same directory as the Markdown file, with
                                     the same name, but with the .pdf extension.
-        '''
+        """
         if output_path is None:
             output_path = self.path_no_ext.with_suffix('.pdf')
 
@@ -131,7 +133,7 @@ class MarkdownFile(FileSystemEventHandler):
         document.close()
 
     def to_html(self, output_path=None):
-        '''
+        """
         Converts the Markdown file to an HTML file.
 
         Args:
@@ -139,7 +141,7 @@ class MarkdownFile(FileSystemEventHandler):
                                     If None, the HTML file will be saved in the
                                     same directory as the Markdown file, with
                                     the same name, but with the .pdf extension.
-        '''
+        """
         if output_path is None:
             output_path = self.path_no_ext.with_suffix('.html')
 
@@ -149,13 +151,13 @@ class MarkdownFile(FileSystemEventHandler):
         output_path.write_text(self.content, encoding='utf-8')
 
     def live_pdf(self):
-        '''
+        """
         Converts the Markdown file to a PDF file, and updates the PDF file
         whenever the Markdown file is modified.
 
         Note:
             This method does not return until the program is interrupted.
-        '''
+        """
         self.to_pdf()
         observer = Observer()
         observer.schedule(self, str(self.path_no_ext.with_suffix('.md')))
@@ -171,13 +173,13 @@ class MarkdownFile(FileSystemEventHandler):
         observer.join()
 
     def on_modified(self, event):
-        '''
+        """
         Required by the FileSystemEventHandler class for the live PDF
         functionality. Do not call this method directly.
 
         Args:
             event (FileSystemEvent): The event that triggered this method.
-        '''
+        """
         if event.src_path == str(self.path_no_ext.with_suffix('.md')):
 
             with open(event.src_path, encoding='utf-8') as file:
