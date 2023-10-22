@@ -39,4 +39,4 @@ jobs:
       - name: Security checks
         run: |
           repo_name="$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)"
-          bandit "$repo_name"
+          bandit -r "$repo_name"
