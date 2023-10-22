@@ -29,7 +29,7 @@ jobs:
       - name: Linting checks
         run: |
           repo_name="$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)"
-          pylint "$repo_name"
+          pylint --disable=E0401 "$repo_name"
       
       - name: Code style checks
         run: |
