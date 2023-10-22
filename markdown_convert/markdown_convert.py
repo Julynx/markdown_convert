@@ -10,6 +10,7 @@ Overview:
 import io
 from time import sleep
 from pathlib import Path
+import pkg_resources
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import markdown
@@ -22,7 +23,8 @@ class MarkdownFile(FileSystemEventHandler):
     """
 
     def __init__(self, md_path, *,
-                 css_path='css/default.css',
+                 css_path=pkg_resources.resource_filename('markdown_convert',
+                                                          'css/default.css'),
                  margin_h=62,
                  margin_v=60):
         """
@@ -40,8 +42,6 @@ class MarkdownFile(FileSystemEventHandler):
 
         try:  # Raise an error if the Markdown file is invalid.
             md_path = Path(md_path).resolve()
-            if not md_path.is_file():
-                raise ValueError("The path must be a file.")
             if md_path.suffix != '.md':
                 raise ValueError("The path must be a Markdown file.")
             self.path_no_ext = md_path.with_suffix('')
