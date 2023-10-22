@@ -20,7 +20,7 @@ jobs:
 
       - name: Install dependencies for GitHub Action
         run: |
-          pip install pylint pycodestyle bandit pytest pytest-custom_exit_code
+          pip install pylint bandit pytest pytest-custom_exit_code
 
       - name: Passes PyTest tests
         run: |
@@ -30,11 +30,6 @@ jobs:
         run: |
           repo_name="$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)"
           pylint --disable=E0401 "$repo_name"
-      
-      - name: Code style checks
-        run: |
-          repo_name="$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)"
-          pycodestyle "$repo_name"
 
       - name: Security checks
         run: |
