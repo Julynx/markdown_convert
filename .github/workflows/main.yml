@@ -33,16 +33,16 @@ jobs:
 
       - name: Linting checks
         run: |
-          pylint $repo_name
+          pylint "$repo_name"
       
       - name: Code style checks
         run: |
-          pycodestyle $repo_name
+          pycodestyle "$repo_name"
 
       - name: Documentation checks
         run: |
-          pydocstyle $repo_name
+          pydocstyle "$repo_name"
 
       - name: Security checks
         run: |
-          bandit -r .
+          bandit "$repo_name"
