@@ -20,7 +20,7 @@ jobs:
 
       - name: Install dependencies for GitHub Action
         run: |
-          pip install pylint pycodestyle bandit pytest pytest-custom_exit_code coverage pydocstyle
+          pip install pylint pycodestyle bandit pytest pytest-custom_exit_code
 
       - name: Passes PyTest tests
         run: |
