@@ -5,7 +5,7 @@ with open('README.md', 'r', encoding='utf-8') as markdown_file:
 
 setuptools.setup(
     name='markdown_convert',
-    version='0.0.1',
+    version='0.9.0',
     author='Julio Cabria',
     author_email='juliocabria@tutanota.com',
     maintainer='Julio Cabria',
