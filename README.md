@@ -37,26 +37,26 @@ MarkdownFile("markdown.md").live_pdf()  # Real-time conversion
 
 #### __init__
 
-- `md_path` Path to the Markdown file.
-- `css_path='css/default.css'` Path to the CSS file.
-- `margin_h=62` Horizontal margin of the PDF file.
-- `margin_v=60` Vertical margin of the PDF file.
+- `md_path` - Path to the Markdown file.
+- `css_path='css/default.css'` - Path to the CSS file.
+- `margin_h=62` - Horizontal margin of the PDF file.
+- `margin_v=60` - Vertical margin of the PDF file.
 
 #### use
 
-- `plugin` Name of the [extension](https://python-markdown.github.io/extensions/) to add to the set of used extensions.
+- `plugin` - Name of the [extension](https://python-markdown.github.io/extensions/) to add to the set of used extensions.
 
   > The extensions `extra` and `sane_lists` are included by default.
 
 #### to_html
 
-- `output_path=None` Path to the output HTML file.
+- `output_path=None` - Path to the output HTML file.
 
   > If not specified, the HTML file will have the same name, but with the `.html` extension.
 
 #### to_pdf
 
-- `output_path=None` Path to the output PDF file.
+- `output_path=None` - Path to the output PDF file.
 
   > If not specified, the PDF file will have the same name, but with the `.pdf` extension.
 
