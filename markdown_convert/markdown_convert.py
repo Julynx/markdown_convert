@@ -16,7 +16,7 @@ import markdown
 import fitz
 
 
-class MarkdownFile(FileSystemEventHandler): 
+class MarkdownFile(FileSystemEventHandler):
     """
     MarkdownFile class, representing a file in Markdown format.
     """
