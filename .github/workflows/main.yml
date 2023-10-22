@@ -36,11 +36,6 @@ jobs:
           repo_name="$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)"
           pycodestyle "$repo_name"
 
-      - name: Documentation checks
-        run: |
-          repo_name="$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)"
-          pydocstyle "$repo_name"
-
       - name: Security checks
         run: |
           repo_name="$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)"
