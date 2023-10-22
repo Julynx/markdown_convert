@@ -1,6 +1,6 @@
-# repository name
+# markdown-convert
 
-_Repository description._
+_Python package to convert Markdown files to other formats._
 
 <br>
 <p align="center">
