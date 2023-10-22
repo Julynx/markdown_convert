@@ -1,0 +1,56 @@
+name: 🐛 Report a bug
+description: Create a bug report to help us improve 🤕
+labels: ["bug"]
+assignees:
+  - Julynx
+body:
+  - type: checkboxes
+    id: cat-preferences
+    attributes:
+      label: Self Check
+      options:
+        - label: I have taken a look for similar errors in existing GitHub Issues.
+          required: true
+        - label: I have taken a look at the documentation for help.
+          required: true
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: Describe the bug
+      placeholder: A short and clear description of what the bug is.
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Execute with options '...'
+        2. Check output '...'
+        3. Notice error
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: Expected behavior
+      placeholder: A brief description of what should have happened.
+  - type: textarea
+    attributes:
+      label: Screenshots and recordings
+      placeholder: If applicable, add screenshots to help explain your problem.
+  - type: input
+    validations:
+      required: true
+    attributes:
+      label: OS / Linux distribution
+      placeholder: Windows 10, Ubuntu 20.04, Arch Linux, macOS 10.15...
+  - type: input
+    validations:
+      required: true
+    attributes:
+      label: Package version
+      placeholder: "1.0"
+  - type: textarea
+    attributes:
+      label: Additional context
+      placeholder: Any other context about the problem...

@@ -1,0 +1,43 @@
+name: Pre-commit Checks
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python for GitHub Action
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies for GitHub Action
+        run: |
+          pip install pylint pycodestyle bandit pytest pytest-custom_exit_code coverage pydocstyle
+
+      - name: Passes PyTest tests
+        run: |
+          pytest --suppress-no-test-exit-code .
+
+      - name: Linting checks
+        run: |
+          pylint `ls -R|grep .py$|xargs`
+      
+      - name: Code style checks
+        run: |
+          pycodestyle `ls -R|grep .py$|xargs`
+
+      - name: Documentation checks
+        run: |
+          pydocstyle `ls -R|grep .py$|xargs`
+
+      - name: Security checks
+        run: |
+          bandit -r .

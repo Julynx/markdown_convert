@@ -1,0 +1,37 @@
+name: 🚀 Feature request
+description: Suggest a new feature/idea for this project 💡
+labels: ["feature"]
+assignees:
+  - Julynx
+body:
+  - type: checkboxes
+    id: cat-preferences
+    attributes:
+      label: Self Check
+      options:
+        - label: I have taken a look for similar feature requests in existing GitHub Issues.
+          required: true
+        - label: I have taken a look at the documentation, and the requested feature does not already exist.
+          required: true
+  - type: textarea
+    attributes:
+      label: Describe the proposed feature.
+      placeholder: A clear and brief description of the feature, preferably in a single sentence.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: How would you use the program if it had this feature?
+      placeholder: Ex. If the program had this feature I would be able to call... Then, I could pass in the value(s)... The program would then...
+  - type: textarea
+    attributes:
+      label: Can I achieve the same result with currently existing functionality? How? (If possible)
+      placeholder: With current functionality, even though I can do... I can't actually achieve...
+  - type: textarea
+    attributes:
+      label: Additional context
+      placeholder: Any other context, screenshots, or conversations about the feature request. If you know of other projects that have this feature, please link them here.
+  - type: textarea
+    attributes:
+      label: Related Issues
+      placeholder: Links to any open or closed issues related to this feature request.
