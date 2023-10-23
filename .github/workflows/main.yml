@@ -20,7 +20,7 @@ jobs:
 
       - name: Install dependencies for GitHub Action
         run: |
-          pip install pylint bandit pytest pytest-custom_exit_code
+          pip install ruff bandit pytest pytest-custom_exit_code
 
       - name: Passes PyTest tests
         run: |
@@ -29,7 +29,7 @@ jobs:
       - name: Linting checks
         run: |
           repo_name="$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)"
-          pylint --disable=E0401 "$repo_name"
+          ruff check "$repo_name"
 
       - name: Security checks
         run: |

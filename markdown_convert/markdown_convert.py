@@ -24,7 +24,7 @@ class MarkdownFile(FileSystemEventHandler):
 
     def __init__(self, md_path, *,
                  css_path=pkg_resources.resource_filename('markdown_convert',
-                                                          'css/default.css'),
+                                                          'default.css'),
                  margin_h=62,
                  margin_v=60):
         """
@@ -32,7 +32,7 @@ class MarkdownFile(FileSystemEventHandler):
 
         Args:
             md_path (Path|str): Path to the Markdown file.
-            css_path (Path|str='css/default.css'): Path to the CSS file.
+            css_path (Path|str='default.css'): Path to the CSS file.
             margin_h (int=62): Horizontal margin of the PDF file.
             margin_v (int=60): Vertical margin of the PDF file.
         """

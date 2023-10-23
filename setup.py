@@ -5,7 +5,7 @@ with open('README.md', 'r', encoding='utf-8') as markdown_file:
 
 setuptools.setup(
     name='markdown_convert',
-    version='0.9.4',
+    version='0.9.5',
     author='Julio Cabria',
     author_email='juliocabria@tutanota.com',
     maintainer='Julio Cabria',
@@ -16,7 +16,7 @@ setuptools.setup(
     long_description_content_type='text/markdown',
     license='GPLv2',
     packages=['markdown_convert'],
-    package_data={'markdown_convert': ['css/default.css']},
+    package_data={'markdown_convert': ['default.css']},
     include_package_data=True,
     install_requires=['Markdown>=3.3.0,<=4.0.0',
                       'PyMuPDF>=1.23.5,<=2.0.0',
