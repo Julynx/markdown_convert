@@ -1,0 +1,22 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "markdown_convert"
+version = "0.9.6"
+description = "Python package to convert Markdown files to other formats."
+authors = ["Julio Cabria <juliocabria@tutanota.com>"]
+license = "GPL-2.0-only"
+readme = "README.md"
+homepage = "https://github.com/Julynx/markdown_convert"
+include = ["markdown_convert/default.css"]
+
+[tool.poetry.dependencies]
+python = ">=3.8,<=4.0"
+Markdown = { version = ">=3.3.0,<=4.0.0" }
+PyMuPDF = { version = ">=1.23.5,<=2.0.0" }
+watchdog = { version = ">=3.0.0,<=4.0.0" }
+
+[tool.poetry.scripts]
+markdown-convert = "markdown_convert:main"
