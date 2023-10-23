@@ -7,4 +7,4 @@ Overview:
     Supports the <pagebreak> tag to insert page breaks in the PDF file.
 """
 
-from .markdown_convert import MarkdownFile
+from .markdown_convert import MarkdownFile  # noqa
