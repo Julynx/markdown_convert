@@ -1,83 +1,169 @@
-* {
-  font-family: sans-serif;
+/* Document structure */
+body {
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+  font-family: Cantarell;
+  color: #333;
+  line-height: 1;
+  max-width: 99%; /* <-- Solves a bug with letters cutting off */
 }
 
-pre {
-  background-color: silver;
-  font-family: "monospace";
-  font-size: 10pt;
-  padding-left: 12px;
-  padding-right: 12px;
-  padding-top: 8px;
-  padding-bottom: 8px;
+/* Headers and paragraphs */
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: #333;
+  font-weight: 400;
 }
 
-blockquote {
-  border-left: 6px solid silver;
-  margin: 1.5em 10px;
-  padding: 0.5em 10px;
+h1 {
+  margin-top: 0;
+  margin-bottom: 0.5em;
 }
 
-blockquote p {
-  display: inline;
+h2,
+h3,
+h4,
+h5,
+p {
+  margin-top: 1em;
+  margin-bottom: 0;
+}
+
+h1 {
+  font-size: 48px;
+}
+
+h2 {
+  font-size: 36px;
+}
+
+h3 {
+  font-size: 24px;
+}
+
+h4 {
+  font-size: 18px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+p {
+  font-size: 12px;
+  line-height: 1.5em;
+}
+
+/* Links */
+a {
+  color: #09f;
+  margin: 0;
+  vertical-align: baseline;
+}
+
+/* Lists */
+ul,
+ol {
+  font-size: 12px;
+  line-height: 1.5em;
+  margin: 1em 0 0 1.5em;
+  padding: 0;
+}
+
+li > ul,
+li > ol {
+  margin-top: 0;
 }
 
 li {
-  margin-bottom: 0.25em;
+  line-height: 1.5em;
 }
 
-ul {
-  list-style-type: disc;
+li ul {
+  margin-left: 1.5em;
 }
 
-ul ul {
-  list-style-type: disc;
+/* Code blocks */
+pre {
+  padding: 0 2em;
+  white-space: pre-wrap;
 }
 
-ul ul ul {
-  list-style-type: disc;
+code {
+  font-family: JetBrains Mono;
+  font-size: 10px;
+  background-color: #eee;
+  line-height: 1.5em;
+  padding-left: 0.4em;
+  padding-right: 0.4em;
+  display: inline-block;
+  border-radius: 0.3em;
 }
 
-ul ul ul ul {
-  list-style-type: disc;
+.sourceCode {
+  background-color: #eee;
+  padding: 0.3em 0.4em;
+  border-radius: 0.3em;
 }
 
-table {
-  border: 1px solid gray;
-  font-size: 8pt;
-  border-spacing: 0px;
+/* Quotes */
+blockquote {
+  margin-top: 1em;
+  margin-left: 2em;
+  max-width: 30em;
+  border-left: 4px solid #ccc;
+  padding-left: 0.5em;
+  color: #666;
 }
 
-table th {
-  background-color: silver;
-  border: 1px solid gray;
-  font-size: 8pt;
-  padding: 4px;
-  border-spacing: 0px;
+blockquote > blockquote {
+  margin-left: 1em;
 }
 
-table tr {
-  background-color: white;
-  border: 1px solid gray;
-  font-size: 8pt;
-  padding: 4px;
-  border-spacing: 0px;
-}
-
-table td {
-  background-color: white;
-  border: 1px solid gray;
-  font-size: 8pt;
-  padding: 4px;
-  border-spacing: 0px;
-}
-
-div {
-  padding-top: 16px;
-  padding-bottom: 16px;
+/* Figures */
+figure {
   text-align: center;
+  margin: 0;
+  padding: 2em 0;
 }
 
 img {
-  width: 250px;
+  max-width: 80%;
+}
+
+/* Tables */
+table {
+  font-size: 10px;
+  border-collapse: collapse;
+  margin-top: 1em;
+  text-align: left;
+  table-layout: auto;
+}
+
+table thead {
+  background-color: #eee;
+}
+
+table thead th,
+table tbody td {
+  padding: 0.5em 0.75em;
+  border: 1px solid #ccc;
+  white-space: nowrap;
+}
+
+table tbody td {
+  color: #666;
+}
+
+col {
+  width: auto !important;
+}
+
+/* Page breaks */
+.pagebreak {
+  clear: both;
+  page-break-after: always;
 }

@@ -1,190 +1,282 @@
-"""
-Markdown convert module.
+#!/usr/bin/env python3
 
-Overview:
-    This module provides a class for converting Markdown files to PDF files,
-    and updating the PDF file whenever the Markdown file is modified.
-    Supports the <pagebreak> tag to insert page breaks in the PDF file.
+"""
+CLI interface to convert markdown files to pdf.
+Author: @julynx
 """
 
-import io
-from time import sleep
+import os
+import subprocess
 from pathlib import Path
-import pkg_resources
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
-import markdown
-import fitz
+from sys import exit as sys_exit
+from argsdict import args
+from string_grab import grab_all
+
+RED = '31'
+GREEN = '32'
+YELLOW = '33'
+BLUE = '34'
+MAGENTA = '35'
+CYAN = '36'
+WHITE = '37'
+
+SIGINT = 2
+
+OPTIONS = ('markdown_file_path', '--mode', '--css', '--extract-opts')
+MODES = ('once', 'watch')
+EXTRACT_VALS = ('true', 'false')
 
 
-class MarkdownFile(FileSystemEventHandler):
+def main():
     """
-    MarkdownFile class, representing a file in Markdown format.
+    Convert a markdown file to a pdf file.
     """
+    try:
+        # Load and validate arguments
+        arg = args(["markdown_file_path"])
+        for key in set(arg.keys()) - set(OPTIONS):
+            raise IndexError(f"Invalid option: '{key}'")
 
-    def __init__(self, md_path, *,
-                 css_path=pkg_resources.resource_filename('markdown_convert',
-                                                          'default.css'),
-                 margin_h=62,
-                 margin_v=60):
-        """
-        Constructor for the MarkdownFile class.
-
-        Args:
-            md_path (Path|str): Path to the Markdown file.
-            css_path (Path|str='default.css'): Path to the CSS file.
-            margin_h (int=62): Horizontal margin of the PDF file.
-            margin_v (int=60): Vertical margin of the PDF file.
-        """
-        self.plugins = {'extra', 'sane_lists'}
-        self.margin_h = margin_h
-        self.margin_v = margin_v
-
-        try:  # Raise an error if the Markdown file is invalid.
-            md_path = Path(md_path).resolve()
-            if md_path.suffix != '.md':
-                raise ValueError("The path must be a Markdown file.")
-            self.path_no_ext = md_path.with_suffix('')
-            self.content = md_path.read_text(encoding='utf-8')
-        except (ValueError, TypeError, OSError) as error:
-            raise ValueError(f'\n\nInvalid Markdown file \'{md_path}\'.\n') \
-                from error
-
-        try:  # Warn if the CSS file is invalid, and disable custom CSS.
-            css_path = Path(css_path).resolve()
-            self.custom_css = css_path.read_text(encoding='utf-8')
-        except (ValueError, TypeError, OSError):
-            print(f'\nCould not read the CSS file \'{css_path}\'.\n'
-                  'Proceeding without custom CSS...')
-            self.custom_css = None
-
-    def _add_page(self, page, *,
-                  markdown_parser,
-                  output_writer,
-                  last_page=False):
-        """
-        Parses a Markdown page with the provided Markdown parser, and adds it
-        to the output writer.
-
-        Args:
-            page (str): The Markdown page to parse.
-            markdown_parser (function): The Markdown parser to use.
-            output_writer (DocumentWriter): The output writer to use.
-            last_page (bool=False): Whether this is the last page.
-                                    Will insert page breaks if False.
-        """
-        page_break_str = '\n\n<div style="page-break-after: always;"></div>'
-        if last_page:
-            page_break_str = ''
-
-        page = f'{page}{page_break_str}'
-        rectangle = fitz.paper_rect('A4')
-        html_content = markdown_parser(page,
-                                       extensions=list(self.plugins))
-        story = fitz.Story(html=html_content,
-                           user_css=self.custom_css,
-                           archive=str(self.path_no_ext.parent))
-
-        pages_left = 1
-        while pages_left > 0:
-            device = output_writer.begin_page(rectangle)
-            pages_left, _ = story.place(rectangle + (self.margin_h,
-                                                     self.margin_v,
-                                                     -self.margin_h,
-                                                     -self.margin_v))
-            story.draw(device)
-            output_writer.end_page()
-
-    def use(self, plugin):
-        """
-        Adds a plugin to the list of plugins to use.
-        'extra' and 'sane_lists' are already included by default.
-
-        Args:
-            plugin (str): The name of the plugin to use.
-        """
-        self.plugins.add(plugin)
-        return self
-
-    def to_pdf(self, output_path=None):
-        """
-        Converts the Markdown file to a PDF file.
-
-        Args:
-            output_path (str=None): The path to the output PDF file.
-                                    If None, the PDF file will be saved in the
-                                    same directory as the Markdown file, with
-                                    the same name, but with the .pdf extension.
-        """
-        if output_path is None:
-            output_path = self.path_no_ext.with_suffix('.pdf')
-
-        output_stream = io.BytesIO()
-        output_writer = fitz.DocumentWriter(output_stream)
-
-        pages = self.content.split('<pagebreak>')
-        for idx, page in enumerate(pages):
-            self._add_page(page,
-                           markdown_parser=markdown.markdown,
-                           output_writer=output_writer,
-                           last_page=idx == (len(pages) - 1))
-
-        output_writer.close()
-        document = fitz.open('pdf', output_stream)
-        document.save(output_path)
-        document.close()
-
-    def to_html(self, output_path=None):
-        """
-        Converts the Markdown file to an HTML file.
-
-        Args:
-            output_path (str=None): The path to the output HTML file.
-                                    If None, the HTML file will be saved in the
-                                    same directory as the Markdown file, with
-                                    the same name, but with the .pdf extension.
-        """
-        if output_path is None:
-            output_path = self.path_no_ext.with_suffix('.html')
-
-        markdown.markdown(self.content,
-                          extensions=list(self.plugins))
-
-        output_path.write_text(self.content, encoding='utf-8')
-
-    def live_pdf(self):
-        """
-        Converts the Markdown file to a PDF file, and updates the PDF file
-        whenever the Markdown file is modified.
-
-        Note:
-            This method does not return until the program is interrupted.
-        """
-        self.to_pdf()
-        observer = Observer()
-        observer.schedule(self, str(self.path_no_ext.with_suffix('.md')))
-        observer.start()
-
+        # Get the markdown path
         try:
-            while True:
-                sleep(1)
+            md_path = arg["markdown_file_path"]
+        except KeyError as key_err:
+            raise IndexError("Missing 'markdown_file_path' argument.") \
+                from key_err
 
-        except KeyboardInterrupt:
-            observer.stop()
+        # Get the conversion mode
+        mode = arg.get("--mode", 'once')
+        if mode not in MODES:
+            raise IndexError(f"Invalid mode: '{mode}'")
 
-        observer.join()
+        # Get the CSS path
+        try:
+            css_path = arg["--css"]
+        except KeyError:
+            def_css = f"{Path.home()}/.local/share/pandoc/default.css"
+            css_path = def_css if Path(def_css).exists() else None
 
-    def on_modified(self, event):
+        # Get the extract options if needed
+        extract = arg.get("--extract-opts", 'true') == 'true'
+
+        # Set the watch command
+        watch_command = ["inotifywait", "-e", "close_write", md_path, css_path]
+
+        # Compile the markdown file once
+        if mode == 'once':
+            print(f'\nGenerating PDF file from \'{md_path}\'...\n')
+            convert(md_path, css_path, extract)  # raises RuntimeError
+
+        # Watch the markdown file for changes
+        elif mode == 'watch':
+            handle = None
+            try:
+                handle = aconvert(md_path, css_path, extract)
+                print(f'\nWatching \'{md_path}\' for changes...\n')
+                while True:
+                    subprocess.call(watch_command)
+                    aconvert_stop(handle)
+                    handle = aconvert(md_path, css_path, extract)
+
+            except KeyboardInterrupt:
+                print('\nExiting...\n')
+
+            finally:
+                aconvert_stop(handle)
+
+        sys_exit(0)
+
+    except Exception as err:
+        if isinstance(err, (IndexError, ValueError)):
+            print(get_usage())
+        print(c(f"ERROR: {err}\n", RED))
+        sys_exit(1)
+
+
+def convert(md_path, css_path, extract_args=False):
+    """
+    Convert a markdown file to a pdf file.
+
+    Args:
+        md_path (str): Path to the markdown file.
+        css_path (str): Path to the CSS file.
+        extra_args (bool): Extract arguments from 'md_path' to pass to pandoc.
+
+    Raises:
+        RuntimeError: If the conversion fails.
+    """
+    if extract_args:
+        extra_args = extract_opts(md_path)
+
+    convert_command = _build_convert_command(md_path, css_path,
+                                             extra_args=extra_args)
+
+    try:
+        with open(os.devnull, 'w') as dev_null:
+            subprocess.check_call(convert_command, stdin=dev_null, stdout=dev_null, stderr=dev_null)
+    except subprocess.CalledProcessError as err:
+        raise RuntimeError(f"Command '{' '.join(convert_command)}'\n       "
+                           f"returned non-zero exit status {err.returncode}.") \
+            from err
+
+
+def aconvert(md_path, css_path, extract_args=False):
+    """
+    Asynchronous version of convert.
+
+    Args:
+        md_path (str): Path to the markdown file.
+        css_path (str): Path to the CSS file.
+        extra_args (bool): Extract arguments from 'md_path' to pass to pandoc.
+
+    Returns:
+        handle: A subprocess handle. (Popen object)
+    """
+    if extract_args:
+        extra_args = extract_opts(md_path)
+
+    convert_command = _build_convert_command(md_path, css_path,
+                                             extra_args=extra_args)
+
+    return subprocess.Popen(convert_command)
+
+
+def aconvert_stop(handle):
+    """
+    Stop an asynchronous conversion.
+
+    Args:
+        handle: A subprocess handle. (Popen object)
+    """
+    if handle:
+        handle.send_signal(SIGINT)
+        handle.wait()
+
+
+def _build_convert_command(md_path, css_path, *, extra_args=None):
+    """
+    Build the command to convert a markdown file to a pdf file.
+
+    Args:
+        md_path (str): Path to the markdown file.
+        css_path (str): Path to the CSS file.
+        extra_args (list): Extra arguments to pass to pandoc.
+
+    Returns:
+        list: The command to convert the markdown file to a pdf file.
+    """
+    extra_args = extra_args if extra_args is not None else []
+
+    cmd = ["pandoc",
+           "--pdf-engine", "wkhtmltopdf",
+           *extra_args,
+           "--pdf-engine-opt=--enable-local-file-access",
+           "--pdf-engine-opt=--disable-smart-shrinking",
+           "-i", md_path,
+           "-o", md_path.replace('.md', '.pdf')]
+
+    if css_path is not None:
+        cmd += ["--css", css_path]
+
+    return cmd
+
+
+def extract_opts(md_path, max_opt_len=1024):
+    """
+    Extract '--pdf-engine-opt' options from a markdown file.
+
+    Args:
+        md_path (str): Path to the markdown file.
+        max_opt_len (int): Maximum length of an option.
+
+    Returns:
+        list: The extracted options.
+    """
+    def _sanitize(text):
         """
-        Required by the FileSystemEventHandler class for the live PDF
-        functionality. Do not call this method directly.
+        Remove all non-alphanumeric characters from a string.
+        Allows hyphens and brackets.
 
         Args:
-            event (FileSystemEvent): The event that triggered this method.
+            text (str): The text to sanitize.
+
+        Returns:
+            str: The sanitized text.
         """
-        if event.src_path == str(self.path_no_ext.with_suffix('.md')):
+        allowed = "-[] "
+        return ''.join([c for c in text if c.isalnum() or c in allowed])
 
-            with open(event.src_path, encoding='utf-8') as file:
-                self.content = file.read()
+    file_contents = Path(md_path).read_text()
 
-            self.to_pdf()
+    clean_opts = []
+    for option_group in grab_all(file_contents, start='[option]: <> (', end=')'):
+
+        if len(option_group) > max_opt_len:
+            continue
+
+        formatted_options = []
+        for idx, option in enumerate(option_group.split(" ", maxsplit=1)):
+
+            option = _sanitize(option)
+
+            if not option.startswith("-") and idx == 0:
+                formatted_options.append(f"--{option}")
+            else:
+                formatted_options.append(option)
+
+        clean_opts += [f"--pdf-engine-opt={opt}" for opt in formatted_options]
+
+    return clean_opts
+
+
+def get_usage():
+    """
+    Returns a message describing how to use the program.
+
+    Returns:
+        str: The usage message.
+    """
+    commd = f"{c('md_to_pdf', GREEN)} [{c(OPTIONS[0], YELLOW)}] [{c('options', BLUE)}]"
+    opt_1 = c(OPTIONS[1], BLUE) + c("=", CYAN) + c('|'.join(MODES), CYAN)
+    opt_2 = c(OPTIONS[2], BLUE) + c("=", CYAN) + c('"~/.local/share/pandoc/default.css"', CYAN)
+    opt_3 = c(OPTIONS[3], BLUE) + c("=", CYAN) + c('|'.join(EXTRACT_VALS), CYAN)
+    syntax_example = c("[option]: <> (footer-center [page])", CYAN)
+
+    usage = ("\n"
+             "Usage:\n"
+             f"  {commd}\n"
+             "\n"
+             "Options:\n"
+             f"  {opt_1}\n"
+             "    Compile once (default), or every time the file changes.\n"
+             "\n"
+             f"  {opt_2}\n"
+             "    Use a custom CSS file provided as an argument, or the file\n"
+             "    above if it exists (default).\n"
+             "\n"
+             f"  {opt_3}\n"
+             "    Extract '--pdf-engine-opt' options from the Markdown file.\n"
+             "    Can be set to 'true' (default) or 'false'.\n"
+             "    '--enable-local-file-access' and '--disable-smart-shrinking'\n"
+             "    are always included. Some options are disabled for security.\n"
+             f"    Example syntax: {syntax_example}\n"
+             )
+    return usage
+
+
+def c(text, color):
+    """
+    Colorize text.
+
+    Args:
+        text (str): The text to colorize.
+        color (str): The color code.
+
+    Returns:
+        str: The colorized text.
+    """
+    return f"\033[{color}m{text}\033[0m"
+
+
+if __name__ == '__main__':
+    main()
