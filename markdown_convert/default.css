@@ -2,7 +2,7 @@
 body {
   margin: 0 0 0 0;
   padding: 0 0 0 0;
-  font-family: Cantarell;
+  font-family: Cantarell, Arial, Helvetica, sans-serif;
   color: #333;
   line-height: 1;
   max-width: 99%; /* <-- Solves a bug with letters cutting off */
@@ -93,7 +93,7 @@ pre {
 }
 
 code {
-  font-family: JetBrains Mono;
+  font-family: JetBrains Mono, "Courier New", Courier, monospace;
   font-size: 10px;
   background-color: #eee;
   line-height: 1.5em;

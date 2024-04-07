@@ -7,6 +7,7 @@ Author: @julynx
 
 import os
 import subprocess
+import pkg_resources
 from pathlib import Path
 from sys import exit as sys_exit
 from argsdict import args
@@ -22,7 +23,8 @@ WHITE = '37'
 
 SIGINT = 2
 
-OPTIONS = ('markdown_file_path', '--mode', '--css', '--extract-opts')
+OPTIONS = ('markdown_file_path', '--mode', '--css', '--extract-opts',
+           "-h", "--help")
 MODES = ('once', 'watch')
 EXTRACT_VALS = ('true', 'false')
 
@@ -53,7 +55,7 @@ def main():
         try:
             css_path = arg["--css"]
         except KeyError:
-            def_css = f"{Path.home()}/.local/share/pandoc/default.css"
+            def_css = get_css_path()
             css_path = def_css if Path(def_css).exists() else None
 
         # Get the extract options if needed
@@ -87,9 +89,13 @@ def main():
         sys_exit(0)
 
     except Exception as err:
-        if isinstance(err, (IndexError, ValueError)):
+        asked_for_help = "--help" in arg or "-h" in arg
+        show_usage = (isinstance(err, (IndexError, ValueError))
+                      or asked_for_help)
+        if show_usage:
             print(get_usage())
-        print(c(f"ERROR: {err}\n", RED))
+        if not asked_for_help:
+            print(c(f"ERROR: {err}\n", RED))
         sys_exit(1)
 
 
@@ -229,6 +235,11 @@ def extract_opts(md_path, max_opt_len=1024):
     return clean_opts
 
 
+def get_css_path():
+    return pkg_resources.resource_filename('markdown_convert',
+                                           'default.css')
+
+
 def get_usage():
     """
     Returns a message describing how to use the program.
@@ -237,9 +248,9 @@ def get_usage():
         str: The usage message.
     """
     commd = f"{c('md_to_pdf', GREEN)} [{c(OPTIONS[0], YELLOW)}] [{c('options', BLUE)}]"
-    opt_1 = c(OPTIONS[1], BLUE) + c("=", CYAN) + c('|'.join(MODES), CYAN)
-    opt_2 = c(OPTIONS[2], BLUE) + c("=", CYAN) + c('"~/.local/share/pandoc/default.css"', CYAN)
-    opt_3 = c(OPTIONS[3], BLUE) + c("=", CYAN) + c('|'.join(EXTRACT_VALS), CYAN)
+    opt_1 = f"{c(OPTIONS[1], BLUE)}{c('=', CYAN)}{c('|'.join(MODES), CYAN)}"
+    opt_2 = f"{c(OPTIONS[2], BLUE)}{c('=', CYAN)}[{c('css_file_path', CYAN)}]"
+    opt_3 = f"{c(OPTIONS[3], BLUE)}{c('=', CYAN)}{c('|'.join(EXTRACT_VALS), CYAN)}"
     syntax_example = c("[option]: <> (footer-center [page])", CYAN)
 
     usage = ("\n"
@@ -251,8 +262,7 @@ def get_usage():
              "    Compile once (default), or every time the file changes.\n"
              "\n"
              f"  {opt_2}\n"
-             "    Use a custom CSS file provided as an argument, or the file\n"
-             "    above if it exists (default).\n"
+             "    Use a custom CSS file.\n"
              "\n"
              f"  {opt_3}\n"
              "    Extract '--pdf-engine-opt' options from the Markdown file.\n"
