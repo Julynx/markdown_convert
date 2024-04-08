@@ -39,8 +39,8 @@ Options:
 from markdown_convert import convert, live_convert
 
 # Convert your Markdown file to PDF once
-convert('README.md', "style.css", 'README.pdf')
+convert('README.md', 'style.css', 'README.pdf')
 
 # Convert your Markdown file to PDF every time it changes
-live_convert('README.md', "style.css", 'README.pdf')
+live_convert('README.md', 'style.css', 'README.pdf')
 ```
