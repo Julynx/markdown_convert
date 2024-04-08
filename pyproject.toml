@@ -4,19 +4,20 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "markdown_convert"
-version = "0.9.7"
+version = "0.0.1"
 description = "Convert Markdown files to PDF from your command line."
 authors = ["Julio Cabria <juliocabria@tutanota.com>"]
 license = "GPL-2.0-only"
 readme = "README.md"
 homepage = "https://github.com/Julynx/markdown_convert"
-include = ["markdown_convert/default.css"]
+include = ["markdown_convert/default.css", "markdown_convert/code.css"]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<=4.0"
-string-grab = "1.3.0"
+python = ">=3.8,<4.0"
 argsdict = "1.0.0"
 setuptools = "^49.6.0"
+weasyprint = "^61.2"
+markdown2 = "^2.4.13"
 
 [tool.poetry.scripts]
 markdown-convert = "markdown_convert.__main__:main"
