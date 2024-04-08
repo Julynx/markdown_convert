@@ -124,15 +124,21 @@ class LiveConverter():
             return
 
 
-def live_convert(md_path, css_path, output_path):
+def live_convert(md_path, css_path=None, output_path=None):
     """
     Convert a markdown file to a pdf file and watch for changes.
 
     Args:
         md_path (str): Path to the markdown file.
-        css_path (str): Path to the CSS file.
-        output_path (str): Path to the output file.
+        css_path (str=None): Path to the CSS file.
+        output_path (str=None): Path to the output file.
     """
+    if css_path is None:
+        css_path = get_css_path()
+
+    if output_path is None:
+        output_path = get_output_path(md_path, None)
+
     live_converter = LiveConverter(md_path, css_path, output_path,
                                    loud=True)
     live_converter.observe()
