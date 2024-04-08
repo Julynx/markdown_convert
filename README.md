@@ -11,10 +11,10 @@ It is powered by the amazing `markdown2` and `weasyprint` libraries, and unlike 
 
 ### Features
 
-- Supports live compilation, so you can preview your PDF in real-time as you type.
-- Comes with beautiful CSS out of the box, making your documents look great from the start.
-- Syntax highlighting for code blocks included.
-- Designed for the 21st century, with relative links, pipe tables, and modern CSS paged media features.
+- ⚡️ Supports live compilation, so you can preview your PDF in real-time as you type.
+- 🌸 Comes with beautiful CSS out of the box, making your documents look great from the start.
+- 🎨 Syntax highlighting for code blocks included.
+- 🪐 Designed for the 21st century, with relative links, pipe tables, and modern CSS paged media features.
 
 ### Usage
 
