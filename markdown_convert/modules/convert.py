@@ -16,7 +16,8 @@ import weasyprint
 from .resources import get_css_path, get_code_css_path, get_output_path
 
 
-def convert(md_path, css_path=None, output_path=None):
+def convert(md_path, css_path=None, output_path=None,
+            *, extend_default_css=True):
     """
     Convert a markdown file to a pdf file.
 
@@ -24,12 +25,18 @@ def convert(md_path, css_path=None, output_path=None):
         md_path (str): Path to the markdown file.
         css_path (str=None): Path to the CSS file.
         output_path (str=None): Path to the output file.
+        extend_default_css (bool=True): Extend the default CSS file.
     """
     if css_path is None:
         css_path = get_css_path()
 
     if output_path is None:
         output_path = get_output_path(md_path, None)
+
+    if extend_default_css:
+        css_sources = set([css_path, get_css_path(), get_code_css_path()])
+    else:
+        css_sources = set([css_path, get_code_css_path()])
 
     try:
         html = markdown2.markdown_path(md_path,
@@ -40,8 +47,70 @@ def convert(md_path, css_path=None, output_path=None):
         (weasyprint
          .HTML(string=html)
          .write_pdf(target=output_path,
-                    stylesheets=[css_path,
-                                 get_code_css_path()]))
+                    stylesheets=list(css_sources)))
+
+    except Exception as exc:
+        raise RuntimeError(exc) from exc
+
+
+def live_convert(md_path, css_path=None, output_path=None,
+                 *, extend_default_css=True):
+    """
+    Convert a markdown file to a pdf file and watch for changes.
+
+    Args:
+        md_path (str): Path to the markdown file.
+        css_path (str=None): Path to the CSS file.
+        output_path (str=None): Path to the output file.
+        extend_default_css (bool=True): Extend the default CSS file.
+    """
+    if css_path is None:
+        css_path = get_css_path()
+
+    if output_path is None:
+        output_path = get_output_path(md_path, None)
+
+    live_converter = LiveConverter(md_path, css_path, output_path,
+                                   extend_default_css=extend_default_css,
+                                   loud=True)
+    live_converter.observe()
+
+
+def convert_text(md_text, css_text=None,
+                 *, extend_default_css=True):
+    """
+    Convert markdown text to a pdf file.
+
+    Args:
+        md_text (str): Markdown text.
+        css_text (str=None): CSS text.
+        extend_default_css (bool=True): Extend the default CSS file.
+
+    Returns:
+        PDF file as bytes.
+    """
+    default_css = Path(get_css_path()).read_text()
+    code_css = Path(get_code_css_path()).read_text()
+
+    if css_text is None:
+        css_text = default_css
+
+    if extend_default_css:
+        css_sources = set([css_text, default_css, code_css])
+    else:
+        css_sources = set([css_text, code_css])
+
+    css_sources = [weasyprint.CSS(string=css) for css in css_sources]
+
+    try:
+        html = markdown2.markdown(md_text,
+                                  extras=["fenced-code-blocks",
+                                          "toc",
+                                          "tables"])
+
+        return (weasyprint
+                .HTML(string=html)
+                .write_pdf(stylesheets=css_sources))
 
     except Exception as exc:
         raise RuntimeError(exc) from exc
@@ -52,7 +121,9 @@ class LiveConverter():
     Class to convert a markdown file to a pdf file and watch for changes.
     """
 
-    def __init__(self, md_path, css_path, output_path, *, loud=False):
+    def __init__(self, md_path, css_path, output_path,
+                 *, extend_default_css=True,
+                 loud=False):
         """
         Initialize the LiveConverter class.
 
@@ -60,10 +131,12 @@ class LiveConverter():
             md_path (str): Path to the markdown file.
             css_path (str): Path to the CSS file.
             output_path (str): Path to the output file.
+            extend_default_css (bool): Extend the default CSS file.
         """
         self.md_path = Path(md_path).absolute()
         self.css_path = Path(css_path).absolute()
         self.output_path = output_path
+        self.extend_default_css = extend_default_css
         self.loud = loud
 
         self.md_last_modified = None
@@ -88,7 +161,8 @@ class LiveConverter():
         """
         Write the pdf file.
         """
-        convert(self.md_path, self.css_path, self.output_path)
+        convert(self.md_path, self.css_path, self.output_path,
+                extend_default_css=self.extend_default_css)
         if self.loud:
             print(f"- PDF file updated: {datetime.now()}", flush=True)
 
@@ -122,23 +196,3 @@ class LiveConverter():
             if self.loud:
                 print("\nInterrupted by user.\n", flush=True)
             return
-
-
-def live_convert(md_path, css_path=None, output_path=None):
-    """
-    Convert a markdown file to a pdf file and watch for changes.
-
-    Args:
-        md_path (str): Path to the markdown file.
-        css_path (str=None): Path to the CSS file.
-        output_path (str=None): Path to the output file.
-    """
-    if css_path is None:
-        css_path = get_css_path()
-
-    if output_path is None:
-        output_path = get_output_path(md_path, None)
-
-    live_converter = LiveConverter(md_path, css_path, output_path,
-                                   loud=True)
-    live_converter.observe()

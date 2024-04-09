@@ -4,4 +4,4 @@ available to the user.
 """
 
 from __main__ import *
-from .modules.convert import convert, live_convert
+from .modules.convert import convert, live_convert, convert_text
