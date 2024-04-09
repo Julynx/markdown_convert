@@ -9,7 +9,7 @@ from pathlib import Path
 import pkg_resources
 
 from .constants import BLUE, CYAN, GREEN, YELLOW, OPTIONS, OPTIONS_MODES
-from .utils_strings import color
+from .utils import color
 
 
 def get_output_path(md_path, output_dir=None):

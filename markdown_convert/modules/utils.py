@@ -16,3 +16,16 @@ def color(color_code, text):
         str: The colorized text.
     """
     return f"\033[{color_code}m{text}\033[0m"
+
+
+def drop_duplicates(lst):
+    """
+    Drops duplicates from the given list.
+
+    Args:
+        lst: List to remove duplicates from.
+
+    Returns:
+        List without duplicates.
+    """
+    return list(dict.fromkeys(lst))

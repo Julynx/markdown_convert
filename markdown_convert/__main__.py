@@ -12,7 +12,7 @@ from argsdict import args
 from .modules.constants import RED, OPTIONS, OPTIONS_MODES
 from .modules.convert import convert, live_convert
 from .modules.resources import get_css_path, get_output_path, get_usage
-from .modules.utils_strings import color
+from .modules.utils import color
 from .modules.validate import (validate_css_path, validate_markdown_path,
                                validate_output_path)
 

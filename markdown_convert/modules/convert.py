@@ -14,6 +14,7 @@ import weasyprint
 
 
 from .resources import get_css_path, get_code_css_path, get_output_path
+from .utils import drop_duplicates
 
 
 def convert(md_path, css_path=None, output_path=None,
@@ -34,9 +35,11 @@ def convert(md_path, css_path=None, output_path=None,
         output_path = get_output_path(md_path, None)
 
     if extend_default_css:
-        css_sources = set([css_path, get_css_path(), get_code_css_path()])
+        css_sources = [get_code_css_path(), get_css_path(), css_path]
     else:
-        css_sources = set([css_path, get_code_css_path()])
+        css_sources = [get_code_css_path(), css_path]
+
+    css_sources = drop_duplicates(css_sources)
 
     try:
         html = markdown2.markdown_path(md_path,
@@ -96,11 +99,12 @@ def convert_text(md_text, css_text=None,
         css_text = default_css
 
     if extend_default_css:
-        css_sources = set([css_text, default_css, code_css])
+        css_sources = [code_css, default_css, css_text]
     else:
-        css_sources = set([css_text, code_css])
+        css_sources = [code_css, css_text]
 
-    css_sources = [weasyprint.CSS(string=css) for css in css_sources]
+    css_sources = [weasyprint.CSS(string=css)
+                   for css in drop_duplicates(css_sources)]
 
     try:
         html = markdown2.markdown(md_text,

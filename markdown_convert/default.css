@@ -206,8 +206,7 @@ h1 code,
 h2 code,
 h3 code,
 h4 code,
-h5 code,
-h6 code {
+h5 code {
   font-size: 0.8em; /* Adjust the font size as needed */
 }
 
@@ -247,19 +246,19 @@ table {
   table-layout: auto;
 }
 
-table thead {
+thead {
   background-color: #eee;
 }
 
-table thead th,
-table tbody td {
+tbody {
+  color: #666;
+}
+
+th,
+td {
   padding: 0.5em 0.75em;
   border: 1px solid #ccc;
   white-space: nowrap;
-}
-
-table tbody td {
-  color: #666;
 }
 
 col {
