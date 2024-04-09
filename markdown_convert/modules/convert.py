@@ -89,8 +89,8 @@ def convert_text(md_text, css_text=None,
     Returns:
         PDF file as bytes.
     """
-    default_css = Path(get_css_path()).read_text()
-    code_css = Path(get_code_css_path()).read_text()
+    default_css = Path(get_css_path()).read_text(encoding='utf-8')
+    code_css = Path(get_code_css_path()).read_text(encoding='utf-8')
 
     if css_text is None:
         css_text = default_css
