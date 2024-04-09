@@ -3,7 +3,7 @@
 _Convert Markdown files to PDF from your command line._
 
 ### `pip install markdown-convert`
-<img src='https://i.imgur.com/UuJL8Ls.png' width='80%'>
+<img src='https://i.imgur.com/GOpzEfy.png' width='80%'>
 
 `markdown-convert` is an elegant command-line tool that converts Markdown files to PDF.
 
