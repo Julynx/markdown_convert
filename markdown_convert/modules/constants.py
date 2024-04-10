@@ -17,3 +17,7 @@ OPTIONS = ('markdown_file_path',
            "-h", "--help")
 
 OPTIONS_MODES = ('once', 'live')
+
+MD_EXTENSIONS = ["fenced-code-blocks",
+                 "header-ids",
+                 "tables"]

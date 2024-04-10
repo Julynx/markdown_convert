@@ -11,9 +11,9 @@ from pathlib import Path
 import markdown2
 import weasyprint
 
-
 from .resources import get_css_path, get_code_css_path, get_output_path
 from .utils import drop_duplicates
+from .constants import MD_EXTENSIONS
 
 
 def convert(md_path, css_path=None, output_path=None,
@@ -42,9 +42,7 @@ def convert(md_path, css_path=None, output_path=None,
 
     try:
         html = markdown2.markdown_path(md_path,
-                                       extras=["fenced-code-blocks",
-                                               "toc",
-                                               "tables"])
+                                       extras=MD_EXTENSIONS)
 
         (weasyprint
          .HTML(string=html)
@@ -107,9 +105,7 @@ def convert_text(md_text, css_text=None,
 
     try:
         html = markdown2.markdown(md_text,
-                                  extras=["fenced-code-blocks",
-                                          "toc",
-                                          "tables"])
+                                  extras=MD_EXTENSIONS)
 
         return (weasyprint
                 .HTML(string=html)
