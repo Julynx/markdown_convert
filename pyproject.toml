@@ -15,7 +15,7 @@ include = ["markdown_convert/default.css", "markdown_convert/code.css"]
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0"
 argsdict = "1.0.0"
-setuptools = "^49.6.0"
+setuptools = ">=46.0.0"
 weasyprint = "^61.2"
 markdown2 = "^2.4.13"
 
