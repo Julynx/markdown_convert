@@ -4,7 +4,6 @@ Author: @julynx
 """
 
 import os
-import platform
 import time
 from datetime import datetime
 from pathlib import Path
@@ -156,9 +155,6 @@ class LiveConverter():
         Returns:
             Last modified date of the file.
         """
-        if platform.system() == 'Windows':
-            return os.path.getmtime(file_path)
-
         return os.path.getmtime(file_path)
 
     def write_pdf(self):
