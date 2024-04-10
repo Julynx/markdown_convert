@@ -10,7 +10,7 @@ _Convert Markdown files to PDF from your command line._
 
 Unlike other similar tools, it relies solely on Python packages to do the job, eliminating the need for any external system-level dependencies when running on Linux.
 
-If you're running Windows, you only need to install the GTK-3 runtime from the following link: [GTK-3 Runtime Installer](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases).
+If you're running Windows, you only need to install the GTK-3 runtime from the following link: [GTK-3 Runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases).
 
 ### Features
 
