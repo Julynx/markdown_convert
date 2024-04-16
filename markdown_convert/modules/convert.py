@@ -45,7 +45,7 @@ def convert(md_path, css_path=None, output_path=None,
                                        extras=MD_EXTENSIONS)
 
         (weasyprint
-         .HTML(string=html)
+         .HTML(string=html, base_url='.')
          .write_pdf(target=output_path,
                     stylesheets=list(css_sources)))
 
@@ -108,7 +108,7 @@ def convert_text(md_text, css_text=None,
                                   extras=MD_EXTENSIONS)
 
         return (weasyprint
-                .HTML(string=html)
+                .HTML(string=html, base_url='.')
                 .write_pdf(stylesheets=css_sources))
 
     except Exception as exc:
