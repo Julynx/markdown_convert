@@ -21,9 +21,9 @@ If you're running Windows, you only need to install the GTK-3 runtime from the f
 
 ### Usage
 
-Run `markdown-convert -h` right from your terminal to check out the available options:
-
 > Note: If you just installed the package, you may need to log out and log back in for the `markdown-convert` command to be registered to your PATH.
+
+Run `markdown-convert -h` right from your terminal to check out the available options:
 
 ```bash
 Usage:
