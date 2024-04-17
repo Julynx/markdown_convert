@@ -49,3 +49,7 @@ convert('README.md', 'style.css', 'README.pdf')
 # Convert your Markdown file to PDF every time it changes
 live_convert('README.md', 'style.css', 'README.pdf')
 ```
+
+### Integrations
+
+Right click a Markdown file and `Convert to PDF` with the [markdown_convert_explorer](https://github.com/Julynx/markdown_convert_explorer) and [markdown_convert_nautilus](https://github.com/Julynx/markdown_convert_nautilus) extensions for Windows and Linux.
