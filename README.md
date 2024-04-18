@@ -4,7 +4,7 @@ _Convert Markdown files to PDF from your command line._
 
 ### `pip install markdown-convert`
 
-[<kbd> <br> 🐱 GitHub <br> </kbd>](https://github.com/Julynx/markdown-convert) [<kbd> <br> 📦 PyPi <br> </kbd>](https://pypi.org/project/markdown_convert) 
+[<kbd> 🐱 GitHub </kbd>](https://github.com/Julynx/markdown-convert) [<kbd> 📦 PyPi </kbd>](https://pypi.org/project/markdown_convert) 
 
 <img src='https://i.imgur.com/SZIz2gY.png' width='80%'>
 
