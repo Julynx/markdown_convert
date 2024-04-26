@@ -99,15 +99,16 @@
 }
 
 :root {
+  /* -- Standard margins */
   --top-margin: 1em;
-  --bottom-margin: 0;
   --left-margin: 1.5em;
 
-  --top-margin-small: 0;
+  /* -- Small margins */
   --left-margin-small: 1em;
 
-  --bottom-margin-big: 0.5em;
+  /* -- Big margins */
   --left-margin-big: 2em;
+  --bottom-margin-big: 0.5em;
 }
 
 /* Document structure */
@@ -129,7 +130,7 @@ h5 {
 }
 
 h1 {
-  margin-top: var(--top-margin-small);
+  margin-top: 0;
   margin-bottom: var(--bottom-margin-big);
 }
 
@@ -139,7 +140,7 @@ h4,
 h5,
 p {
   margin-top: var(--top-margin);
-  margin-bottom: var(--bottom-margin);
+  margin-bottom: 0;
 }
 
 h1 {
@@ -182,6 +183,13 @@ ol {
   margin-right: 0;
   margin-bottom: var(--bottom-margin);
   margin-left: var(--left-margin-big);
+}
+
+ul ol,
+ol ul,
+ol ol,
+ul ul {
+  margin-top: 0;
 }
 
 /* Code blocks */
@@ -264,5 +272,5 @@ col {
 }
 
 .pagebreak + * {
-  margin-top: var(--top-margin-small);
+  margin-top: 0;
 }
