@@ -98,13 +98,24 @@
   margin: 2.54cm;
 }
 
+:root {
+  --top-margin: 1em;
+  --bottom-margin: 0;
+  --left-margin: 1.5em;
+
+  --top-margin-small: 0;
+  --left-margin-small: 1em;
+
+  --bottom-margin-big: 0.5em;
+  --left-margin-big: 2em;
+}
+
 /* Document structure */
 body {
-  margin: 0 0 0 0;
-  padding: 0 0 0 0;
+  margin: 0;
+  padding: 0;
   font-family: "Cantarell Web", sans-serif;
   color: #333;
-  line-height: 1;
 }
 
 /* Headers and paragraphs */
@@ -118,8 +129,8 @@ h5 {
 }
 
 h1 {
-  margin-top: 0;
-  margin-bottom: 0.5em;
+  margin-top: var(--top-margin-small);
+  margin-bottom: var(--bottom-margin-big);
 }
 
 h2,
@@ -127,8 +138,8 @@ h3,
 h4,
 h5,
 p {
-  margin-top: 1em;
-  margin-bottom: 0;
+  margin-top: var(--top-margin);
+  margin-bottom: var(--bottom-margin);
 }
 
 h1 {
@@ -153,7 +164,6 @@ h5 {
 
 p {
   font-size: 12px;
-  line-height: 1.5em;
 }
 
 /* Links */
@@ -167,27 +177,16 @@ a {
 ul,
 ol {
   font-size: 12px;
-  line-height: 1.5em;
-  margin: 1em 0 0 1.5em;
   padding: 0;
-}
-
-li > ul,
-li > ol {
-  margin-top: 0;
-}
-
-li {
-  line-height: 1.5em;
-}
-
-li ul {
-  margin-left: 1.5em;
+  margin-top: var(--top-margin);
+  margin-right: 0;
+  margin-bottom: var(--bottom-margin);
+  margin-left: var(--left-margin-big);
 }
 
 /* Code blocks */
 pre {
-  padding: 0 2em;
+  padding: 0;
   white-space: pre-wrap;
 }
 
@@ -195,7 +194,6 @@ code {
   font-family: "JetBrains Mono", "Courier New", Courier, monospace;
   font-size: 10px;
   background-color: #eee;
-  line-height: 1.5em;
   padding-left: 0.4em;
   padding-right: 0.4em;
   display: inline-block;
@@ -212,8 +210,8 @@ h5 code {
 
 /* Quotes */
 blockquote {
-  margin-top: 1em;
-  margin-left: 2em;
+  margin-top: var(--top-margin);
+  margin-left: var(--left-margin);
   max-width: 30em;
   border-left: 4px solid #ccc;
   padding-left: 0.5em;
@@ -221,7 +219,7 @@ blockquote {
 }
 
 blockquote > blockquote {
-  margin-left: 1em;
+  margin-left: var(--left-margin-small);
 }
 
 /* Figures */
@@ -235,7 +233,7 @@ img {
 table {
   font-size: 10px;
   border-collapse: collapse;
-  margin-top: 1em;
+  margin-top: var(--top-margin);
   text-align: left;
   table-layout: auto;
 }
@@ -256,7 +254,7 @@ td {
 }
 
 col {
-  width: auto !important;
+  width: auto;
 }
 
 /* Page breaks */
@@ -266,5 +264,5 @@ col {
 }
 
 .pagebreak + * {
-  margin-top: 0;
+  margin-top: var(--top-margin-small);
 }
