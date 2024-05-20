@@ -206,6 +206,7 @@ code {
   padding-right: 0.4em;
   display: inline-block;
   border-radius: 0.3em;
+  line-height: 1.5;
 }
 
 h1 code,
@@ -213,7 +214,7 @@ h2 code,
 h3 code,
 h4 code,
 h5 code {
-  font-size: 0.8em; /* Adjust the font size as needed */
+  font-size: 0.8em;
 }
 
 /* Quotes */
@@ -275,6 +276,15 @@ col {
   margin-top: 0;
 }
 
-* {
+li,
+table,
+blockquote,
+code,
+p,
+h1,
+h2,
+h3,
+h4,
+h5 {
   page-break-inside: avoid;
 }
