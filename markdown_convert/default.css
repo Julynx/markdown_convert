@@ -111,6 +111,11 @@
   --bottom-margin-big: 0.5em;
 }
 
+/* Document */
+html {
+  font-size: 10px;
+}
+
 /* Document structure */
 body {
   margin: 0;
@@ -144,27 +149,27 @@ p {
 }
 
 h1 {
-  font-size: 48px;
+  font-size: 4.8rem;
 }
 
 h2 {
-  font-size: 36px;
+  font-size: 3.6rem;
 }
 
 h3 {
-  font-size: 24px;
+  font-size: 2.4rem;
 }
 
 h4 {
-  font-size: 18px;
+  font-size: 1.8rem;
 }
 
 h5 {
-  font-size: 14px;
+  font-size: 1.4rem;
 }
 
 p {
-  font-size: 12px;
+  font-size: 1.2rem;
 }
 
 /* Links */
@@ -177,7 +182,7 @@ a {
 /* Lists */
 ul,
 ol {
-  font-size: 12px;
+  font-size: 1.2rem;
   padding: 0;
   margin-top: var(--top-margin);
   margin-right: 0;
@@ -200,7 +205,7 @@ pre {
 
 code {
   font-family: "JetBrains Mono", "Courier New", Courier, monospace;
-  font-size: 10px;
+  font-size: 1rem;
   background-color: #eee;
   padding-left: 0.4em;
   padding-right: 0.4em;
@@ -240,7 +245,7 @@ img {
 
 /* Tables */
 table {
-  font-size: 10px;
+  font-size: 1rem;
   border-collapse: collapse;
   margin-top: var(--top-margin);
   text-align: left;
