@@ -181,7 +181,6 @@ html {
   font-size: 10px;
 }
 
-/* Document structure */
 body {
   margin: 0;
   padding: 0;
@@ -260,6 +259,10 @@ ol ul,
 ol ol,
 ul ul {
   margin-top: 0;
+}
+
+li {
+  margin-top: 0.5rem;
 }
 
 /* Code blocks */
