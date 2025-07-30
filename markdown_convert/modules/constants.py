@@ -20,4 +20,5 @@ OPTIONS_MODES = ('once', 'live')
 
 MD_EXTENSIONS = ["fenced-code-blocks",
                  "header-ids",
+                 "breaks",
                  "tables"]
