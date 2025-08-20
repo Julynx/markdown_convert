@@ -3,24 +3,20 @@ This module contains the constants used in the markdown_convert package.
 Author: @julynx
 """
 
-RED = '31'
-GREEN = '32'
-YELLOW = '33'
-BLUE = '34'
-MAGENTA = '35'
-CYAN = '36'
+RED = "31"
+GREEN = "32"
+YELLOW = "33"
+BLUE = "34"
+MAGENTA = "35"
+CYAN = "36"
 
-OPTIONS = ('markdown_file_path',
-           "--mode",
-           '--css',
-           "--out",
-           "-h", "--help")
+OPTIONS = ("markdown_file_path", "--mode", "--css", "--out", "-h", "--help")
 
-OPTIONS_MODES = ('once', 'live')
+OPTIONS_MODES = ("once", "live")
 
 MD_EXTENSIONS = {
     "fenced-code-blocks": None,
     "header-ids": None,
     "breaks": {"on_newline": True},
-    "tables": None
+    "tables": None,
 }

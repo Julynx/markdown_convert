@@ -48,8 +48,8 @@ def get_css_path():
     Returns:
         str: The path to the default CSS file.
     """
-    package_files = files('markdown_convert')
-    css_file = package_files / 'default.css'
+    package_files = files("markdown_convert")
+    css_file = package_files / "default.css"
     return str(css_file)
 
 
@@ -60,8 +60,8 @@ def get_code_css_path():
     Returns:
         str: The path to the code CSS file.
     """
-    package_files = files('markdown_convert')
-    css_file = package_files / 'code.css'
+    package_files = files("markdown_convert")
+    css_file = package_files / "code.css"
     return str(css_file)
 
 
@@ -72,21 +72,27 @@ def get_usage():
     Returns:
         str: The usage message.
     """
-    commd = (f"{color(GREEN, 'markdown-convert')} "
-             f"[{color(YELLOW, OPTIONS[0])}] [{color(BLUE, 'options')}]")
+    commd = (
+        f"{color(GREEN, 'markdown-convert')} "
+        f"[{color(YELLOW, OPTIONS[0])}] [{color(BLUE, 'options')}]"
+    )
     opt_1 = f"{color(BLUE, OPTIONS[1])}{color(CYAN, '=')}{color(CYAN, '|'.join(OPTIONS_MODES))}"
-    opt_2 = f"{color(BLUE, OPTIONS[2])}{color(CYAN, '=')}[{color(CYAN, 'css_file_path')}]"
+    opt_2 = (
+        f"{color(BLUE, OPTIONS[2])}{color(CYAN, '=')}[{color(CYAN, 'css_file_path')}]"
+    )
     opt_3 = f"{color(BLUE, OPTIONS[3])}{color(CYAN, '=')}[{color(CYAN, 'output_file_path')}]"
 
-    usage = ("\n"
-             "Usage:\n"
-             f"  {commd}\n"
-             "\n"
-             "Options:\n"
-             f"  {opt_1}\n"
-             "    Convert the markdown file once (default) or live.\n"
-             f"  {opt_2}\n"
-             "    Use a custom CSS file.\n"
-             f"  {opt_3}\n"
-             "    Specify the output file path.\n")
+    usage = (
+        "\n"
+        "Usage:\n"
+        f"  {commd}\n"
+        "\n"
+        "Options:\n"
+        f"  {opt_1}\n"
+        "    Convert the markdown file once (default) or live.\n"
+        f"  {opt_2}\n"
+        "    Use a custom CSS file.\n"
+        f"  {opt_3}\n"
+        "    Specify the output file path.\n"
+    )
     return usage

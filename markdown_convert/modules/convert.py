@@ -26,12 +26,12 @@ def _suppress_warnings():
     Only errors and exceptions will be shown.
     """
     # Suppress all warnings but keep errors
-    warnings.filterwarnings('ignore', category=UserWarning)
-    warnings.filterwarnings('ignore', category=DeprecationWarning)
-    warnings.filterwarnings('ignore', category=FutureWarning)
-    warnings.filterwarnings('ignore', category=PendingDeprecationWarning)
-    warnings.filterwarnings('ignore', category=ImportWarning)
-    warnings.filterwarnings('ignore', category=ResourceWarning)
+    warnings.filterwarnings("ignore", category=UserWarning)
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    warnings.filterwarnings("ignore", category=FutureWarning)
+    warnings.filterwarnings("ignore", category=PendingDeprecationWarning)
+    warnings.filterwarnings("ignore", category=ImportWarning)
+    warnings.filterwarnings("ignore", category=ResourceWarning)
 
 
 def _silent_pdf_generation(func, *args, **kwargs):
@@ -40,31 +40,32 @@ def _silent_pdf_generation(func, *args, **kwargs):
     Preserves exceptions and critical errors.
     """
     _suppress_warnings()
-    
+
     # Capture stdout and stderr to filter out warnings
     stdout_capture = StringIO()
     stderr_capture = StringIO()
-    
+
     try:
         with redirect_stdout(stdout_capture), redirect_stderr(stderr_capture):
             result = func(*args, **kwargs)
-        
+
         # Check if there were any critical errors in stderr
         stderr_content = stderr_capture.getvalue()
-        if stderr_content and any(keyword in stderr_content.lower()
-                                for keyword in ['error', 'exception', 'traceback', 'failed']):
+        if stderr_content and any(
+            keyword in stderr_content.lower()
+            for keyword in ["error", "exception", "traceback", "failed"]
+        ):
             # Print only critical errors, not warnings
             print(stderr_content, file=sys.stderr)
-        
+
         return result
-        
+
     except Exception as exc:
         # Always re-raise actual exceptions
         raise exc
 
 
-def convert(md_path, css_path=None, output_path=None,
-            *, extend_default_css=True):
+def convert(md_path, css_path=None, output_path=None, *, extend_default_css=True):
     """
     Convert a markdown file to a pdf file.
 
@@ -88,23 +89,20 @@ def convert(md_path, css_path=None, output_path=None,
     css_sources = drop_duplicates(css_sources)
 
     try:
-        html = markdown2.markdown_path(md_path,
-                                       extras=MD_EXTENSIONS)
+        html = markdown2.markdown_path(md_path, extras=MD_EXTENSIONS)
 
         # Use silent PDF generation to suppress warnings
         _silent_pdf_generation(
-            lambda: weasyprint
-            .HTML(string=html, base_url='.')
-            .write_pdf(target=output_path,
-                      stylesheets=list(css_sources))
+            lambda: weasyprint.HTML(string=html, base_url=".").write_pdf(
+                target=output_path, stylesheets=list(css_sources)
+            )
         )
 
     except Exception as exc:
         raise RuntimeError(exc) from exc
 
 
-def live_convert(md_path, css_path=None, output_path=None,
-                 *, extend_default_css=True):
+def live_convert(md_path, css_path=None, output_path=None, *, extend_default_css=True):
     """
     Convert a markdown file to a pdf file and watch for changes.
 
@@ -120,14 +118,13 @@ def live_convert(md_path, css_path=None, output_path=None,
     if output_path is None:
         output_path = get_output_path(md_path, None)
 
-    live_converter = LiveConverter(md_path, css_path, output_path,
-                                   extend_default_css=extend_default_css,
-                                   loud=True)
+    live_converter = LiveConverter(
+        md_path, css_path, output_path, extend_default_css=extend_default_css, loud=True
+    )
     live_converter.observe()
 
 
-def convert_text(md_text, css_text=None,
-                 *, extend_default_css=True):
+def convert_text(md_text, css_text=None, *, extend_default_css=True):
     """
     Convert markdown text to a pdf file.
 
@@ -139,8 +136,8 @@ def convert_text(md_text, css_text=None,
     Returns:
         PDF file as bytes.
     """
-    default_css = Path(get_css_path()).read_text(encoding='utf-8')
-    code_css = Path(get_code_css_path()).read_text(encoding='utf-8')
+    default_css = Path(get_css_path()).read_text(encoding="utf-8")
+    code_css = Path(get_code_css_path()).read_text(encoding="utf-8")
 
     if css_text is None:
         css_text = default_css
@@ -150,32 +147,30 @@ def convert_text(md_text, css_text=None,
     else:
         css_sources = [code_css, css_text]
 
-    css_sources = [weasyprint.CSS(string=css)
-                   for css in drop_duplicates(css_sources)]
+    css_sources = [weasyprint.CSS(string=css) for css in drop_duplicates(css_sources)]
 
     try:
-        html = markdown2.markdown(md_text,
-                                  extras=MD_EXTENSIONS)
+        html = markdown2.markdown(md_text, extras=MD_EXTENSIONS)
 
         # Use silent PDF generation to suppress warnings
         return _silent_pdf_generation(
-            lambda: weasyprint
-            .HTML(string=html, base_url='.')
-            .write_pdf(stylesheets=css_sources)
+            lambda: weasyprint.HTML(string=html, base_url=".").write_pdf(
+                stylesheets=css_sources
+            )
         )
 
     except Exception as exc:
         raise RuntimeError(exc) from exc
 
 
-class LiveConverter():
+class LiveConverter:
     """
     Class to convert a markdown file to a pdf file and watch for changes.
     """
 
-    def __init__(self, md_path, css_path, output_path,
-                 *, extend_default_css=True,
-                 loud=False):
+    def __init__(
+        self, md_path, css_path, output_path, *, extend_default_css=True, loud=False
+    ):
         """
         Initialize the LiveConverter class.
 
@@ -210,8 +205,12 @@ class LiveConverter():
         """
         Write the pdf file.
         """
-        convert(self.md_path, self.css_path, self.output_path,
-                extend_default_css=self.extend_default_css)
+        convert(
+            self.md_path,
+            self.css_path,
+            self.output_path,
+            extend_default_css=self.extend_default_css,
+        )
         if self.loud:
             print(f"- PDF file updated: {datetime.now()}", flush=True)
 
@@ -231,8 +230,10 @@ class LiveConverter():
                 md_modified = self.get_last_modified_date(self.md_path)
                 css_modified = self.get_last_modified_date(self.css_path)
 
-                if md_modified != self.md_last_modified or \
-                        css_modified != self.css_last_modified:
+                if (
+                    md_modified != self.md_last_modified
+                    or css_modified != self.css_last_modified
+                ):
 
                     self.write_pdf()
 
@@ -244,4 +245,3 @@ class LiveConverter():
         except KeyboardInterrupt:
             if self.loud:
                 print("\nInterrupted by user.\n", flush=True)
-            return
