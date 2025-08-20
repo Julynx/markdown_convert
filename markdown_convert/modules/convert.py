@@ -4,8 +4,12 @@ Author: @julynx
 """
 
 import os
+import sys
 import time
+import warnings
+from contextlib import redirect_stderr, redirect_stdout
 from datetime import datetime
+from io import StringIO
 from pathlib import Path
 
 import markdown2
@@ -14,6 +18,49 @@ import weasyprint
 from .resources import get_css_path, get_code_css_path, get_output_path
 from .utils import drop_duplicates
 from .constants import MD_EXTENSIONS
+
+
+def _suppress_warnings():
+    """
+    Suppress all warnings in production while preserving critical error handling.
+    Only errors and exceptions will be shown.
+    """
+    # Suppress all warnings but keep errors
+    warnings.filterwarnings('ignore', category=UserWarning)
+    warnings.filterwarnings('ignore', category=DeprecationWarning)
+    warnings.filterwarnings('ignore', category=FutureWarning)
+    warnings.filterwarnings('ignore', category=PendingDeprecationWarning)
+    warnings.filterwarnings('ignore', category=ImportWarning)
+    warnings.filterwarnings('ignore', category=ResourceWarning)
+
+
+def _silent_pdf_generation(func, *args, **kwargs):
+    """
+    Execute PDF generation function while suppressing all non-critical output.
+    Preserves exceptions and critical errors.
+    """
+    _suppress_warnings()
+    
+    # Capture stdout and stderr to filter out warnings
+    stdout_capture = StringIO()
+    stderr_capture = StringIO()
+    
+    try:
+        with redirect_stdout(stdout_capture), redirect_stderr(stderr_capture):
+            result = func(*args, **kwargs)
+        
+        # Check if there were any critical errors in stderr
+        stderr_content = stderr_capture.getvalue()
+        if stderr_content and any(keyword in stderr_content.lower()
+                                for keyword in ['error', 'exception', 'traceback', 'failed']):
+            # Print only critical errors, not warnings
+            print(stderr_content, file=sys.stderr)
+        
+        return result
+        
+    except Exception as exc:
+        # Always re-raise actual exceptions
+        raise exc
 
 
 def convert(md_path, css_path=None, output_path=None,
@@ -44,10 +91,13 @@ def convert(md_path, css_path=None, output_path=None,
         html = markdown2.markdown_path(md_path,
                                        extras=MD_EXTENSIONS)
 
-        (weasyprint
-         .HTML(string=html, base_url='.')
-         .write_pdf(target=output_path,
-                    stylesheets=list(css_sources)))
+        # Use silent PDF generation to suppress warnings
+        _silent_pdf_generation(
+            lambda: weasyprint
+            .HTML(string=html, base_url='.')
+            .write_pdf(target=output_path,
+                      stylesheets=list(css_sources))
+        )
 
     except Exception as exc:
         raise RuntimeError(exc) from exc
@@ -107,9 +157,12 @@ def convert_text(md_text, css_text=None,
         html = markdown2.markdown(md_text,
                                   extras=MD_EXTENSIONS)
 
-        return (weasyprint
-                .HTML(string=html, base_url='.')
-                .write_pdf(stylesheets=css_sources))
+        # Use silent PDF generation to suppress warnings
+        return _silent_pdf_generation(
+            lambda: weasyprint
+            .HTML(string=html, base_url='.')
+            .write_pdf(stylesheets=css_sources)
+        )
 
     except Exception as exc:
         raise RuntimeError(exc) from exc

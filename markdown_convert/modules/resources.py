@@ -6,7 +6,12 @@ Author: @julynx
 
 from pathlib import Path
 
-import pkg_resources
+try:
+    # Python 3.9+
+    from importlib.resources import files
+except ImportError:
+    # Fallback for older Python versions
+    from importlib_resources import files
 
 from .constants import BLUE, CYAN, GREEN, YELLOW, OPTIONS, OPTIONS_MODES
 from .utils import color
@@ -43,8 +48,9 @@ def get_css_path():
     Returns:
         str: The path to the default CSS file.
     """
-    return pkg_resources.resource_filename('markdown_convert',
-                                           'default.css')
+    package_files = files('markdown_convert')
+    css_file = package_files / 'default.css'
+    return str(css_file)
 
 
 def get_code_css_path():
@@ -54,8 +60,9 @@ def get_code_css_path():
     Returns:
         str: The path to the code CSS file.
     """
-    return pkg_resources.resource_filename('markdown_convert',
-                                           'code.css')
+    package_files = files('markdown_convert')
+    css_file = package_files / 'code.css'
+    return str(css_file)
 
 
 def get_usage():

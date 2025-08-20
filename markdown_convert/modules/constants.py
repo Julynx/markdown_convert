@@ -18,7 +18,9 @@ OPTIONS = ('markdown_file_path',
 
 OPTIONS_MODES = ('once', 'live')
 
-MD_EXTENSIONS = ["fenced-code-blocks",
-                 "header-ids",
-                 "breaks",
-                 "tables"]
+MD_EXTENSIONS = {
+    "fenced-code-blocks": None,
+    "header-ids": None,
+    "breaks": {"on_newline": True},
+    "tables": None
+}

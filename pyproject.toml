@@ -1,24 +1,58 @@
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.poetry]
+[project]
 name = "markdown_convert"
-version = "1.2.7"
+version = "1.2.15"
 description = "Convert Markdown files to PDF from your command line."
-authors = ["Julio Cabria <juliocabria@tutanota.com>"]
-license = "GPL-2.0-only"
+authors = [
+    { name = "Julio Cabria", email = "juliocabria@tutanota.com" },
+]
+license = { text = "GPL-2.0-only" }
 readme = "README.md"
+requires-python = ">=3.9,<4.0"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "argsdict==1.0.0",
+    "weasyprint>=62.3,<70.0",
+    "markdown2>=2.4.13,<3",
+    "pygments>=2.17.2,<3",
+]
+
+[project.urls]
 homepage = "https://github.com/Julynx/markdown_convert"
-include = ["markdown_convert/default.css", "markdown_convert/code.css"]
 
-[tool.poetry.dependencies]
-python = ">=3.9,<4.0"
-argsdict = "1.0.0"
-setuptools = ">=46.0.0"
-weasyprint = ">=62.3,<70.0"
-markdown2 = "^2.4.13"
-pygments = "^2.17.2"
-
-[tool.poetry.scripts]
+[project.scripts]
 markdown-convert = "markdown_convert.__main__:main"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "markdown_convert/__main__.py",
+    "markdown_convert/default.css",
+    "markdown_convert/code.css",
+    "markdown_convert/modules/__init__.py",
+    "markdown_convert/modules/constants.py",
+    "markdown_convert/modules/convert.py",
+    "markdown_convert/modules/resources.py",
+    "markdown_convert/modules/utils.py",
+    "markdown_convert/modules/validate.py",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["markdown_convert"]
+include = [
+    "markdown_convert/__main__.py",
+    "markdown_convert/default.css",
+    "markdown_convert/code.css",
+    "markdown_convert/modules/__init__.py",
+    "markdown_convert/modules/constants.py",
+    "markdown_convert/modules/convert.py",
+    "markdown_convert/modules/resources.py",
+    "markdown_convert/modules/utils.py",
+    "markdown_convert/modules/validate.py",
+]

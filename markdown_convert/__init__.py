@@ -4,5 +4,8 @@ available to the user.
 Author: @julynx
 """
 
-from __main__ import *
 from .modules.convert import convert, live_convert, convert_text
+from .__main__ import main
+
+__version__ = "1.2.15"
+__all__ = ["convert", "live_convert", "convert_text", "main"]
