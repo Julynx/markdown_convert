@@ -13,11 +13,9 @@ _Convert Markdown files to PDF from your command line._
 
 <img src='https://i.imgur.com/SZIz2gY.png' width='80%'>
 
-`markdown-convert` is an elegant command-line tool that converts Markdown files to PDF, powered by the amazing `markdown2` and `weasyprint` libraries.
+`markdown-convert` is an elegant command-line tool that converts Markdown files to PDF, powered by the amazing `markdown2` and `playwright` libraries.
 
-Unlike other similar tools, it relies solely on Python packages to do the job, eliminating the need for any external system-level dependencies when running on Linux.
-
-If you're running Windows, you only need to install the GTK-3 runtime from the following link: [GTK-3 Runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases).
+Unlike other similar tools, it relies solely on Python packages to do the job, eliminating the need for any external system-level dependencies.
 
 ### Features
 

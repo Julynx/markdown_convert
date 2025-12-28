@@ -19,4 +19,5 @@ MD_EXTENSIONS = {
     "header-ids": None,
     "breaks": {"on_newline": True},
     "tables": None,
+    "latex": True,
 }

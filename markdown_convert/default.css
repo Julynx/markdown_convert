@@ -371,3 +371,9 @@ h4,
 h5 {
   page-break-inside: avoid;
 }
+
+/* Increase vertical padding for math elements with display=block */
+math[display="block"] {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}

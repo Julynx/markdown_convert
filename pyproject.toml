@@ -19,10 +19,10 @@ classifiers = [
 ]
 dependencies = [
     "argsdict==1.0.0",
-    "weasyprint>=62.3,<70.0",
     "markdown2>=2.4.13,<3",
     "pygments>=2.17.2,<3",
     "latex2mathml>=3.78.1",
+    "playwright>=1.57.0",
 ]
 
 [project.urls]

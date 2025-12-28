@@ -4,65 +4,67 @@ Author: @julynx
 """
 
 import os
-import sys
 import time
-import warnings
-from contextlib import redirect_stderr, redirect_stdout
 from datetime import datetime
-from io import StringIO
 from pathlib import Path
 
 import markdown2
-import weasyprint
+from playwright.sync_api import sync_playwright
 
 from .resources import get_css_path, get_code_css_path, get_output_path
 from .utils import drop_duplicates
 from .constants import MD_EXTENSIONS
 
 
-def _suppress_warnings():
+def _generate_pdf_with_playwright(html_content, output_path):
     """
-    Suppress all warnings in production while preserving critical error handling.
-    Only errors and exceptions will be shown.
+    Generate a PDF from HTML content using Playwright.
     """
-    # Suppress all warnings but keep errors
-    warnings.filterwarnings("ignore", category=UserWarning)
-    warnings.filterwarnings("ignore", category=DeprecationWarning)
-    warnings.filterwarnings("ignore", category=FutureWarning)
-    warnings.filterwarnings("ignore", category=PendingDeprecationWarning)
-    warnings.filterwarnings("ignore", category=ImportWarning)
-    warnings.filterwarnings("ignore", category=ResourceWarning)
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+        page.set_content(html_content)
+        # Wait for any potential resources to load
+        page.wait_for_load_state("networkidle")
+
+        pdf_params = {
+            "format": "A4",
+            "print_background": True,
+            "margin": {
+                "top": "20mm",
+                "bottom": "20mm",
+                "left": "20mm",
+                "right": "20mm",
+            },
+        }
+
+        if output_path:
+            page.pdf(path=output_path, **pdf_params)
+            browser.close()
+            return None
+        else:
+            pdf_bytes = page.pdf(**pdf_params)
+            browser.close()
+            return pdf_bytes
 
 
-def _silent_pdf_generation(func, *args, **kwargs):
+def _embed_css_in_html(html, css_sources):
     """
-    Execute PDF generation function while suppressing all non-critical output.
-    Preserves exceptions and critical errors.
+    Embed CSS styles into HTML content.
+
+    Args:
+        html (str): HTML content.
+        css_sources (list): List of CSS file paths.
+
+    Returns:
+        HTML content with embedded CSS styles.
     """
-    _suppress_warnings()
+    css_buffer = ""
+    for css_file in css_sources:
+        css_buffer += Path(css_file).read_text(encoding="utf-8") + "\n"
 
-    # Capture stdout and stderr to filter out warnings
-    stdout_capture = StringIO()
-    stderr_capture = StringIO()
-
-    try:
-        with redirect_stdout(stdout_capture), redirect_stderr(stderr_capture):
-            result = func(*args, **kwargs)
-
-        # Check if there were any critical errors in stderr
-        stderr_content = stderr_capture.getvalue()
-        if stderr_content and any(
-            keyword in stderr_content.lower()
-            for keyword in ["error", "exception", "traceback", "failed"]
-        ):
-            # Print only critical errors, not warnings
-            print(stderr_content, file=sys.stderr)
-
-        return result
-
-    except Exception as exc:
-        # Always re-raise actual exceptions
-        raise exc
+    style_tag = f"<style>\n{css_buffer}\n</style>\n"
+    return f"<!DOCTYPE html>\n<html>\n<head>\n{style_tag}</head>\n<body>\n{html}\n</body>\n</html>"
 
 
 def convert(
@@ -98,17 +100,13 @@ def convert(
 
     try:
         html = markdown2.markdown_path(md_path, extras=MD_EXTENSIONS)
+        html = _embed_css_in_html(html, css_sources)
 
         if dump_html:
             html_dump_path = Path(output_path).with_suffix(".html")
             html_dump_path.write_text(html, encoding="utf-8")
 
-        # Use silent PDF generation to suppress warnings
-        _silent_pdf_generation(
-            lambda: weasyprint.HTML(string=html, base_url=".").write_pdf(
-                target=output_path, stylesheets=list(css_sources)
-            )
-        )
+        _generate_pdf_with_playwright(html, output_path)
 
     except Exception as exc:
         raise RuntimeError(exc) from exc
@@ -159,17 +157,11 @@ def convert_text(md_text, css_text=None, *, extend_default_css=True):
     else:
         css_sources = [code_css, css_text]
 
-    css_sources = [weasyprint.CSS(string=css) for css in drop_duplicates(css_sources)]
-
     try:
         html = markdown2.markdown(md_text, extras=MD_EXTENSIONS)
+        html = _embed_css_in_html(html, css_sources)
 
-        # Use silent PDF generation to suppress warnings
-        return _silent_pdf_generation(
-            lambda: weasyprint.HTML(string=html, base_url=".").write_pdf(
-                stylesheets=css_sources
-            )
-        )
+        return _generate_pdf_with_playwright(html, None)
 
     except Exception as exc:
         raise RuntimeError(exc) from exc
