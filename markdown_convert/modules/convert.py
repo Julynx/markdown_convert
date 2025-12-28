@@ -149,7 +149,13 @@ def live_convert(md_path, css_path=None, output_path=None, *, extend_default_css
     if output_path is None:
         output_path = get_output_path(md_path, None)
 
-    live_converter = LiveConverter(md_path, css_path, output_path, extend_default_css=extend_default_css, loud=True)
+    live_converter = LiveConverter(
+        md_path,
+        css_path,
+        output_path,
+        extend_default_css=extend_default_css,
+        loud=True,
+    )
     live_converter.observe()
 
 
