@@ -69,8 +69,8 @@ def main():
 
         # Compile the markdown file
         print(f"\nGenerating PDF file from '{md_path}'...\n")
-        if mode == "once":
-            convert(md_path, css_path, output_path)
+        if mode in ("once", "debug"):
+            convert(md_path, css_path, output_path, dump_html=(mode == "debug"))
         else:
             live_convert(md_path, css_path, output_path)
 

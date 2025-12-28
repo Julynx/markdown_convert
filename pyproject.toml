@@ -11,7 +11,7 @@ authors = [
 ]
 license = { text = "GPL-2.0-only" }
 readme = "README.md"
-requires-python = ">=3.9,<4.0"
+requires-python = ">=3.9,<3.14"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
@@ -22,6 +22,7 @@ dependencies = [
     "weasyprint>=62.3,<70.0",
     "markdown2>=2.4.13,<3",
     "pygments>=2.17.2,<3",
+    "latex2mathml>=3.78.1",
 ]
 
 [project.urls]

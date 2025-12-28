@@ -12,7 +12,7 @@ CYAN = "36"
 
 OPTIONS = ("markdown_file_path", "--mode", "--css", "--out", "-h", "--help")
 
-OPTIONS_MODES = ("once", "live")
+OPTIONS_MODES = ("once", "live", "debug")
 
 MD_EXTENSIONS = {
     "fenced-code-blocks": None,

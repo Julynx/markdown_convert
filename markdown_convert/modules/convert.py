@@ -65,7 +65,14 @@ def _silent_pdf_generation(func, *args, **kwargs):
         raise exc
 
 
-def convert(md_path, css_path=None, output_path=None, *, extend_default_css=True):
+def convert(
+    md_path,
+    css_path=None,
+    output_path=None,
+    *,
+    extend_default_css=True,
+    dump_html=False,
+):
     """
     Convert a markdown file to a pdf file.
 
@@ -74,6 +81,7 @@ def convert(md_path, css_path=None, output_path=None, *, extend_default_css=True
         css_path (str=None): Path to the CSS file.
         output_path (str=None): Path to the output file.
         extend_default_css (bool=True): Extend the default CSS file.
+        dump_html (bool=False): Dump the intermediate HTML to a file.
     """
     if css_path is None:
         css_path = get_css_path()
@@ -90,6 +98,10 @@ def convert(md_path, css_path=None, output_path=None, *, extend_default_css=True
 
     try:
         html = markdown2.markdown_path(md_path, extras=MD_EXTENSIONS)
+
+        if dump_html:
+            html_dump_path = Path(output_path).with_suffix(".html")
+            html_dump_path.write_text(html, encoding="utf-8")
 
         # Use silent PDF generation to suppress warnings
         _silent_pdf_generation(
