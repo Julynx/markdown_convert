@@ -4,6 +4,7 @@ Author: @julynx
 """
 
 import os
+import re
 import time
 from datetime import datetime
 from pathlib import Path
@@ -11,12 +12,12 @@ from pathlib import Path
 import markdown2
 from playwright.sync_api import sync_playwright
 
-from .resources import get_css_path, get_code_css_path, get_output_path
-from .utils import drop_duplicates
 from .constants import MD_EXTENSIONS
+from .resources import get_code_css_path, get_css_path, get_output_path
+from .utils import drop_duplicates
 
 
-def _generate_pdf_with_playwright(html_content, output_path):
+def _generate_pdf_with_playwright(html_content, output_path, *, css_content=None):
     """
     Generate a PDF from HTML content using Playwright.
     """
@@ -24,6 +25,8 @@ def _generate_pdf_with_playwright(html_content, output_path):
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
         page.set_content(html_content)
+        if css_content:
+            page.add_style_tag(content=css_content)
         # Wait for any potential resources to load
         page.wait_for_load_state("networkidle")
 
@@ -48,23 +51,37 @@ def _generate_pdf_with_playwright(html_content, output_path):
         return pdf_bytes
 
 
-def _embed_css_in_html(html, css_sources):
+def _get_css_content(css_sources):
     """
-    Embed CSS styles into HTML content.
+    Get the CSS content from a list of CSS file paths.
 
     Args:
-        html (str): HTML content.
         css_sources (list): List of CSS file paths.
-
     Returns:
-        HTML content with embedded CSS styles.
+        str: Combined CSS content.
     """
     css_buffer = ""
     for css_file in css_sources:
         css_buffer += Path(css_file).read_text(encoding="utf-8") + "\n"
+    return css_buffer
 
-    style_tag = f"<style>\n{css_buffer}\n</style>\n"
-    return f"<!DOCTYPE html>\n<html>\n<head>\n{style_tag}</head>\n<body>\n{html}\n</body>\n</html>"
+
+def _create_sections(html):
+    """
+    Creates h2 sections, from the first h2 to the next h2, wrapping them in <section> tags
+    using regular expressions.
+    Args:
+        html (str): HTML content.
+    Returns:
+        HTML content with sections wrapped in <section> tags.
+    """
+
+    pattern = re.compile(r"(<h2.*?>.*?</h2>)(.*?)(?=(<h2.*?>|$))", re.DOTALL)
+
+    def wrap_section(match):
+        return f"<section>\n{match.group(1)}\n{match.group(2)}\n</section>\n"
+
+    return pattern.sub(wrap_section, html)
 
 
 def convert(
@@ -100,13 +117,17 @@ def convert(
 
     try:
         html = markdown2.markdown_path(md_path, extras=MD_EXTENSIONS)
-        html = _embed_css_in_html(html, css_sources)
+        html = _create_sections(html)
 
         if dump_html:
             html_dump_path = Path(output_path).with_suffix(".html")
             html_dump_path.write_text(html, encoding="utf-8")
 
-        _generate_pdf_with_playwright(html, output_path)
+        _generate_pdf_with_playwright(
+            html,
+            output_path,
+            css_content=_get_css_content(css_sources),
+        )
 
     except Exception as exc:
         raise RuntimeError(exc) from exc
@@ -128,9 +149,7 @@ def live_convert(md_path, css_path=None, output_path=None, *, extend_default_css
     if output_path is None:
         output_path = get_output_path(md_path, None)
 
-    live_converter = LiveConverter(
-        md_path, css_path, output_path, extend_default_css=extend_default_css, loud=True
-    )
+    live_converter = LiveConverter(md_path, css_path, output_path, extend_default_css=extend_default_css, loud=True)
     live_converter.observe()
 
 
@@ -159,9 +178,13 @@ def convert_text(md_text, css_text=None, *, extend_default_css=True):
 
     try:
         html = markdown2.markdown(md_text, extras=MD_EXTENSIONS)
-        html = _embed_css_in_html(html, css_sources)
+        html = _create_sections(html)
 
-        return _generate_pdf_with_playwright(html, None)
+        return _generate_pdf_with_playwright(
+            html,
+            None,
+            css_content=_get_css_content(css_sources),
+        )
 
     except Exception as exc:
         raise RuntimeError(exc) from exc
@@ -172,9 +195,7 @@ class LiveConverter:
     Class to convert a markdown file to a pdf file and watch for changes.
     """
 
-    def __init__(
-        self, md_path, css_path, output_path, *, extend_default_css=True, loud=False
-    ):
+    def __init__(self, md_path, css_path, output_path, *, extend_default_css=True, loud=False):
         """
         Initialize the LiveConverter class.
 
@@ -234,10 +255,7 @@ class LiveConverter:
                 md_modified = self.get_last_modified_date(self.md_path)
                 css_modified = self.get_last_modified_date(self.css_path)
 
-                if (
-                    md_modified != self.md_last_modified
-                    or css_modified != self.css_last_modified
-                ):
+                if md_modified != self.md_last_modified or css_modified != self.css_last_modified:
 
                     self.write_pdf()
 

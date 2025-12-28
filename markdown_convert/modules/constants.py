@@ -16,8 +16,8 @@ OPTIONS_MODES = ("once", "live", "debug")
 
 MD_EXTENSIONS = {
     "fenced-code-blocks": None,
-    "header-ids": None,
+    "header-ids": True,
     "breaks": {"on_newline": True},
-    "tables": None,
+    "tables": True,
     "latex": True,
 }
