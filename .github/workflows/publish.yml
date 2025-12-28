@@ -1,0 +1,62 @@
+name: Lint, Test and Publish
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.10
+
+      - name: Install dependencies
+        run: |
+          uv pip install pylint bandit pytest pytest-custom_exit_code
+          uv pip install .
+
+      - name: Passes PyTest tests
+        run: |
+          uv run pytest --suppress-no-test-exit-code .
+
+      - name: Linting checks
+        run: |
+          repo_name="$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)"
+          uv run pylint --disable=E0401,W0718,R0912,R0913 "$repo_name"
+
+      - name: Security checks
+        run: |
+          repo_name="$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)"
+          uv run bandit -r "$repo_name"
+
+  publish:
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+    # Only run if the previous job succeeded
+    if: success()
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Build package
+        run: uv build
+
+      - name: Publish to PyPI
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+        run: uv publish
