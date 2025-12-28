@@ -22,8 +22,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          uv pip install --system pylint bandit pytest pytest-custom_exit_code
-          uv pip install --system .
+          uv venv
+          uv pip install pylint bandit pytest pytest-custom_exit_code
+          uv pip install .
 
       - name: Passes PyTest tests
         run: |
