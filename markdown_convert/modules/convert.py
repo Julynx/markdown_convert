@@ -42,10 +42,10 @@ def _generate_pdf_with_playwright(html_content, output_path):
             page.pdf(path=output_path, **pdf_params)
             browser.close()
             return None
-        else:
-            pdf_bytes = page.pdf(**pdf_params)
-            browser.close()
-            return pdf_bytes
+
+        pdf_bytes = page.pdf(**pdf_params)
+        browser.close()
+        return pdf_bytes
 
 
 def _embed_css_in_html(html, css_sources):
