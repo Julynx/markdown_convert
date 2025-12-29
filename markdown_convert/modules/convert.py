@@ -17,38 +17,55 @@ from .resources import get_code_css_path, get_css_path, get_output_path
 from .utils import drop_duplicates
 
 
-def _generate_pdf_with_playwright(html_content, output_path, *, css_content=None):
+def _generate_pdf_with_playwright(
+    html_content,
+    output_path,
+    *,
+    css_content=None,
+    base_dir=None,
+    dump_html=False,
+):
     """
     Generate a PDF from HTML content using Playwright.
+
+    Args:
+        html_content (str): HTML content to convert.
+        output_path (str): Path to save the PDF file.
+        css_content (str, optional): CSS content to inject.
+        base_dir (Path, optional): Base directory for resolving relative paths in HTML.
+        dump_html (bool, optional): Whether to dump the HTML content to a file.
     """
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
-        page.set_content(html_content)
-        if css_content:
-            page.add_style_tag(content=css_content)
-        # Wait for any potential resources to load
-        page.wait_for_load_state("networkidle")
 
-        pdf_params = {
-            "format": "A4",
-            "print_background": True,
-            "margin": {
-                "top": "20mm",
-                "bottom": "20mm",
-                "left": "20mm",
-                "right": "20mm",
-            },
-        }
+        # Handle loading based on presence of base_dir
+        temp_html = None
+        try:
+            if base_dir:
+                temp_html = base_dir / f".temp_{os.getpid()}.html"
+                temp_html.write_text(html_content, encoding="utf-8")
+                page.goto(temp_html.as_uri(), wait_until="networkidle")
+            else:
+                page.set_content(html_content, wait_until="networkidle")
 
-        if output_path:
-            page.pdf(path=output_path, **pdf_params)
+            if css_content:
+                page.add_style_tag(content=css_content)
+
+            pdf_params = {
+                "format": "A4",
+                "print_background": True,
+                "margin": {"top": "20mm", "bottom": "20mm", "left": "20mm", "right": "20mm"},
+                "path": output_path,
+            }  # Playwright ignores None paths
+
+            pdf_bytes = page.pdf(**pdf_params)
+            return None if output_path else pdf_bytes
+
+        finally:
             browser.close()
-            return None
-
-        pdf_bytes = page.pdf(**pdf_params)
-        browser.close()
-        return pdf_bytes
+            if temp_html and temp_html.exists() and not dump_html:
+                temp_html.unlink()
 
 
 def _get_css_content(css_sources):
@@ -75,7 +92,6 @@ def _create_sections(html):
     Returns:
         HTML content with sections wrapped in <section> tags.
     """
-
     pattern = re.compile(r"(<h2.*?>.*?</h2>)(.*?)(?=(<h2.*?>|$))", re.DOTALL)
 
     def wrap_section(match):
@@ -119,14 +135,12 @@ def convert(
         html = markdown2.markdown_path(md_path, extras=MD_EXTENSIONS)
         html = _create_sections(html)
 
-        if dump_html:
-            html_dump_path = Path(output_path).with_suffix(".html")
-            html_dump_path.write_text(html, encoding="utf-8")
-
         _generate_pdf_with_playwright(
             html,
             output_path,
             css_content=_get_css_content(css_sources),
+            base_dir=Path(md_path).resolve().parent,
+            dump_html=dump_html,
         )
 
     except Exception as exc:
