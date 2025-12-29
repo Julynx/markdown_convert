@@ -1,171 +1,7 @@
-/* Font imports */
-/* -- Cantarell Web */
-@font-face {
-  font-family: "Cantarell Web";
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/cantarell/v17/B50LF7ZDq37KMUvlO015iZJnNKuiLA.woff2) format("woff2");
-  unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF,
-    U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-@font-face {
-  font-family: "Cantarell Web";
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/cantarell/v17/B50LF7ZDq37KMUvlO015iZJpNKs.woff2) format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
-    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191,
-    U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
-  font-family: "Cantarell Web";
-  font-style: italic;
-  font-weight: 700;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/cantarell/v17/B50WF7ZDq37KMUvlO015iZrSEb6TDYsmgQ.woff2) format("woff2");
-  unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF,
-    U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-@font-face {
-  font-family: "Cantarell Web";
-  font-style: italic;
-  font-weight: 700;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/cantarell/v17/B50WF7ZDq37KMUvlO015iZrSEb6dDYs.woff2) format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
-    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191,
-    U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
-  font-family: "Cantarell Web";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/cantarell/v17/B50NF7ZDq37KMUvlO015gqJrLK8.woff2) format("woff2");
-  unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF,
-    U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-@font-face {
-  font-family: "Cantarell Web";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/cantarell/v17/B50NF7ZDq37KMUvlO015jKJr.woff2) format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
-    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191,
-    U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
-  font-family: "Cantarell Web";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/cantarell/v17/B50IF7ZDq37KMUvlO01xN4d-HY6fFY8.woff2) format("woff2");
-  unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF,
-    U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-@font-face {
-  font-family: "Cantarell Web";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/cantarell/v17/B50IF7ZDq37KMUvlO01xN4d-E46f.woff2) format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
-    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191,
-    U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-/* -- JetBrains Mono */
-@font-face {
-  font-family: "JetBrains Mono";
-  src: url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/woff2/JetBrainsMono-Bold-Italic.woff2") format("woff2"),
-    url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/woff/JetBrainsMono-Bold-Italic.woff") format("woff");
-  font-weight: 700;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "JetBrains Mono";
-  src: url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/woff2/JetBrainsMono-Bold.woff2") format("woff2"),
-    url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/woff/JetBrainsMono-Bold.woff") format("woff");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "JetBrains Mono";
-  src: url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/woff2/JetBrainsMono-ExtraBold-Italic.woff2") format("woff2"),
-    url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/woff/JetBrainsMono-ExtraBold-Italic.woff") format("woff");
-  font-weight: 800;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "JetBrains Mono";
-  src: url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/woff2/JetBrainsMono-ExtraBold.woff2") format("woff2"),
-    url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/woff/JetBrainsMono-ExtraBold.woff") format("woff");
-  font-weight: 800;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "JetBrains Mono";
-  src: url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/woff2/JetBrainsMono-Italic.woff2") format("woff2"),
-    url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/woff/JetBrainsMono-Italic.woff") format("woff");
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "JetBrains Mono";
-  src: url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/woff2/JetBrainsMono-Medium-Italic.woff2") format("woff2"),
-    url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/woff/JetBrainsMono-Medium-Italic.woff") format("woff");
-  font-weight: 500;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "JetBrains Mono";
-  src: url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/woff2/JetBrainsMono-Medium.woff2") format("woff2"),
-    url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/woff/JetBrainsMono-Medium.woff") format("woff");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "JetBrains Mono";
-  src: url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2") format("woff2"),
-    url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/woff/JetBrainsMono-Regular.woff") format("woff");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* Print media css */
-@page {
-  size: A4;
-  margin: 2.54cm;
-}
-
 :root {
   /* -- Standard margins */
-  --top-margin: 1em;
+  --top-margin: 0.5em;
+  --bottom-margin: 0.5em;
   --left-margin: 1.5em;
 
   /* -- Small margins */
@@ -173,18 +9,18 @@
 
   /* -- Big margins */
   --left-margin-big: 2em;
-  --bottom-margin-big: 0.5em;
 }
 
 /* Document */
 html {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 body {
   margin: 0;
   padding: 0;
-  font-family: "Cantarell Web", "Cantarell", sans-serif;
+  font-family: "Segoe UI", "Ubuntu", "DejaVu Sans", "Liberation Sans", "Arial",
+    "sans-serif";
   color: #333;
 }
 
@@ -195,12 +31,12 @@ h3,
 h4,
 h5 {
   color: #333;
-  font-weight: 400;
+  font-weight: 600;
 }
 
 h1 {
   margin-top: 0;
-  margin-bottom: var(--bottom-margin-big);
+  margin-bottom: var(--bottom-margin);
 }
 
 h2,
@@ -213,27 +49,27 @@ p {
 }
 
 h1 {
-  font-size: 4.8rem;
-}
-
-h2 {
-  font-size: 3.6rem;
-}
-
-h3 {
   font-size: 2.4rem;
 }
 
-h4 {
-  font-size: 1.8rem;
+h2 {
+  font-size: 2rem;
 }
 
-h5 {
+h3 {
+  font-size: 1.6rem;
+}
+
+h4 {
   font-size: 1.4rem;
 }
 
-p {
+h5 {
   font-size: 1.2rem;
+}
+
+p {
+  font-size: 1rem;
 }
 
 /* Links */
@@ -246,7 +82,7 @@ a {
 /* Lists */
 ul,
 ol {
-  font-size: 1.2rem;
+  font-size: 1rem;
   padding: 0;
   margin-top: var(--top-margin);
   margin-right: 0;
@@ -262,7 +98,7 @@ ul ul {
 }
 
 li {
-  margin-top: 0.5rem;
+  margin-top: var(--top-margin);
 }
 
 /* Code blocks */
@@ -272,7 +108,8 @@ pre {
 }
 
 code {
-  font-family: "JetBrains Mono", "Courier New", Courier, monospace;
+  font-family: "JetBrains Mono", "Consolas", "Ubuntu Mono", "DejaVu Sans Mono",
+    "Liberation Mono", "Courier New", monospace;
   font-size: 1rem;
   background-color: #eee;
   padding-left: 0.4em;
@@ -294,13 +131,12 @@ h5 code {
 blockquote {
   margin-top: var(--top-margin);
   margin-left: var(--left-margin);
-  max-width: 30em;
   border-left: 4px solid #ccc;
   padding-left: 0.5em;
   color: #666;
 }
 
-blockquote>blockquote {
+blockquote > blockquote {
   margin-left: var(--left-margin-small);
 }
 
@@ -312,7 +148,7 @@ img {
 }
 
 /* -- Figure footer */
-p>img+em {
+p > img + em {
   text-align: center;
   font-size: 1rem;
   font-style: italic;
@@ -324,6 +160,7 @@ p>img+em {
 /* Tables */
 table {
   font-size: 1rem;
+  font-family: inherit;
   border-collapse: collapse;
   margin-top: var(--top-margin);
   text-align: left;
@@ -355,11 +192,13 @@ col {
   page-break-after: always;
 }
 
-.pagebreak+* {
+.pagebreak + * {
   margin-top: 0;
 }
 
-li,
+section,
+ol,
+ul,
 table,
 blockquote,
 code,
@@ -376,4 +215,9 @@ h5 {
 math[display="block"] {
   margin-top: 1em;
   margin-bottom: 1em;
+}
+
+math {
+  text-rendering: optimizeLegibility;
+  font-family: "Latin Modern Math", "Cambria Math", serif;
 }
