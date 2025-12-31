@@ -9,8 +9,8 @@
             "command": "uv run --dev -m black markdown_convert"
         },
         {
-            "text": "$(arrow-up) Commit",
-            "command": "git add . && git commit"
+            "text": "$(arrow-up) Push",
+            "command": "git add . && git commit && git push"
         },
         {
             "text": "$(gear) Bump",
