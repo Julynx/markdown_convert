@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "markdown_convert"
-version = "1.2.22"
+version = "1.2.23"
 description = "Convert Markdown files to PDF from your command line."
 authors = [
     { name = "Julio Cabria", email = "juliocabria@tutanota.com" },
@@ -58,4 +58,10 @@ include = [
     "markdown_convert/modules/resources.py",
     "markdown_convert/modules/utils.py",
     "markdown_convert/modules/validate.py",
+]
+
+[dependency-groups]
+dev = [
+    "black>=25.11.0",
+    "pylint>=3.3.9",
 ]

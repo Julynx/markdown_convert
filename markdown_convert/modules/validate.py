@@ -6,21 +6,21 @@ Author: @julynx
 from pathlib import Path
 
 
-def validate_markdown_path(md_path):
+def validate_markdown_path(markdown_path):
     """
     Validate the markdown file path.
 
     Args:
-        md_path (str): The path to the markdown file.
+        markdown_path (str): The path to the markdown file.
 
     Raises:
         FileNotFoundError: If the file is not found.
         ValueError: If the file is not a Markdown file.
     """
-    if not Path(md_path).is_file():
-        raise FileNotFoundError(f"File not found: '{md_path}'")
+    if not Path(markdown_path).is_file():
+        raise FileNotFoundError(f"File not found: '{markdown_path}'")
 
-    if not md_path.endswith(".md"):
+    if not markdown_path.endswith(".md"):
         raise ValueError("File must be a Markdown file.")
 
 

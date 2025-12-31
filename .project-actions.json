@@ -1,0 +1,24 @@
+{
+    "actions": [
+        {
+            "text": "$(sparkle) Lint",
+            "command": "uv run --dev -m pylint markdown_convert; jina lint markdown_convert"
+        },
+        {
+            "text": "$(sparkle) Format",
+            "command": "uv run --dev -m black markdown_convert"
+        },
+        {
+            "text": "$(arrow-up) Commit",
+            "command": "git add . && git commit"
+        },
+        {
+            "text": "$(gear) Bump",
+            "command": "uv version --bump patch"
+        },
+        {
+            "text": "$(rocket) Publish",
+            "command": "uv publish"
+        }
+    ]
+}

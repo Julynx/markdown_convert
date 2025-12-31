@@ -17,28 +17,28 @@ from .constants import BLUE, CYAN, GREEN, YELLOW, OPTIONS, OPTIONS_MODES
 from .utils import color
 
 
-def get_output_path(md_path, output_dir=None):
+def get_output_path(markdown_path, output_dir=None):
     """
     Get the output path for the pdf file.
 
     Args:
-        md_path (str): The path to the markdown file.
+        markdown_path (str): The path to the markdown file.
         output_dir (str): The output directory.
 
     Returns:
         str: The output path.
     """
-    md_path = Path(md_path)
+    markdown_path = Path(markdown_path)
 
     if output_dir is None:
-        return md_path.parent / f"{md_path.stem}.pdf"
+        return markdown_path.parent / f"{markdown_path.stem}.pdf"
 
     output_dir = Path(output_dir)
 
     if output_dir.suffix == ".pdf":
         return output_dir
 
-    return output_dir.parent / f"{Path(md_path).stem}.pdf"
+    return output_dir.parent / f"{Path(markdown_path).stem}.pdf"
 
 
 def get_css_path():
@@ -76,11 +76,14 @@ def get_usage():
         f"{color(GREEN, 'markdown-convert')} "
         f"[{color(YELLOW, OPTIONS[0])}] [{color(BLUE, 'options')}]"
     )
-    opt_1 = f"{color(BLUE, OPTIONS[1])}{color(CYAN, '=')}{color(CYAN, '|'.join(OPTIONS_MODES))}"
-    opt_2 = (
+    option_one = (
+        f"{color(BLUE, OPTIONS[1])}{color(CYAN, '=')}"
+        f"{color(CYAN, '|'.join(OPTIONS_MODES))}"
+    )
+    option_two = (
         f"{color(BLUE, OPTIONS[2])}{color(CYAN, '=')}[{color(CYAN, 'css_file_path')}]"
     )
-    opt_3 = f"{color(BLUE, OPTIONS[3])}{color(CYAN, '=')}[{color(CYAN, 'output_file_path')}]"
+    option_three = f"{color(BLUE, OPTIONS[3])}{color(CYAN, '=')}[{color(CYAN, 'output_file_path')}]"
 
     usage = (
         "\n"
@@ -88,11 +91,11 @@ def get_usage():
         f"  {commd}\n"
         "\n"
         "Options:\n"
-        f"  {opt_1}\n"
+        f"  {option_one}\n"
         "    Convert the markdown file once (default) or live.\n"
-        f"  {opt_2}\n"
+        f"  {option_two}\n"
         "    Use a custom CSS file.\n"
-        f"  {opt_3}\n"
+        f"  {option_three}\n"
         "    Specify the output file path.\n"
     )
     return usage

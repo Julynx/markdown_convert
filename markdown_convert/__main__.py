@@ -32,8 +32,8 @@ def main():
 
         # Get the markdown path
         try:
-            md_path = arg["markdown_file_path"]
-            validate_markdown_path(md_path)
+            markdown_path = arg["markdown_file_path"]
+            validate_markdown_path(markdown_path)
         except KeyError as key_err:
             raise IndexError("Missing 'markdown_file_path' argument.") from key_err
         except Exception as exc:
@@ -61,18 +61,18 @@ def main():
         try:
             output_path = arg["--out"]
             validate_output_path(output_path)
-            output_path = get_output_path(md_path, output_path)
+            output_path = get_output_path(markdown_path, output_path)
         except KeyError:
-            output_path = get_output_path(md_path, None)
+            output_path = get_output_path(markdown_path, None)
         except Exception as exc:
             raise IndexError(f"Invalid 'output_path' argument: {exc}") from exc
 
         # Compile the markdown file
-        print(f"\nGenerating PDF file from '{md_path}'...\n")
+        print(f"\nGenerating PDF file from '{markdown_path}'...\n")
         if mode in ("once", "debug"):
-            convert(md_path, css_path, output_path, dump_html=mode == "debug")
+            convert(markdown_path, css_path, output_path, dump_html=mode == "debug")
         else:
-            live_convert(md_path, css_path, output_path)
+            live_convert(markdown_path, css_path, output_path)
 
         sys_exit(0)
 

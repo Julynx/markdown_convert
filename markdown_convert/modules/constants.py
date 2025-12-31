@@ -14,7 +14,7 @@ OPTIONS = ("markdown_file_path", "--mode", "--css", "--out", "-h", "--help")
 
 OPTIONS_MODES = ("once", "live", "debug")
 
-MD_EXTENSIONS = {
+MARKDOWN_EXTENSIONS = {
     "fenced-code-blocks": None,
     "header-ids": True,
     "breaks": {"on_newline": True},
