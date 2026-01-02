@@ -53,13 +53,19 @@ def render_mermaid_diagrams(html, *, nonce):
 
     Args:
         html (str): HTML content.
+        nonce (str): Cryptographic nonce for CSP.
     Returns:
         str: HTML content with rendered Mermaid diagrams.
     """
     mermaid_script = f"""
 <script type="module" nonce="{nonce}">
-  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-  mermaid.initialize({{ startOnLoad: true }});
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({{
+    startOnLoad: true,
+    theme: 'default',
+    themeVariables: {{}},
+    fontFamily: 'arial, verdana, sans-serif'
+  }});
 </script>
 """
 
