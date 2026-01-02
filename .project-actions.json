@@ -1,24 +1,34 @@
 {
     "actions": [
         {
-            "text": "$(sparkle) Lint",
-            "command": "uv run --dev -m pylint markdown_convert; yina lint markdown_convert"
+            "text": "$(wand) Format",
+            "command": "uv run --dev -m black markdown_convert",
+            "color": "#e8c170"
         },
         {
-            "text": "$(sparkle) Format",
-            "command": "uv run --dev -m black markdown_convert"
+            "text": "$(check) Lint",
+            "command": "uv run --dev -m pylint markdown_convert; yina lint markdown_convert",
+            "color": "#73bed3"
         },
         {
-            "text": "$(arrow-up) Push",
-            "command": "git add . && git commit && git push"
+            "text": "$(repo-pull) Pull",
+            "command": "git pull",
+            "color": "#d7b594"
         },
         {
-            "text": "$(gear) Bump",
-            "command": "uv version --bump patch"
+            "text": "$(repo-push) Push",
+            "command": "git add . && git commit && git push",
+            "color": "#df84a5"
+        },
+        {
+            "text": "$(debug-step-over) Bump",
+            "command": "uv version --bump patch",
+            "color": "#da863e"
         },
         {
             "text": "$(rocket) Publish",
-            "command": "uv publish"
+            "command": "uv publish",
+            "color": "#a8ca58"
         }
     ]
 }

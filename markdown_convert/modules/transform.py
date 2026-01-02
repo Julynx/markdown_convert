@@ -1,11 +1,33 @@
+"""
+Module for transforming HTML content.
+"""
+
 import re
 
-MERMAID_SCRIPT = """
-<script type="module">
-  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-  mermaid.initialize({ startOnLoad: true });
-</script>
-"""
+
+def create_html_document(html_content, css_content, csp):
+    """
+    Creates a complete HTML document with the given content, CSS, and Content Security Policy.
+    Args:
+        html_content (str): The HTML content to include in the body.
+        css_content (str): The CSS styles to include in the head.
+        csp (str): The Content Security Policy string.
+    Returns:
+        str: A complete HTML document as a string.
+    """
+    return f"""<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="{csp}">
+<style>
+{css_content}
+</style>
+</head>
+<body>
+{html_content}
+</body>
+</html>"""
 
 
 def create_sections(html):
@@ -25,7 +47,7 @@ def create_sections(html):
     return pattern.sub(wrap_section, html)
 
 
-def render_mermaid_diagrams(html):
+def render_mermaid_diagrams(html, *, nonce):
     """
     Renders Mermaid diagrams in the HTML content.
 
@@ -34,7 +56,14 @@ def render_mermaid_diagrams(html):
     Returns:
         str: HTML content with rendered Mermaid diagrams.
     """
+    mermaid_script = f"""
+<script type="module" nonce="{nonce}">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({{ startOnLoad: true }});
+</script>
+"""
+
     if '<div class="mermaid">' in html:
-        html = MERMAID_SCRIPT + html
+        html = mermaid_script + html
 
     return html

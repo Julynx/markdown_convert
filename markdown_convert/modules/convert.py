@@ -4,6 +4,7 @@ Author: @julynx
 """
 
 import os
+import secrets
 import time
 from datetime import datetime
 from pathlib import Path
@@ -13,7 +14,7 @@ from playwright.sync_api import sync_playwright
 
 from .constants import MARKDOWN_EXTENSIONS
 from .resources import get_code_css_path, get_css_path, get_output_path
-from .transform import create_sections, render_mermaid_diagrams
+from .transform import create_sections, render_mermaid_diagrams, create_html_document
 from .utils import drop_duplicates
 
 
@@ -24,6 +25,7 @@ def _generate_pdf_with_playwright(
     css_content=None,
     base_dir=None,
     dump_html=False,
+    nonce=None,
 ):
     """
     Generate a PDF from HTML content using Playwright.
@@ -35,22 +37,55 @@ def _generate_pdf_with_playwright(
         base_dir (Path, optional): Base directory for resolving relative paths in HTML.
         dump_html (bool, optional): Whether to dump the HTML content to a file.
     """
+    # Generate a cryptographic nonce for the Mermaid script
+
+    # Content Security Policy using nonce to whitelist only the Mermaid initialization script
+    # This prevents arbitrary JavaScript injection while allowing Mermaid to work
+    csp = (
+        "default-src 'none'; "
+        f"script-src 'nonce-{nonce}' https://cdn.jsdelivr.net; "
+        f"script-src-elem 'nonce-{nonce}' https://cdn.jsdelivr.net; "
+        "style-src 'unsafe-inline'; "
+        "img-src data: https: file:; "
+        "font-src data: https:; "
+        "connect-src https://cdn.jsdelivr.net;"
+    )
+
+    # Wrap HTML content with CSP and CSS
+    if css_content:
+        full_html = create_html_document(html_content, css_content, csp)
+    else:
+        full_html = html_content
+
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=True)
-        page = browser.new_page()
+        browser = playwright.chromium.launch(
+            headless=True,
+            args=[
+                "--disable-dev-shm-usage",
+                "--disable-extensions",
+                "--disable-plugins",
+                "--disable-gpu",
+                "--no-first-run",
+                "--no-default-browser-check",
+            ],
+        )
+        context = browser.new_context(
+            java_script_enabled=True,
+            permissions=[],
+            geolocation=None,
+            accept_downloads=False,
+        )
+        page = context.new_page()
 
         # Handle loading based on presence of base_dir
         temp_html = None
         try:
             if base_dir:
                 temp_html = base_dir / f".temp_{os.getpid()}.html"
-                temp_html.write_text(html_content, encoding="utf-8")
-                page.goto(temp_html.as_uri(), wait_until="networkidle")
+                temp_html.write_text(full_html, encoding="utf-8")
+                page.goto(temp_html.as_uri(), wait_until="networkidle", timeout=30000)
             else:
-                page.set_content(html_content, wait_until="networkidle")
-
-            if css_content:
-                page.add_style_tag(content=css_content)
+                page.set_content(full_html, wait_until="networkidle", timeout=30000)
 
             pdf_params = {
                 "format": "A4",
@@ -120,9 +155,10 @@ def convert(
     css_sources = drop_duplicates(css_sources)
 
     try:
+        nonce = secrets.token_urlsafe(16)
         html = markdown2.markdown_path(markdown_path, extras=MARKDOWN_EXTENSIONS)
         html = create_sections(html)
-        html = render_mermaid_diagrams(html)
+        html = render_mermaid_diagrams(html, nonce=nonce)
 
         _generate_pdf_with_playwright(
             html,
@@ -130,13 +166,16 @@ def convert(
             css_content=_get_css_content(css_sources),
             base_dir=Path(markdown_path).resolve().parent,
             dump_html=dump_html,
+            nonce=nonce,
         )
 
     except Exception as exc:
         raise RuntimeError(exc) from exc
 
 
-def live_convert(markdown_path, css_path=None, output_path=None, *, extend_default_css=True):
+def live_convert(
+    markdown_path, css_path=None, output_path=None, *, extend_default_css=True
+):
     """
     Convert a markdown file to a pdf file and watch for changes.
 
@@ -186,14 +225,16 @@ def convert_text(markdown_text, css_text=None, *, extend_default_css=True):
         css_sources = [code_css, css_text]
 
     try:
+        nonce = secrets.token_urlsafe(16)
         html = markdown2.markdown(markdown_text, extras=MARKDOWN_EXTENSIONS)
         html = create_sections(html)
-        html = render_mermaid_diagrams(html)
+        html = render_mermaid_diagrams(html, nonce=nonce)
 
         return _generate_pdf_with_playwright(
             html,
             None,
             css_content=_get_css_content(css_sources),
+            nonce=nonce,
         )
 
     except Exception as exc:
@@ -273,7 +314,10 @@ class LiveConverter:
                 markdown_modified = self.get_last_modified_date(self.md_path)
                 css_modified = self.get_last_modified_date(self.css_path)
 
-                if markdown_modified != self.md_last_modified or css_modified != self.css_last_modified:
+                if (
+                    markdown_modified != self.md_last_modified
+                    or css_modified != self.css_last_modified
+                ):
 
                     self.write_pdf()
 
