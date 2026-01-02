@@ -14,7 +14,12 @@ from playwright.sync_api import sync_playwright
 
 from .constants import MARKDOWN_EXTENSIONS
 from .resources import get_code_css_path, get_css_path, get_output_path
-from .transform import create_sections, render_mermaid_diagrams, create_html_document
+from .transform import (
+    create_sections,
+    render_mermaid_diagrams,
+    create_html_document,
+    render_checkboxes,
+)
 from .utils import drop_duplicates
 
 
@@ -159,6 +164,7 @@ def convert(
         html = markdown2.markdown_path(markdown_path, extras=MARKDOWN_EXTENSIONS)
         html = create_sections(html)
         html = render_mermaid_diagrams(html, nonce=nonce)
+        html = render_checkboxes(html)
 
         _generate_pdf_with_playwright(
             html,
@@ -229,6 +235,7 @@ def convert_text(markdown_text, css_text=None, *, extend_default_css=True):
         html = markdown2.markdown(markdown_text, extras=MARKDOWN_EXTENSIONS)
         html = create_sections(html)
         html = render_mermaid_diagrams(html, nonce=nonce)
+        html = render_checkboxes(html)
 
         return _generate_pdf_with_playwright(
             html,

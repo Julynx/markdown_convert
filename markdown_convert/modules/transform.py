@@ -73,3 +73,22 @@ def render_mermaid_diagrams(html, *, nonce):
         html = mermaid_script + html
 
     return html
+
+
+def render_checkboxes(html):
+    """
+    Renders checkboxes in the HTML content by replacing input elements with SVG representations.
+    Args:
+        html (str): HTML content.
+    Returns:
+        str: HTML content with rendered checkboxes.
+    """
+    unchecked = "[ ]"
+    checked = "[x]"
+
+    unchecked_html = "<input type='checkbox'>"
+    checked_html = "<input type='checkbox' checked>"
+
+    html = html.replace(unchecked, unchecked_html)
+    html = html.replace(checked, checked_html)
+    return html

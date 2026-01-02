@@ -35,7 +35,7 @@ Unlike other similar tools, `markdown-convert`:
   - **Syntax highlighting for code blocks:** Applied automatically based on the specified language.
   - **Live conversion:** `markdown-convert file.md --mode=live` updates the PDF every time the Markdown file changes.
   - **Custom CSS** `markdown-convert file.md --css=style.css` extends the default CSS with your own stylesheet.
-  - **Pipe tables, header links, CSS paged media features and more!**
+  - **Pipe tables, checkboxes, header links, CSS paged media features and more!**
 
 ## Installation
 
