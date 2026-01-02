@@ -31,6 +31,7 @@ Unlike other similar tools, `markdown-convert`:
 - Comes with a sensible default CSS stylesheet out of the box.
 - Supports:
   - **LaTeX math equations:** `$...$` for inline and `$$...$$` for block equations.
+  - **Mermaid diagrams:** ` ```mermaid ...``` ` code blocks get rendered as diagrams.
   - **Syntax highlighting for code blocks:** Applied automatically based on the specified language.
   - **Live conversion:** `markdown-convert file.md --mode=live` updates the PDF every time the Markdown file changes.
   - **Custom CSS** `markdown-convert file.md --css=style.css` extends the default CSS with your own stylesheet.
