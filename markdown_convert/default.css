@@ -221,9 +221,3 @@ math {
   text-rendering: optimizeLegibility;
   font-family: "Latin Modern Math", "Cambria Math", serif;
 }
-
-/* Mermaid diagrams */
-div.mermaid {
-    display: flex;
-    justify-content: center;
-}
