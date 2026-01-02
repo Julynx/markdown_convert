@@ -21,4 +21,5 @@ MARKDOWN_EXTENSIONS = {
     "tables": True,
     "latex": True,
     "mermaid": None,
+    "strike": None,
 }
