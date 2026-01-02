@@ -1,11 +1,13 @@
 :root {
   /* -- Standard margins */
-  --top-margin: 0.5em;
+  --top-margin: 0.75em;
   --bottom-margin: 0.5em;
   --left-margin: 1.5em;
 
   /* -- Small margins */
   --left-margin-small: 1em;
+  --top-margin-small: 0.25em;
+  --bottom-margin-small: 0.15em;
 
   /* -- Big margins */
   --left-margin-big: 2em;
@@ -49,23 +51,27 @@ p {
 }
 
 h1 {
-  font-size: 2.4rem;
+  font-size: 2.2rem;
+  border-bottom: 0.5px solid #999;
+  padding-bottom: var(--bottom-margin-small);
 }
 
 h2 {
-  font-size: 2rem;
+  font-size: 1.8rem;
+  border-bottom: 0.5px solid #999;
+  padding-bottom: var(--bottom-margin-small);
 }
 
 h3 {
-  font-size: 1.6rem;
-}
-
-h4 {
   font-size: 1.4rem;
 }
 
-h5 {
+h4 {
   font-size: 1.2rem;
+}
+
+h5 {
+  font-size: 1rem;
 }
 
 p {
@@ -98,7 +104,7 @@ ul ul {
 }
 
 li {
-  margin-top: var(--top-margin);
+  margin-top: var(--top-margin-small);
 }
 
 /* Code blocks */
