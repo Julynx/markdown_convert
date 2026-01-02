@@ -2,7 +2,7 @@
     "actions": [
         {
             "text": "$(sparkle) Lint",
-            "command": "uv run --dev -m pylint markdown_convert; jina lint markdown_convert"
+            "command": "uv run --dev -m pylint markdown_convert; yina lint markdown_convert"
         },
         {
             "text": "$(sparkle) Format",

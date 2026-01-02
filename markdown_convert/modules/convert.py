@@ -4,7 +4,6 @@ Author: @julynx
 """
 
 import os
-import re
 import time
 from datetime import datetime
 from pathlib import Path
@@ -14,6 +13,7 @@ from playwright.sync_api import sync_playwright
 
 from .constants import MARKDOWN_EXTENSIONS
 from .resources import get_code_css_path, get_css_path, get_output_path
+from .transform import create_sections, render_mermaid_diagrams
 from .utils import drop_duplicates
 
 
@@ -88,23 +88,6 @@ def _get_css_content(css_sources):
     return css_buffer
 
 
-def _create_sections(html):
-    """
-    Creates h2 sections, from the first h2 to the next h2, wrapping them in <section> tags
-    using regular expressions.
-    Args:
-        html (str): HTML content.
-    Returns:
-        HTML content with sections wrapped in <section> tags.
-    """
-    pattern = re.compile(r"(<h2.*?>.*?</h2>)(.*?)(?=(<h2.*?>|$))", re.DOTALL)
-
-    def wrap_section(match):
-        return f"<section>\n{match.group(1)}\n{match.group(2)}\n</section>\n"
-
-    return pattern.sub(wrap_section, html)
-
-
 def convert(
     markdown_path,
     css_path=None,
@@ -138,7 +121,8 @@ def convert(
 
     try:
         html = markdown2.markdown_path(markdown_path, extras=MARKDOWN_EXTENSIONS)
-        html = _create_sections(html)
+        html = create_sections(html)
+        html = render_mermaid_diagrams(html)
 
         _generate_pdf_with_playwright(
             html,
@@ -152,9 +136,7 @@ def convert(
         raise RuntimeError(exc) from exc
 
 
-def live_convert(
-    markdown_path, css_path=None, output_path=None, *, extend_default_css=True
-):
+def live_convert(markdown_path, css_path=None, output_path=None, *, extend_default_css=True):
     """
     Convert a markdown file to a pdf file and watch for changes.
 
@@ -205,7 +187,8 @@ def convert_text(markdown_text, css_text=None, *, extend_default_css=True):
 
     try:
         html = markdown2.markdown(markdown_text, extras=MARKDOWN_EXTENSIONS)
-        html = _create_sections(html)
+        html = create_sections(html)
+        html = render_mermaid_diagrams(html)
 
         return _generate_pdf_with_playwright(
             html,
@@ -290,10 +273,7 @@ class LiveConverter:
                 markdown_modified = self.get_last_modified_date(self.md_path)
                 css_modified = self.get_last_modified_date(self.css_path)
 
-                if (
-                    markdown_modified != self.md_last_modified
-                    or css_modified != self.css_last_modified
-                ):
+                if markdown_modified != self.md_last_modified or css_modified != self.css_last_modified:
 
                     self.write_pdf()
 

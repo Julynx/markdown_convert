@@ -20,4 +20,5 @@ MARKDOWN_EXTENSIONS = {
     "breaks": {"on_newline": True},
     "tables": True,
     "latex": True,
+    "mermaid": None,
 }
