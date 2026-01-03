@@ -44,7 +44,14 @@ def create_sections(html):
     def wrap_section(match):
         return f"<section>\n{match.group(1)}\n{match.group(2)}\n</section>\n"
 
-    return pattern.sub(wrap_section, html)
+    # Split by code blocks to avoid processing text inside them
+    parts = re.split(r"(<code>.*?</code>)", html, flags=re.DOTALL)
+    for part_index, _part in enumerate(parts):
+        # Only process parts that are NOT code blocks
+        if not parts[part_index].startswith("<code>"):
+            parts[part_index] = pattern.sub(wrap_section, parts[part_index])
+
+    return "".join(parts)
 
 
 def render_mermaid_diagrams(html, *, nonce):
@@ -89,6 +96,12 @@ def render_checkboxes(html):
     unchecked_html = "<input type='checkbox'>"
     checked_html = "<input type='checkbox' checked>"
 
-    html = html.replace(unchecked, unchecked_html)
-    html = html.replace(checked, checked_html)
-    return html
+    # Split by code blocks to avoid processing text inside them
+    parts = re.split(r"(<code>.*?</code>)", html, flags=re.DOTALL)
+    for part_index, _part in enumerate(parts):
+        # Only process parts that are NOT code blocks
+        if not parts[part_index].startswith("<code>"):
+            parts[part_index] = parts[part_index].replace(unchecked, unchecked_html)
+            parts[part_index] = parts[part_index].replace(checked, checked_html)
+
+    return "".join(parts)
