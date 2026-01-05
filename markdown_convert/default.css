@@ -170,6 +170,7 @@ table {
   border-collapse: collapse;
   margin-top: var(--top-margin);
   text-align: left;
+  width: 100%;
   table-layout: auto;
 }
 
@@ -185,11 +186,19 @@ th,
 td {
   padding: 0.5em 0.75em;
   border: 1px solid #ccc;
-  white-space: nowrap;
+  overflow-wrap: break-word;
+  vertical-align: top;
 }
 
-col {
-  width: auto;
+th {
+  white-space: normal;
+  word-break: keep-all;
+  hyphens: auto;
+}
+
+td {
+  white-space: normal;
+  word-break: break-word;
 }
 
 /* Page breaks */
