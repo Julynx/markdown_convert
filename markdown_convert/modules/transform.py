@@ -4,6 +4,8 @@ Module for transforming HTML content.
 
 import re
 
+from bs4 import BeautifulSoup
+
 
 def create_html_document(html_content, css_content, csp):
     """
@@ -30,28 +32,31 @@ def create_html_document(html_content, css_content, csp):
 </html>"""
 
 
-def create_sections(html):
+def create_sections(html_string):
     """
-    Creates h2 sections, from the first h2 to the next h2, wrapping them in <section> tags
-    using regular expressions.
+    Wraps each h2 and its following content in a <section> tag.
+    Avoids wrapping h2 tags that are inside <code> blocks.
+
     Args:
-        html (str): HTML content.
+        html_string (str): The input HTML string.
     Returns:
-        HTML content with sections wrapped in <section> tags.
+        str: The modified HTML string with h2 sections wrapped.
     """
-    pattern = re.compile(r"(<h2.*?>.*?</h2>)(.*?)(?=(<h2.*?>|$))", re.DOTALL)
+    soup = BeautifulSoup(html_string, "html.parser")
 
-    def wrap_section(match):
-        return f"<section>\n{match.group(1)}\n{match.group(2)}\n</section>\n"
+    for second_level_header in soup.find_all("h2"):
+        new_section = soup.new_tag("section")
+        second_level_header.insert_before(new_section)
 
-    # Split by code blocks to avoid processing text inside them
-    parts = re.split(r"(<code>.*?</code>)", html, flags=re.DOTALL)
-    for part_index, _part in enumerate(parts):
-        # Only process parts that are NOT code blocks
-        if not parts[part_index].startswith("<code>"):
-            parts[part_index] = pattern.sub(wrap_section, parts[part_index])
+        current = second_level_header
+        while current is not None and (
+            current == second_level_header or current.name != "h2"
+        ):
+            next_sibling = current.next_sibling
+            new_section.append(current)
+            current = next_sibling
 
-    return "".join(parts)
+    return str(soup)
 
 
 def render_mermaid_diagrams(html, *, nonce):
