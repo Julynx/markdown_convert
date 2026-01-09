@@ -11,7 +11,9 @@ _Convert Markdown files to PDF from your command line._
 
 <br>
 
-<img src='https://i.imgur.com/uWDm7s0.png' width='80%'>
+<img src='https://i.imgur.com/kzoo3hs.png' width='80%'>
+
+<br>
 
 ----
 
