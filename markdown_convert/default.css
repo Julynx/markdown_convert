@@ -212,18 +212,20 @@ td {
 }
 
 section,
-ol,
-ul,
 table,
 blockquote,
-code,
-p,
+code {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
 h1,
 h2,
 h3,
 h4,
 h5 {
-  page-break-inside: avoid;
+  page-break-after: avoid;
+  break-after: avoid;
 }
 
 /* Increase vertical padding for math elements with display=block */
