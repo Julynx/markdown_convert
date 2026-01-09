@@ -113,6 +113,13 @@ pre {
   white-space: pre-wrap;
 }
 
+pre > code {
+  display: block;
+  padding: 1em;
+  margin-top: var(--top-margin);
+  margin-bottom: var(--bottom-margin);
+}
+
 code {
   font-family: "JetBrains Mono", "Consolas", "Ubuntu Mono", "DejaVu Sans Mono",
     "Liberation Mono", "Courier New", monospace;
