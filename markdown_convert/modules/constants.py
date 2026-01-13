@@ -23,3 +23,34 @@ MARKDOWN_EXTENSIONS = {
     "mermaid": None,
     "strike": None,
 }
+
+BROWSER_ARGS = [
+    "--disable-dev-shm-usage",
+    "--disable-extensions",
+    "--disable-plugins",
+    "--disable-gpu",
+    "--no-first-run",
+    "--no-default-browser-check",
+]
+
+CSP_TEMPLATE = (
+    "default-src 'none'; "
+    "script-src 'nonce-{nonce}' https://cdn.jsdelivr.net; "  # <- Script for Mermaid diagrams
+    "script-src-elem 'nonce-{nonce}' https://cdn.jsdelivr.net; "
+    "style-src 'unsafe-inline'; "
+    "img-src data: https: file:; "
+    "font-src data: https:; "
+    "connect-src https://cdn.jsdelivr.net;"
+)
+
+PDF_PARAMS = {
+    "format": "A4",
+    "print_background": True,
+    "margin": {
+        "top": "20mm",
+        "bottom": "20mm",
+        "left": "20mm",
+        "right": "20mm",
+    },
+    "path": None,  # <- Replace with actual output path when used
+}

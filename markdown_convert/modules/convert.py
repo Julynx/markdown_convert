@@ -12,7 +12,7 @@ from pathlib import Path
 import markdown2
 from playwright.sync_api import sync_playwright
 
-from .constants import MARKDOWN_EXTENSIONS
+from .constants import MARKDOWN_EXTENSIONS, BROWSER_ARGS, CSP_TEMPLATE, PDF_PARAMS
 from .resources import get_code_css_path, get_css_path, get_output_path
 from .transform import (
     create_sections,
@@ -41,36 +41,17 @@ def _generate_pdf_with_playwright(
         css_content (str, optional): CSS content to inject.
         base_dir (Path, optional): Base directory for resolving relative paths in HTML.
         dump_html (bool, optional): Whether to dump the HTML content to a file.
+        nonce (str, optional): Nonce for Content Security Policy.
     """
-    # Generate a cryptographic nonce for the Mermaid script
+    if nonce is None:
+        raise ValueError("A nonce must be provided for CSP generation.")
 
-    # Content Security Policy using nonce to whitelist only the Mermaid initialization script
     # This prevents arbitrary JavaScript injection while allowing Mermaid to work
-    csp = (
-        "default-src 'none'; "
-        f"script-src 'nonce-{nonce}' https://cdn.jsdelivr.net; "
-        f"script-src-elem 'nonce-{nonce}' https://cdn.jsdelivr.net; "
-        "style-src 'unsafe-inline'; "
-        "img-src data: https: file:; "
-        "font-src data: https:; "
-        "connect-src https://cdn.jsdelivr.net;"
-    )
-
-    # Wrap HTML content with CSP and CSS
+    csp = CSP_TEMPLATE.format(nonce=nonce)
     full_html = create_html_document(html_content, css_content, csp)
 
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(
-            headless=True,
-            args=[
-                "--disable-dev-shm-usage",
-                "--disable-extensions",
-                "--disable-plugins",
-                "--disable-gpu",
-                "--no-first-run",
-                "--no-default-browser-check",
-            ],
-        )
+        browser = playwright.chromium.launch(headless=True, args=BROWSER_ARGS)
         context = browser.new_context(
             java_script_enabled=True,
             permissions=[],
@@ -79,7 +60,6 @@ def _generate_pdf_with_playwright(
         )
         page = context.new_page()
 
-        # Handle loading based on presence of base_dir
         temp_html = None
         try:
             if base_dir:
@@ -90,16 +70,9 @@ def _generate_pdf_with_playwright(
                 page.set_content(full_html, wait_until="networkidle", timeout=30000)
 
             pdf_params = {
-                "format": "A4",
-                "print_background": True,
-                "margin": {
-                    "top": "20mm",
-                    "bottom": "20mm",
-                    "left": "20mm",
-                    "right": "20mm",
-                },
+                **PDF_PARAMS,
                 "path": output_path,
-            }  # Playwright ignores None paths
+            }
 
             pdf_bytes = page.pdf(**pdf_params)
             return None if output_path else pdf_bytes
@@ -314,7 +287,6 @@ class LiveConverter:
 
         try:
             while True:
-
                 markdown_modified = self.get_last_modified_date(self.md_path)
                 css_modified = self.get_last_modified_date(self.css_path)
 
@@ -322,7 +294,6 @@ class LiveConverter:
                     markdown_modified != self.md_last_modified
                     or css_modified != self.css_last_modified
                 ):
-
                     self.write_pdf()
 
                     self.md_last_modified = markdown_modified
