@@ -57,10 +57,7 @@ def _generate_pdf_with_playwright(
     )
 
     # Wrap HTML content with CSP and CSS
-    if css_content:
-        full_html = create_html_document(html_content, css_content, csp)
-    else:
-        full_html = html_content
+    full_html = create_html_document(html_content, css_content, csp)
 
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(
