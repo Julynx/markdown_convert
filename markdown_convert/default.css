@@ -154,11 +154,13 @@ blockquote>blockquote {
   padding-left: var(--left-margin-small);
 }
 
-/* Figures */
 img {
+  max-width: 80vw;
+  max-height: 80vh;
+  width: auto;
+  height: auto;
   display: block;
   margin: 2em auto 1em auto;
-  max-width: 80%;
 }
 
 /* -- Figure footer */
