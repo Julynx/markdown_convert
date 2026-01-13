@@ -5,7 +5,6 @@ CLI interface to convert markdown files to pdf.
 Author: @julynx
 """
 
-
 from sys import exit as sys_exit
 
 from argsdict import args
@@ -78,7 +77,6 @@ def main():
 
     # pylint: disable=W0718
     except Exception as err:
-
         asked_for_help = "--help" in arg or "-h" in arg
         show_usage = isinstance(err, (IndexError, ValueError)) or asked_for_help
 

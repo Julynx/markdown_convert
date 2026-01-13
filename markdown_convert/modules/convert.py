@@ -210,7 +210,7 @@ def convert_text(markdown_text, css_text=None, *, extend_default_css=True):
         return _generate_pdf_with_playwright(
             html,
             None,
-            css_content=_get_css_content(css_sources),
+            css_content="\n".join(css_sources),
             nonce=nonce,
         )
 

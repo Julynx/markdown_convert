@@ -2,12 +2,12 @@
     "actions": [
         {
             "text": "$(wand) Format",
-            "command": "uv run --dev -m black markdown_convert",
+            "command": "uv run ruff format markdown_convert",
             "color": "#e8c170"
         },
         {
             "text": "$(check) Lint",
-            "command": "uv run --dev -m pylint markdown_convert; yina lint markdown_convert",
+            "command": "uv run ruff check markdown_convert; uv run yina lint markdown_convert",
             "color": "#73bed3"
         },
         {
