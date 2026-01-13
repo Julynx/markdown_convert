@@ -1,15 +1,14 @@
 :root {
-  /* -- Standard margins */
-  --top-margin: 0.75em;
-  --bottom-margin: 0.5em;
+  /* -- Header margins -- */
+  --top-margin: 1em;
+  --bottom-margin-small: 0.25em;
+
+  /* -- Element margins -- */
+  --bottom-margin: 0.75em;
+
+  /* -- Nested element margins -- */
   --left-margin: 1.5em;
-
-  /* -- Small margins */
   --left-margin-small: 1em;
-  --top-margin-small: 0.25em;
-  --bottom-margin-small: 0.15em;
-
-  /* -- Big margins */
   --left-margin-big: 2em;
 }
 
@@ -28,6 +27,24 @@ body {
 }
 
 /* Headers and paragraphs */
+h1 {
+  margin-top: 0;
+  margin-bottom: var(--bottom-margin-small);
+}
+
+h2,
+h3,
+h4,
+h5 {
+  margin-top: var(--top-margin);
+  margin-bottom: var(--bottom-margin-small);
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: var(--bottom-margin);
+}
+
 h1,
 h2,
 h3,
@@ -38,29 +55,13 @@ h5 {
 }
 
 h1 {
-  margin-top: 0;
-  margin-bottom: var(--bottom-margin);
-}
-
-h2,
-h3,
-h4,
-h5,
-p {
-  margin-top: var(--top-margin);
-  margin-bottom: 0;
-}
-
-h1 {
   font-size: 2.2rem;
   border-bottom: 0.5px solid #999;
-  padding-bottom: var(--bottom-margin-small);
 }
 
 h2 {
   font-size: 1.8rem;
   border-bottom: 0.5px solid #999;
-  padding-bottom: var(--bottom-margin-small);
 }
 
 h3 {
@@ -90,22 +91,20 @@ a {
 ul,
 ol {
   font-size: 1rem;
-  padding: 0;
-  margin-top: var(--top-margin);
-  margin-right: 0;
+  margin-top: 0;
   margin-bottom: var(--bottom-margin);
-  margin-left: var(--left-margin-big);
+  margin-right: 0;
+  margin-left: var(--left-margin-small);
+  padding-left: var(--left-margin);
 }
 
 ul ol,
 ol ul,
 ol ol,
 ul ul {
-  margin-top: 0;
-}
-
-li {
-  margin-top: var(--top-margin-small);
+  margin-bottom: 0;
+  margin-left: 0;
+  padding-left:  var(--left-margin);
 }
 
 /* Code blocks */
@@ -114,10 +113,10 @@ pre {
   white-space: pre-wrap;
 }
 
-pre > code {
+pre>code {
   display: block;
   padding: 1em;
-  margin-top: var(--top-margin);
+  margin-top: 0;
   margin-bottom: var(--bottom-margin);
 }
 
@@ -143,15 +142,16 @@ h5 code {
 
 /* Quotes */
 blockquote {
-  margin-top: var(--top-margin);
+  margin-top: 0;
+  margin-bottom: var(--bottom-margin);
   margin-left: var(--left-margin);
   border-left: 4px solid #ccc;
   padding-left: 0.5em;
   color: #666;
 }
 
-blockquote > blockquote {
-  margin-left: var(--left-margin-small);
+blockquote>blockquote {
+  padding-left: var(--left-margin-small);
 }
 
 /* Figures */
@@ -162,7 +162,7 @@ img {
 }
 
 /* -- Figure footer */
-p > img + em {
+p>img+em {
   text-align: center;
   font-size: 1rem;
   font-style: italic;
@@ -176,7 +176,8 @@ table {
   font-size: 1rem;
   font-family: inherit;
   border-collapse: collapse;
-  margin-top: var(--top-margin);
+  margin-top: 0;
+  margin-bottom: var(--bottom-margin);
   text-align: left;
   width: 100%;
   table-layout: auto;
@@ -215,7 +216,7 @@ td {
   page-break-after: always;
 }
 
-.pagebreak + * {
+.pagebreak+* {
   margin-top: 0;
 }
 
