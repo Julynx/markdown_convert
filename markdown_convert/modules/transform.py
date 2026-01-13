@@ -21,13 +21,13 @@ def create_html_document(html_content, css_content, csp):
 <html>
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="{csp}">
+<meta http-equiv="Content-Security-Policy" content="{csp or ''}">
 <style>
-{css_content}
+{css_content or ''}
 </style>
 </head>
 <body>
-{html_content}
+{html_content or ''}
 </body>
 </html>"""
 
