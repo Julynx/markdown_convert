@@ -21,7 +21,8 @@ html {
 body {
   margin: 0;
   padding: 0;
-  font-family: "Segoe UI", "Ubuntu", "DejaVu Sans", "Liberation Sans", "Arial",
+  font-family:
+    "Segoe UI", "Ubuntu", "DejaVu Sans", "Liberation Sans", "Arial",
     "sans-serif";
   color: #333;
 }
@@ -104,7 +105,7 @@ ol ol,
 ul ul {
   margin-bottom: 0;
   margin-left: 0;
-  padding-left:  var(--left-margin);
+  padding-left: var(--left-margin);
 }
 
 /* Code blocks */
@@ -113,7 +114,7 @@ pre {
   white-space: pre-wrap;
 }
 
-pre>code {
+pre > code {
   display: block;
   padding: 1em;
   margin-top: 0;
@@ -121,7 +122,8 @@ pre>code {
 }
 
 code {
-  font-family: "JetBrains Mono", "Consolas", "Ubuntu Mono", "DejaVu Sans Mono",
+  font-family:
+    "JetBrains Mono", "Consolas", "Ubuntu Mono", "DejaVu Sans Mono",
     "Liberation Mono", "Courier New", monospace;
   font-size: 1rem;
   background-color: #eee;
@@ -150,27 +152,63 @@ blockquote {
   color: #666;
 }
 
-blockquote>blockquote {
+blockquote > blockquote {
   padding-left: var(--left-margin-small);
 }
 
+/* Images */
 img {
   max-width: 80vw;
   max-height: 80vh;
   width: auto;
   height: auto;
   display: block;
-  margin: 2em auto 1em auto;
+  margin: 1em auto;
 }
 
-/* -- Figure footer */
-p>img+em {
+/* Image alt text attributes */
+img[alt*="::tiny::"],
+img[alt*="::smallest::"] {
+  width: 10vw;
+}
+
+img[alt*="::small::"] {
+  width: 30vw;
+}
+
+img[alt*="::medium::"],
+img[alt*="::normal::"] {
+  width: 60vw;
+}
+
+img[alt*="::large::"],
+img[alt*="::big::"] {
+  width: 80vw;
+}
+
+img[alt*="::full::"],
+img[alt*="::max::"],
+img[alt*="::huge::"],
+img[alt*="::wide::"] {
+  width: 100vw;
+  max-width: 100vw;
+}
+
+p:has(> img[alt*="::inline::"]) {
+  display: inline-block;
+  width: min-content;
+  vertical-align: top;
+  margin-right: 1em;
+}
+
+/* Image footers */
+p > img + em {
   text-align: center;
   font-size: 1rem;
   font-style: italic;
   color: #666;
   display: block;
-  margin: 1em auto 2em;
+  margin: 1em auto;
 }
 
 /* Tables */
@@ -212,14 +250,23 @@ td {
   word-break: break-word;
 }
 
-/* Page breaks */
-.pagebreak {
-  clear: both;
-  page-break-after: always;
+/* Horizontal rulers */
+hr {
+  height: 1px;
+  background-color: #999;
+  border: none;
 }
 
-.pagebreak+* {
-  margin-top: 0;
+/* Page breaks */
+hr:has(+ hr) {
+  visibility: hidden;
+}
+
+hr + hr {
+  clear: both;
+  break-after: always;
+  page-break-after: always;
+  visibility: hidden;
 }
 
 section,
@@ -239,7 +286,7 @@ h5 {
   break-after: avoid;
 }
 
-/* Increase vertical padding for math elements with display=block */
+/* Mathematical expressions */
 math[display="block"] {
   margin-top: 1em;
   margin-bottom: 1em;
