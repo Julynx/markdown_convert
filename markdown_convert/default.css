@@ -10,6 +10,14 @@
   --left-margin: 1.5em;
   --left-margin-small: 1em;
   --left-margin-big: 2em;
+
+  /* -- Colors -- */
+  --color-text: #333; /* Main text color */
+  --color-text-light: #666; /* Tables, blockquotes, footers */
+  --color-text-background: #eee; /* Code blocks, table headers */
+  --color-border: #999; /* Image borders, rules */
+  --color-border-light: #ccc; /* Table borders, blockquotes */
+  --color-links: #09f; /* Hyperlinks */
 }
 
 /* Document */
@@ -24,7 +32,7 @@ body {
   font-family:
     "Segoe UI", "Ubuntu", "DejaVu Sans", "Liberation Sans", "Arial",
     "sans-serif";
-  color: #333;
+  color: var(--color-text);
 }
 
 /* Headers and paragraphs */
@@ -51,18 +59,18 @@ h2,
 h3,
 h4,
 h5 {
-  color: #333;
+  color: var(--color-text);
   font-weight: 600;
 }
 
 h1 {
   font-size: 2.2rem;
-  border-bottom: 0.5px solid #999;
+  border-bottom: 0.5px solid var(--color-border);
 }
 
 h2 {
   font-size: 1.8rem;
-  border-bottom: 0.5px solid #999;
+  border-bottom: 0.5px solid var(--color-border);
 }
 
 h3 {
@@ -83,7 +91,7 @@ p {
 
 /* Links */
 a {
-  color: #09f;
+  color: var(--color-links);
   margin: 0;
   vertical-align: baseline;
 }
@@ -126,7 +134,7 @@ code {
     "JetBrains Mono", "Consolas", "Ubuntu Mono", "DejaVu Sans Mono",
     "Liberation Mono", "Courier New", monospace;
   font-size: 1rem;
-  background-color: #eee;
+  background-color: var(--color-text-background);
   padding-left: 0.4em;
   padding-right: 0.4em;
   display: inline-block;
@@ -147,9 +155,9 @@ blockquote {
   margin-top: 0;
   margin-bottom: var(--bottom-margin);
   margin-left: var(--left-margin);
-  border-left: 4px solid #ccc;
+  border-left: 4px solid var(--color-border-light);
   padding-left: 0.5em;
-  color: #666;
+  color: var(--color-text-light);
 }
 
 blockquote > blockquote {
@@ -162,6 +170,16 @@ img {
   max-height: 80vh;
   width: auto;
   height: auto;
+  display: block;
+  margin: 1em auto;
+}
+
+/* Image footers */
+p > img + em {
+  text-align: center;
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--color-text-light);
   display: block;
   margin: 1em auto;
 }
@@ -201,14 +219,29 @@ p:has(> img[alt*="::inline::"]) {
   margin-right: 1em;
 }
 
-/* Image footers */
-p > img + em {
-  text-align: center;
-  font-size: 1rem;
-  font-style: italic;
-  color: #666;
-  display: block;
-  margin: 1em auto;
+img[alt*="::shadow::"] {
+  box-shadow: rgba(100, 100, 100, 0.4) 0px 2px 8px 0px;
+}
+
+img[alt*="::border::"] {
+  border: 2px solid var(--color-border);
+}
+
+img[alt*="::invert::"] {
+  filter: invert(100%);
+}
+
+img[alt*="::grayscale::"],
+img[alt*="::greyscale::"] {
+  filter: grayscale(100%);
+}
+
+img[alt*="::circle::"] {
+  border-radius: 50%;
+}
+
+img[alt*="::rounded::"] {
+  border-radius: 1em;
 }
 
 /* Tables */
@@ -224,17 +257,17 @@ table {
 }
 
 thead {
-  background-color: #eee;
+  background-color: var(--color-text-background);
 }
 
 tbody {
-  color: #666;
+  color: var(--color-text-light);
 }
 
 th,
 td {
   padding: 0.5em 0.75em;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border-light);
   overflow-wrap: break-word;
   vertical-align: top;
 }
@@ -253,7 +286,7 @@ td {
 /* Horizontal rulers */
 hr {
   height: 1px;
-  background-color: #999;
+  background-color: var(--color-border);
   border: none;
 }
 
