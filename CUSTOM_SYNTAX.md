@@ -61,8 +61,6 @@ $$\int_a^b f(x) \,dx = F(b) - F(a)$$
 
 <summary>All supported attributes</summary>
 
-All supported attributes:
-
 - Size: `::tiny::`, `::small::`, `::medium::`, `::large::`, `::full::`
 - Positioning: `::inline::`
 - Shape: `::circle::`, `::rounded::`
@@ -93,8 +91,6 @@ This text is hl{{highlighted}}.
 <details>
 
 <summary>All supported attributes</summary>
-
-Containers supported by default CSS:
 
 - Colors: `red/r`, `green/g`, `blue/b`, `yellow`, `orange`, `purple`, `white`, `black`, `gray`, `brown`, `pink`
 - Underline: `underline/ul`
