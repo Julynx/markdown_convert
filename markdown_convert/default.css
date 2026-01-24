@@ -330,17 +330,20 @@ math {
   font-family: "Latin Modern Math", "Cambria Math", serif;
 }
 
-/* Color classes for custom containers */
-.red {
+/* Classes for custom containers */
+.red,
+.r {
   color: red;
 }
 
-.blue {
-  color: blue;
+.green,
+.g {
+  color: green;
 }
 
-.green {
-  color: green;
+.blue,
+.b {
+  color: blue;
 }
 
 .yellow {
@@ -373,4 +376,27 @@ math {
 
 .pink {
   color: pink;
+}
+
+.underline,
+.u {
+  text-decoration: underline;
+}
+
+.highlight,
+.hl {
+  background-color: yellow;
+}
+
+.keyboard,
+.key {
+  font-family:
+    "Segoe UI Symbol", "DejaVu Sans", "Liberation Sans", "Arial",
+    "sans-serif";
+  font-size: 0.9rem;
+  background-color: var(--color-text-background);
+  border: 1px solid var(--color-border);
+  border-radius: 0.3em;
+  padding: 0.1em 0.4em;
+  box-shadow: rgba(100, 100, 100, 0.4) 0px 2px 4px 0px;
 }

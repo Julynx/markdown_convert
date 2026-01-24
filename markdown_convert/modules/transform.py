@@ -114,7 +114,7 @@ def render_checkboxes(html):
 
 def create_spans(html):
     """
-    Renders custom spans in the HTML content by replacing classname%% ... %% tags.
+    Renders custom spans in the HTML content by replacing classname{{ content }} tags.
     Args:
         html (str): HTML content.
     Returns:
@@ -122,9 +122,9 @@ def create_spans(html):
     """
     soup = BeautifulSoup(html, "html.parser")
 
-    # Regex to match classname%% content %%
+    # Regex to match classname{{ content }}
     # It captures the class name and the content
-    pattern = re.compile(r"([a-zA-Z0-9_-]+)%%\s*(.*?)\s*%%")
+    pattern = re.compile(r"([a-zA-Z0-9_-]+){{\s*(.*?)\s*}}")
 
     # We need to find all text nodes and replace the pattern
     for text_node in soup.find_all(string=True):
@@ -133,7 +133,7 @@ def create_spans(html):
             continue
 
         content = str(text_node)
-        if "%%" in content:
+        if "{{" in content:
             new_content_nodes = []
             last_end = 0
             for match in pattern.finditer(content):
