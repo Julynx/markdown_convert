@@ -39,6 +39,8 @@ Unlike other similar tools, `markdown-convert`:
   - **Custom CSS** `markdown-convert file.md --css=style.css` extends the default CSS with your own stylesheet.
   - **Pipe tables, checkboxes, header links, CSS paged media features and more!**
 
+Check out [CUSTOM_SYNTAX.md](https://github.com/Julynx/markdown_convert/blob/main/CUSTOM_SYNTAX.md) for all the extra features and how to use them.
+
 ## Installation
 
 `markdown-convert` is available on PyPI and can be installed via pip:

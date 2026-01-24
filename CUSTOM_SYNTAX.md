@@ -14,7 +14,7 @@ Block equation:
 $$\int_a^b f(x) \,dx = F(b) - F(a)$$
 ```
 
-<img src='assets/math-equations.png' width='60%'>
+<img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/math-equations.png'>
 
 ## Mermaid Diagrams
 
@@ -26,7 +26,7 @@ $$\int_a^b f(x) \,dx = F(b) - F(a)$$
         C-->D;
     ```
 
-<img src='assets/mermaid-diagram.png' width='60%'>
+<img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/mermaid-diagram.png'>
 
 ## Syntax Highlighted Code Blocks
 
@@ -35,7 +35,7 @@ $$\int_a^b f(x) \,dx = F(b) - F(a)$$
         return f"Hello, {name}!"
     ```
 
-<img src='assets/syntax-highlighted-code.png' width='60%'>
+<img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/syntax-highlighted-code.png'>
 
 ## Pipe Tables
 
@@ -47,7 +47,7 @@ $$\int_a^b f(x) \,dx = F(b) - F(a)$$
 | Charlie | 35  | Los Angeles   |
 ```
 
-<img src='assets/pipe-table.png' width='60%'>
+<img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/pipe-table.png'>
 
 ## Image alt-text attributes
 
@@ -55,7 +55,7 @@ $$\int_a^b f(x) \,dx = F(b) - F(a)$$
 ![Flower ::shadow:: ::tiny::](assets/flower.png)
 ```
 
-<img src='assets/image-attributes.png' width='60%'>
+<img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/image-attributes.png'>
 
 <details>
 
@@ -66,9 +66,9 @@ $$\int_a^b f(x) \,dx = F(b) - F(a)$$
 - Shape: `::circle::`, `::rounded::`
 - Filters: `::shadow::`, `::border::`, `::invert::`, `::grayscale::`
 
-<img src='assets/size-attributes.png' width='60%'>
+<img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/size-attributes.png'>
 
-<img src='assets/effects.png' width='60%'>
+<img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/effects.png'>
 
 </details>
 
@@ -78,7 +78,7 @@ $$\int_a^b f(x) \,dx = F(b) - F(a)$$
 ![Flower](assets/flower2.png)_A beautiful flower._
 ```
 
-<img src='assets/image-caption.png' width='60%'>
+<img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/image-caption.png'>
 
 ## Custom Containers
 
@@ -86,7 +86,7 @@ $$\int_a^b f(x) \,dx = F(b) - F(a)$$
 This text is hl{{highlighted}}.
 ```
 
-<img src='assets/custom-container.png' width='60%'>
+<img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/custom-container.png'>
 
 <details>
 
@@ -125,4 +125,4 @@ Two consecutive horizontal rules insert a page break:
 This text is rendered on a new page.
 ```
 
-<img src='assets/page-break.png' width='60%'>
+<img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/page-break.png'>
