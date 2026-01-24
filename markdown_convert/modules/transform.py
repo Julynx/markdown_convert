@@ -110,3 +110,56 @@ def render_checkboxes(html):
             parts[part_index] = parts[part_index].replace(checked, checked_html)
 
     return "".join(parts)
+
+
+def create_spans(html):
+    """
+    Renders custom spans in the HTML content by replacing classname%% ... %% tags.
+    Args:
+        html (str): HTML content.
+    Returns:
+        str: HTML content with rendered custom spans.
+    """
+    soup = BeautifulSoup(html, "html.parser")
+
+    # Regex to match classname%% content %%
+    # It captures the class name and the content
+    pattern = re.compile(r"([a-zA-Z0-9_-]+)%%\s*(.*?)\s*%%")
+
+    # We need to find all text nodes and replace the pattern
+    for text_node in soup.find_all(string=True):
+        # Skip text nodes inside code, pre, script, style tags
+        if text_node.parent.name in ["code", "pre", "script", "style"]:
+            continue
+
+        content = str(text_node)
+        if "%%" in content:
+            new_content_nodes = []
+            last_end = 0
+            for match in pattern.finditer(content):
+                # Add text before the match
+                before = content[last_end : match.start()]
+                if before:
+                    new_content_nodes.append(soup.new_string(before))
+
+                # Create the new span tag
+                class_name = match.group(1)
+                inner_text = match.group(2)
+                new_span = soup.new_tag("span", attrs={"class": class_name})
+                new_span.string = inner_text
+                new_content_nodes.append(new_span)
+
+                last_end = match.end()
+
+            # Add remaining text after the last match
+            after = content[last_end:]
+            if after:
+                new_content_nodes.append(soup.new_string(after))
+
+            if new_content_nodes:
+                # Replace the original text node with the new nodes
+                for node in reversed(new_content_nodes):
+                    text_node.insert_after(node)
+                text_node.extract()
+
+    return str(soup)

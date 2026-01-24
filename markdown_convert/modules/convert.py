@@ -19,6 +19,7 @@ from .transform import (
     render_mermaid_diagrams,
     create_html_document,
     render_checkboxes,
+    create_spans,
 )
 from .utils import drop_duplicates
 
@@ -135,6 +136,7 @@ def convert(
         html = create_sections(html)
         html = render_mermaid_diagrams(html, nonce=nonce)
         html = render_checkboxes(html)
+        html = create_spans(html)
 
         _generate_pdf_with_playwright(
             html,
@@ -206,6 +208,7 @@ def convert_text(markdown_text, css_text=None, *, extend_default_css=True):
         html = create_sections(html)
         html = render_mermaid_diagrams(html, nonce=nonce)
         html = render_checkboxes(html)
+        html = create_spans(html)
 
         return _generate_pdf_with_playwright(
             html,

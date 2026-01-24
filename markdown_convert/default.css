@@ -329,3 +329,48 @@ math {
   text-rendering: optimizeLegibility;
   font-family: "Latin Modern Math", "Cambria Math", serif;
 }
+
+/* Color classes for custom containers */
+.red {
+  color: red;
+}
+
+.blue {
+  color: blue;
+}
+
+.green {
+  color: green;
+}
+
+.yellow {
+  color: goldenrod;
+}
+
+.orange {
+  color: orange;
+}
+
+.purple {
+  color: purple;
+}
+
+.white {
+  color: white;
+}
+
+.black {
+  color: black;
+}
+
+.gray {
+  color: gray;
+}
+
+.brown {
+  color: brown;
+}
+
+.pink {
+  color: pink;
+}
