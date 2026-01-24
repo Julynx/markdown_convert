@@ -57,6 +57,10 @@ $$\int_a^b f(x) \,dx = F(b) - F(a)$$
 
 <img src='assets/image-attributes.png' width='60%'>
 
+<details>
+
+<summary>All supported attributes</summary>
+
 All supported attributes:
 
 - Size: `::tiny::`, `::small::`, `::medium::`, `::large::`, `::full::`
@@ -67,6 +71,8 @@ All supported attributes:
 <img src='assets/size-attributes.png' width='60%'>
 
 <img src='assets/effects.png' width='60%'>
+
+</details>
 
 ## Image captions
 
@@ -83,6 +89,10 @@ This text is hl{{highlighted}}.
 ```
 
 <img src='assets/custom-container.png' width='60%'>
+
+<details>
+
+<summary>All supported attributes</summary>
 
 Containers supported by default CSS:
 
@@ -104,6 +114,8 @@ This text is sm{{small text}}.
     font-size: 0.8em;
 }
 ```
+
+</details>
 
 ## Page Breaks
 
