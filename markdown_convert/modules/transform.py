@@ -46,13 +46,12 @@ def create_sections(html_string):
 
     # Change 1: Search for both h2 and h3 tags
     for header in soup.find_all(["h2", "h3"]):
-        
         # Create the new section
         new_section = soup.new_tag("section")
         header.insert_before(new_section)
 
         current = header
-        
+
         # Change 2: Update loop to stop if it hits an h2 OR h3 (that isn't the current one)
         while current is not None and (
             current == header or current.name not in ["h2", "h3"]
