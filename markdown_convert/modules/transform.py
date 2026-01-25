@@ -34,23 +34,28 @@ def create_html_document(html_content, css_content, csp):
 
 def create_sections(html_string):
     """
-    Wraps each h2 and its following content in a <section> tag.
-    Avoids wrapping h2 tags that are inside <code> blocks.
+    Wraps each h2 or h3 and its following content in a <section> tag.
+    The section ends when the next h2 or h3 is encountered, or the parent ends.
 
     Args:
         html_string (str): The input HTML string.
     Returns:
-        str: The modified HTML string with h2 sections wrapped.
+        str: The modified HTML string with sections wrapped.
     """
     soup = BeautifulSoup(html_string, "html.parser")
 
-    for second_level_header in soup.find_all("h2"):
+    # Change 1: Search for both h2 and h3 tags
+    for header in soup.find_all(["h2", "h3"]):
+        
+        # Create the new section
         new_section = soup.new_tag("section")
-        second_level_header.insert_before(new_section)
+        header.insert_before(new_section)
 
-        current = second_level_header
+        current = header
+        
+        # Change 2: Update loop to stop if it hits an h2 OR h3 (that isn't the current one)
         while current is not None and (
-            current == second_level_header or current.name != "h2"
+            current == header or current.name not in ["h2", "h3"]
         ):
             next_sibling = current.next_sibling
             new_section.append(current)
