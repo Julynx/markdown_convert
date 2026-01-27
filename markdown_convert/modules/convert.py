@@ -18,8 +18,7 @@ from .transform import (
     create_sections,
     render_mermaid_diagrams,
     create_html_document,
-    render_checkboxes,
-    create_spans,
+    render_extra_features,
 )
 from .utils import drop_duplicates
 
@@ -135,8 +134,7 @@ def convert(
         html = markdown2.markdown_path(markdown_path, extras=MARKDOWN_EXTENSIONS)
         html = create_sections(html)
         html = render_mermaid_diagrams(html, nonce=nonce)
-        html = render_checkboxes(html)
-        html = create_spans(html)
+        html = render_extra_features(html)
 
         _generate_pdf_with_playwright(
             html,
@@ -207,8 +205,7 @@ def convert_text(markdown_text, css_text=None, *, extend_default_css=True):
         html = markdown2.markdown(markdown_text, extras=MARKDOWN_EXTENSIONS)
         html = create_sections(html)
         html = render_mermaid_diagrams(html, nonce=nonce)
-        html = render_checkboxes(html)
-        html = create_spans(html)
+        html = render_extra_features(html)
 
         return _generate_pdf_with_playwright(
             html,
