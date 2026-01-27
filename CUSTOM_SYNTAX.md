@@ -62,7 +62,7 @@ $$\int_a^b f(x) \,dx = F(b) - F(a)$$
 <summary>All supported attributes</summary>
 
 - Size: `::tiny::`, `::small::`, `::medium::`, `::large::`, `::full::`
-- Positioning: `::inline::`
+- Positioning: `::inline::`, `::left::`, `::right::`
 - Shape: `::circle::`, `::rounded::`
 - Filters: `::shadow::`, `::border::`, `::invert::`, `::grayscale::`
 
@@ -96,6 +96,7 @@ This text is hl{{highlighted}}.
 - Underline: `underline/ul`
 - Highlight: `highlight/hl`
 - Key: `key`
+- Positioning: `center`
 
 You can use any arbitrary name for a container and define a matching class in your custom CSS to style it, for example:
 
