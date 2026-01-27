@@ -219,6 +219,22 @@ p:has(> img[alt*="::inline::"]) {
   margin-right: 1em;
 }
 
+p:has(> img[alt*="::right::"]) {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  margin-left: auto;
+  align-items: center;
+}
+
+p:has(> img[alt*="::left::"]) {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  margin-right: auto;
+  align-items: center;
+}
+
 img[alt*="::shadow::"] {
   box-shadow: rgba(100, 100, 100, 0.4) 0px 2px 8px 0px;
 }
@@ -399,4 +415,8 @@ math {
   border-radius: 0.3em;
   padding: 0.1em 0.4em;
   box-shadow: rgba(100, 100, 100, 0.4) 0px 2px 4px 0px;
+}
+
+.center {
+  text-align: center;
 }

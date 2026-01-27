@@ -44,15 +44,11 @@ def create_sections(html_string):
     """
     soup = BeautifulSoup(html_string, "html.parser")
 
-    # Change 1: Search for both h2 and h3 tags
     for header in soup.find_all(["h2", "h3"]):
-        # Create the new section
         new_section = soup.new_tag("section")
         header.insert_before(new_section)
 
         current = header
-
-        # Change 2: Update loop to stop if it hits an h2 OR h3 (that isn't the current one)
         while current is not None and (
             current == header or current.name not in ["h2", "h3"]
         ):
@@ -91,79 +87,85 @@ def render_mermaid_diagrams(html, *, nonce):
     return html
 
 
-def render_checkboxes(html):
+def render_extra_features(html):
     """
-    Renders checkboxes in the HTML content by replacing input elements with SVG representations.
+    Renders extra features like checkboxes, highlights, and custom spans in the HTML content.
+
     Args:
         html (str): HTML content.
     Returns:
-        str: HTML content with rendered checkboxes.
+        str: HTML content with extra features rendered.
     """
-    unchecked = "[ ]"
-    checked = "[x]"
 
-    unchecked_html = "<input type='checkbox'>"
-    checked_html = "<input type='checkbox' checked>"
+    def _create_checkbox(soup, match):
+        tag = soup.new_tag("input", type="checkbox")
+        if "[x]" in match.group("checkbox"):
+            tag["checked"] = ""
+        return tag
 
-    # Split by code blocks to avoid processing text inside them
-    parts = re.split(r"(<code>.*?</code>)", html, flags=re.DOTALL)
-    for part_index, _part in enumerate(parts):
-        # Only process parts that are NOT code blocks
-        if not parts[part_index].startswith("<code>"):
-            parts[part_index] = parts[part_index].replace(unchecked, unchecked_html)
-            parts[part_index] = parts[part_index].replace(checked, checked_html)
+    def _create_highlight(soup, match):
+        tag = soup.new_tag("span", attrs={"class": "highlight"})
+        tag.string = match.group("hl_content")
+        return tag
 
-    return "".join(parts)
+    def _create_custom_span(soup, match):
+        tag = soup.new_tag("span", attrs={"class": match.group("cls")})
+        tag.string = match.group("sp_content")
+        return tag
 
+    handlers = {
+        "checkbox": _create_checkbox,
+        "highlight": _create_highlight,
+        "span": _create_custom_span,
+    }
 
-def create_spans(html):
-    """
-    Renders custom spans in the HTML content by replacing classname{{ content }} tags.
-    Args:
-        html (str): HTML content.
-    Returns:
-        str: HTML content with rendered custom spans.
-    """
+    master_pattern = re.compile(
+        r"(?P<checkbox>\[\s\]|\[x\])|"
+        r"(?P<highlight>==(?P<hl_content>.*?)==)|"
+        r"(?P<span>(?P<cls>[a-zA-Z0-9_-]+)\{\{\s*(?P<sp_content>.*?)\s*\}\})"
+    )
+
+    ignored_tags = {"code", "pre", "script", "style"}
+
     soup = BeautifulSoup(html, "html.parser")
-
-    # Regex to match classname{{ content }}
-    # It captures the class name and the content
-    pattern = re.compile(r"([a-zA-Z0-9_-]+){{\s*(.*?)\s*}}")
-
-    # We need to find all text nodes and replace the pattern
     for text_node in soup.find_all(string=True):
-        # Skip text nodes inside code, pre, script, style tags
-        if text_node.parent.name in ["code", "pre", "script", "style"]:
+        # Ignore text nodes within certain tags
+        if text_node.parent.name in ignored_tags:
             continue
 
-        content = str(text_node)
-        if "{{" in content:
-            new_content_nodes = []
-            last_end = 0
-            for match in pattern.finditer(content):
-                # Add text before the match
-                before = content[last_end : match.start()]
-                if before:
-                    new_content_nodes.append(soup.new_string(before))
+        # If no match, skip processing
+        content = text_node.string
+        if not master_pattern.search(content):
+            continue
 
-                # Create the new span tag
-                class_name = match.group(1)
-                inner_text = match.group(2)
-                new_span = soup.new_tag("span", attrs={"class": class_name})
-                new_span.string = inner_text
-                new_content_nodes.append(new_span)
+        new_nodes = []
+        last_end = 0
+        for match in master_pattern.finditer(content):
+            start, end = match.span()
 
-                last_end = match.end()
+            # Append text before the match
+            if start > last_end:
+                new_nodes.append(content[last_end:start])
 
-            # Add remaining text after the last match
-            after = content[last_end:]
-            if after:
-                new_content_nodes.append(soup.new_string(after))
+            kind = match.lastgroup
 
-            if new_content_nodes:
-                # Replace the original text node with the new nodes
-                for node in reversed(new_content_nodes):
-                    text_node.insert_after(node)
-                text_node.extract()
+            # Call the appropriate handler
+            handler = handlers.get(kind)
+            if handler:
+                try:
+                    tag = handler(soup, match)
+                    new_nodes.append(tag)
+                except Exception as exc:
+                    print(f"Warning: Handler for '{kind}' failed with exception: {exc}")
+                    new_nodes.append(match.group(0))
+
+            last_end = end
+
+        # Append any remaining text after the last match
+        if new_nodes:
+            if last_end < len(content):
+                new_nodes.append(content[last_end:])
+
+            text_node.replace_with(*new_nodes)
 
     return str(soup)
