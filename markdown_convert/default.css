@@ -287,13 +287,6 @@ td {
   vertical-align: top;
   overflow-wrap: break-word; 
   word-break: normal;
-}
-
-th {
-  white-space: normal;
-}
-
-td {
   white-space: normal;
 }
 
