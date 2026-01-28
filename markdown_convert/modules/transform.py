@@ -5,6 +5,7 @@ Module for transforming HTML content.
 import re
 
 from bs4 import BeautifulSoup
+from .extras import create_checkbox, create_highlight, create_custom_span, create_toc
 
 
 def create_html_document(html_content, css_content, csp):
@@ -97,75 +98,18 @@ def render_extra_features(html):
         str: HTML content with extra features rendered.
     """
 
-    def _create_checkbox(soup, match):
-        tag = soup.new_tag("input", type="checkbox")
-        if "[x]" in match.group("checkbox"):
-            tag["checked"] = ""
-        return tag
-
-    def _create_highlight(soup, match):
-        tag = soup.new_tag("span", attrs={"class": "highlight"})
-        tag.string = match.group("hl_content")
-        return tag
-
-    def _create_custom_span(soup, match):
-        tag = soup.new_tag("span", attrs={"class": match.group("cls")})
-        tag.string = match.group("sp_content")
-        return tag
-
-    def _create_toc(soup, match, max_level=3):
-        headers = [
-            header
-            for header in soup.find_all(
-                [f"h{index}" for index in range(1, max_level + 1)]
-            )
-            if header.get("id")
-        ]
-        if not headers:
-            return ""
-
-        root = soup.new_tag("ul", attrs={"class": "toc"})
-        active_list = {0: root}
-        last_list_element = {}
-
-        for header in headers:
-            level = int(header.name[1])
-
-            if level not in active_list:
-                parent_lvl = max(key for key in active_list if key < level)
-                if last_list_element.get(parent_lvl):
-                    sub_list = soup.new_tag("ul")
-                    last_list_element[parent_lvl].append(sub_list)
-                    active_list[level] = sub_list
-                else:
-                    active_list[level] = active_list[parent_lvl]
-
-            active_list = {
-                key: value for key, value in active_list.items() if key <= level
-            }
-
-            list_item = soup.new_tag("li")
-            link = soup.new_tag("a", href=f"#{header['id']}")
-            link.string = header.get_text(strip=True)
-            list_item.append(link)
-
-            active_list[level].append(list_item)
-            last_list_element[level] = list_item
-
-        return root
-
     handlers = {
-        "checkbox": _create_checkbox,
-        "highlight": _create_highlight,
-        "span": _create_custom_span,
-        "toc": _create_toc,
+        "checkbox": create_checkbox,
+        "highlight": create_highlight,
+        "span": create_custom_span,
+        "toc": create_toc,
     }
 
     master_pattern = re.compile(
         r"(?P<checkbox>\[\s\]|\[x\])|"
         r"(?P<highlight>==(?P<hl_content>.*?)==)|"
         r"(?P<span>(?P<cls>[a-zA-Z0-9_-]+)\{\{\s*(?P<sp_content>.*?)\s*\}\})|"
-        r"(?P<toc>\[TOC\])"
+        r"(?P<toc>\[TOC(?:\s+depth=(?P<depth>\d+))?\])"
     )
 
     ignored_tags = {"code", "pre", "script", "style"}
