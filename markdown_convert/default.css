@@ -12,12 +12,18 @@
   --left-margin-big: 2em;
 
   /* -- Colors -- */
-  --color-text: #333; /* Main text color */
-  --color-text-light: #666; /* Tables, blockquotes, footers */
-  --color-text-background: #eee; /* Code blocks, table headers */
-  --color-border: #999; /* Image borders, rules */
-  --color-border-light: #ccc; /* Table borders, blockquotes */
-  --color-links: #09f; /* Hyperlinks */
+  /* Main text color */
+  --color-text: #333;
+  /* Tables, blockquotes, footers */
+  --color-text-light: #666;
+  /* Code blocks, table headers */
+  --color-text-background: #eee;
+  /* Image borders, rules */
+  --color-border: #999;
+  /* Table borders, blockquotes */
+  --color-border-light: #ccc;
+  /* Hyperlinks */
+  --color-links: #09f;
 }
 
 /* Document */
@@ -59,6 +65,7 @@ h2,
 h3,
 h4,
 h5 {
+  line-height: 1;
   color: var(--color-text);
   font-weight: 600;
 }
@@ -122,7 +129,7 @@ pre {
   white-space: pre-wrap;
 }
 
-pre > code {
+pre>code {
   display: block;
   padding: 1em;
   margin-top: 0;
@@ -160,7 +167,7 @@ blockquote {
   color: var(--color-text-light);
 }
 
-blockquote > blockquote {
+blockquote>blockquote {
   padding-left: var(--left-margin-small);
 }
 
@@ -175,7 +182,7 @@ img {
 }
 
 /* Image footers */
-p > img + em {
+p>img+em {
   text-align: center;
   font-size: 1rem;
   font-style: italic;
@@ -285,7 +292,7 @@ td {
   padding: 0.5em 0.75em;
   border: 1px solid var(--color-border-light);
   vertical-align: top;
-  overflow-wrap: break-word; 
+  overflow-wrap: break-word;
   word-break: normal;
   white-space: normal;
 }
@@ -302,7 +309,7 @@ hr:has(+ hr) {
   visibility: hidden;
 }
 
-hr + hr {
+hr+hr {
   clear: both;
   break-after: always;
   page-break-after: always;
