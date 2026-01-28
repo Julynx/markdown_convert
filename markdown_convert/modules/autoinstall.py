@@ -16,8 +16,8 @@ def ensure_chromium(loud=True):
     Ensures the chromium playwright browser is installed.
     If not, tries to install it.
     """
-    with sync_playwright() as p:
-        if is_browser_installed(p.chromium):
+    with sync_playwright() as playwright:
+        if is_browser_installed(playwright.chromium):
             return
 
         if loud:
@@ -27,9 +27,9 @@ def ensure_chromium(loud=True):
             )
 
         try:
-            result = install([p.chromium])
+            result = install([playwright.chromium])
             if not result:
-                result = install([p.chromium], with_deps=True)
+                result = install([playwright.chromium], with_deps=True)
 
             if loud:
                 if result:

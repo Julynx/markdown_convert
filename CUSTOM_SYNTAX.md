@@ -127,3 +127,14 @@ This text is rendered on a new page.
 ```
 
 <img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/page-break.png' width='100%'>
+
+## Table of Contents
+
+```markdown
+Use `[TOC]` to insert a dynamic Table of Contents with links into the PDF file.
+You can specify a maximum depth by using `[TOC depth=3]`.
+
+[TOC]
+```
+
+<img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/toc.png' width='100%'>
