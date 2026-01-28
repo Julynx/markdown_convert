@@ -13,7 +13,7 @@ except ImportError:
     # Fallback for older Python versions
     from importlib_resources import files
 
-from .constants import BLUE, CYAN, GREEN, YELLOW, OPTIONS, OPTIONS_MODES
+from .constants import BLUE, CYAN, GREEN, OPTIONS, OPTIONS_MODES, YELLOW
 from .utils import color
 
 

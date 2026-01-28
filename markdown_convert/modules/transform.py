@@ -5,7 +5,10 @@ Module for transforming HTML content.
 import re
 
 from bs4 import BeautifulSoup
-from .extras import create_checkbox, create_highlight, create_custom_span, create_toc
+
+from .constants import YELLOW
+from .extras import create_checkbox, create_custom_span, create_highlight, create_toc
+from .utils import color
 
 
 def create_html_document(html_content, css_content, csp):
@@ -35,8 +38,8 @@ def create_html_document(html_content, css_content, csp):
 
 def create_sections(html_string):
     """
-    Wraps each h2 or h3 and its following content in a <section> tag.
-    The section ends when the next h2 or h3 is encountered, or the parent ends.
+    Wraps each h2 and its following content in a <section> tag.
+    The section ends when the next h2 is encountered, or the parent ends.
 
     Args:
         html_string (str): The input HTML string.
@@ -45,14 +48,12 @@ def create_sections(html_string):
     """
     soup = BeautifulSoup(html_string, "html.parser")
 
-    for header in soup.find_all(["h2", "h3"]):
+    for header in soup.find_all("h2"):
         new_section = soup.new_tag("section")
         header.insert_before(new_section)
 
         current = header
-        while current is not None and (
-            current == header or current.name not in ["h2", "h3"]
-        ):
+        while current is not None and (current == header or current.name != "h2"):
             next_sibling = current.next_sibling
             new_section.append(current)
             current = next_sibling
@@ -143,7 +144,12 @@ def render_extra_features(html):
                     tag = handler(soup, match)
                     new_nodes.append(tag)
                 except Exception as exc:
-                    print(f"Warning: Handler for '{kind}' failed with exception: {exc}")
+                    print(
+                        color(
+                            YELLOW,
+                            f"WARNING: Handler for '{kind}' failed with exception: {exc}",
+                        )
+                    )
                     new_nodes.append(match.group(0))
 
             last_end = end

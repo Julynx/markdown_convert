@@ -24,6 +24,7 @@ dependencies = [
     "latex2mathml>=3.78.1",
     "playwright>=1.57.0",
     "beautifulsoup4>=4.14.3",
+    "install-playwright>=1.0.0",
 ]
 
 [project.urls]
@@ -46,6 +47,7 @@ include = [
     "markdown_convert/modules/resources.py",
     "markdown_convert/modules/utils.py",
     "markdown_convert/modules/validate.py",
+    "markdown_convert/modules/autoinstall.py",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -63,6 +65,7 @@ include = [
     "markdown_convert/modules/resources.py",
     "markdown_convert/modules/utils.py",
     "markdown_convert/modules/validate.py",
+    "markdown_convert/modules/autoinstall.py",
 ]
 
 [dependency-groups]

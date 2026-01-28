@@ -8,7 +8,8 @@ Author: @julynx
 from sys import exit as sys_exit
 
 from argsdict import args
-from .modules.constants import RED, OPTIONS, OPTIONS_MODES
+
+from .modules.constants import OPTIONS, OPTIONS_MODES, RED
 from .modules.convert import convert, live_convert
 from .modules.resources import get_css_path, get_output_path, get_usage
 from .modules.utils import color
@@ -75,7 +76,6 @@ def main():
 
         sys_exit(0)
 
-    # pylint: disable=W0718
     except Exception as err:
         asked_for_help = "--help" in arg or "-h" in arg
         show_usage = isinstance(err, (IndexError, ValueError)) or asked_for_help

@@ -312,9 +312,9 @@ hr:has(+ hr) {
 
 hr+hr {
   clear: both;
-  break-after: always;
-  page-break-after: always;
   visibility: hidden;
+  page-break-after: always;
+  break-after: always;
 }
 
 section,

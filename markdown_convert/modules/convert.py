@@ -12,13 +12,19 @@ from pathlib import Path
 import markdown2
 from playwright.sync_api import sync_playwright
 
-from .constants import MARKDOWN_EXTENSIONS, BROWSER_ARGS, CSP_TEMPLATE, PDF_PARAMS
+from .autoinstall import ensure_chromium
+from .constants import (
+    BROWSER_ARGS,
+    CSP_TEMPLATE,
+    MARKDOWN_EXTENSIONS,
+    PDF_PARAMS,
+)
 from .resources import get_code_css_path, get_css_path, get_output_path
 from .transform import (
-    create_sections,
-    render_mermaid_diagrams,
     create_html_document,
+    create_sections,
     render_extra_features,
+    render_mermaid_diagrams,
 )
 from .utils import drop_duplicates
 
@@ -50,6 +56,7 @@ def _generate_pdf_with_playwright(
     csp = CSP_TEMPLATE.format(nonce=nonce)
     full_html = create_html_document(html_content, css_content, csp)
 
+    ensure_chromium()
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(headless=True, args=BROWSER_ARGS)
         context = browser.new_context(

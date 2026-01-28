@@ -149,6 +149,18 @@ wheels = [
 ]
 
 [[package]]
+name = "install-playwright"
+version = "1.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "playwright" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/72/7f/e58049588bd33c3dd38ab1027c29a15352737dc01f16111e5d4ae12465df/install_playwright-1.0.0.tar.gz", hash = "sha256:620a93f41cb0ba1989e1a7f016ccbf3008137f8c204fff6d529ac2b79a6298e3", size = 4154, upload-time = "2025-12-29T18:35:38.607Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d6/c3/997bccccba0764c5a4d7da7829c99b59e25b6f38a0f38fd596c9eefde35a/install_playwright-1.0.0-py3-none-any.whl", hash = "sha256:8e02a33275f1dbad5c0a4da1b8d92b4338019814ef4a75e42938a4b7458cb51c", size = 3473, upload-time = "2025-12-29T18:35:37.889Z" },
+]
+
+[[package]]
 name = "isort"
 version = "7.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -173,6 +185,7 @@ source = { editable = "." }
 dependencies = [
     { name = "argsdict" },
     { name = "beautifulsoup4" },
+    { name = "install-playwright" },
     { name = "latex2mathml" },
     { name = "markdown2" },
     { name = "playwright" },
@@ -191,6 +204,7 @@ dev = [
 requires-dist = [
     { name = "argsdict", specifier = "==1.0.0" },
     { name = "beautifulsoup4", specifier = ">=4.14.3" },
+    { name = "install-playwright", specifier = ">=1.0.0" },
     { name = "latex2mathml", specifier = ">=3.78.1" },
     { name = "markdown2", specifier = ">=2.4.13,<3" },
     { name = "playwright", specifier = ">=1.57.0" },
