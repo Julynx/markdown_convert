@@ -66,6 +66,7 @@ h3,
 h4,
 h5 {
   line-height: 1;
+  padding-bottom: 0.5rem;
   color: var(--color-text);
   font-weight: 600;
 }
@@ -319,7 +320,11 @@ hr+hr {
 section,
 table,
 blockquote,
-code {
+pre,
+code,
+img,
+figure,
+svg {
   page-break-inside: avoid;
   break-inside: avoid;
 }
@@ -417,4 +422,14 @@ math {
 .center {
   display: block;
   text-align: center;
+}
+
+.right {
+  display: block;
+  text-align: right;
+}
+
+.justify {
+  display: block;
+  text-align: justify;
 }
