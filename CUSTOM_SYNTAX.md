@@ -51,23 +51,23 @@ Check out [mermaid.js.org/intro/#diagram-types](https://mermaid.js.org/intro/#di
 
 ## Vega-Lite Charts
 
-```vega-lite
-$schema: https://vega.github.io/schema/vega-lite/v5.json
-data:
-  url: https://raw.githubusercontent.com/vega/vega-datasets/next/data/movies.json
-mark: circle
-encoding:
-  x:
-    bin:
-      maxbins: 10
-    field: IMDB Rating
-  y:
-    bin:
-      maxbins: 10
-    field: Rotten Tomatoes Rating
-  size:
-    aggregate: count
-```
+    ```vega-lite
+    $schema: https://vega.github.io/schema/vega-lite/v5.json
+    data:
+      url: https://raw.githubusercontent.com/vega/vega-datasets/next/data/movies.json
+    mark: circle
+    encoding:
+      x:
+        bin:
+          maxbins: 10
+        field: IMDB Rating
+      y:
+        bin:
+          maxbins: 10
+        field: Rotten Tomatoes Rating
+      size:
+        aggregate: count
+    ```
 
 <img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/vega-chart.png' width='100%'>
 
