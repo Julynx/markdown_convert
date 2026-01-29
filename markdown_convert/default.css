@@ -515,3 +515,13 @@ math {
 .admonition.caution strong {
   color: var(--color-ad-caution);
 }
+
+/* Vega-Lite charts*/
+.vega-lite {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}

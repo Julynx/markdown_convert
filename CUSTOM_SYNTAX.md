@@ -1,5 +1,18 @@
 # Custom Syntax
 
+- [Custom Syntax](#custom-syntax)
+  - [LaTeX Math Equations](#latex-math-equations)
+  - [Mermaid Diagrams](#mermaid-diagrams)
+  - [Vega-Lite Charts](#vega-lite-charts)
+  - [Syntax Highlighted Code Blocks](#syntax-highlighted-code-blocks)
+  - [Pipe Tables](#pipe-tables)
+  - [Image alt-text attributes](#image-alt-text-attributes)
+  - [Image captions](#image-captions)
+  - [Custom Containers](#custom-containers)
+  - [Page Breaks](#page-breaks)
+  - [Table of Contents](#table-of-contents)
+  - [Admonitions](#admonitions)
+
 `markdown-convert` supports several syntax shortcuts and extensions to standard Markdown.
 
 Below are the most notable features:
@@ -27,6 +40,44 @@ $$\int_a^b f(x) \,dx = F(b) - F(a)$$
     ```
 
 <img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/mermaid-diagram.png' width='100%'>
+
+<details>
+
+<summary>All supported options</summary>
+
+Check out [mermaid.js.org/intro/#diagram-types](https://mermaid.js.org/intro/#diagram-types) for all the supported diagrams.
+
+</details>
+
+## Vega-Lite Charts
+
+```vega-lite
+$schema: https://vega.github.io/schema/vega-lite/v5.json
+data:
+  url: https://raw.githubusercontent.com/vega/vega-datasets/next/data/movies.json
+mark: circle
+encoding:
+  x:
+    bin:
+      maxbins: 10
+    field: IMDB Rating
+  y:
+    bin:
+      maxbins: 10
+    field: Rotten Tomatoes Rating
+  size:
+    aggregate: count
+```
+
+<img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/vega-chart.png' width='100%'>
+
+<details>
+
+<summary>All supported options</summary>
+
+Check out [vega.github.io/vega-lite/examples](https://vega.github.io/vega-lite/examples/) for all the supported charts.
+
+</details>
 
 ## Syntax Highlighted Code Blocks
 
@@ -59,7 +110,7 @@ $$\int_a^b f(x) \,dx = F(b) - F(a)$$
 
 <details>
 
-<summary>All supported attributes</summary>
+<summary>All supported options</summary>
 
 - Size: `::tiny::`, `::small::`, `::medium::`, `::large::`, `::full::`
 - Positioning: `::inline::`, `::left::`, `::right::`
@@ -90,7 +141,7 @@ This text is hl{{highlighted}}.
 
 <details>
 
-<summary>All supported attributes</summary>
+<summary>All supported options</summary>
 
 - Colors: `red/r`, `green/g`, `blue/b`, `yellow`, `orange`, `purple`, `white`, `black`, `gray`, `brown`, `pink`
 - Underline: `underline/ul`
@@ -138,3 +189,24 @@ You can specify a maximum depth by using `[TOC depth=3]`.
 ```
 
 <img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/toc.png' width='100%'>
+
+## Admonitions
+
+```markdown
+.. note::
+   Useful information that users should know, even when skimming content.
+
+.. tip::
+   Helpful advice for doing things better or more easily.
+
+.. important:: Read this
+   Key information users need to know to achieve their goal.
+
+.. warning::
+   Urgent info that needs immediate user attention to avoid problems.
+
+.. caution::
+   Advises about risks or negative outcomes of certain actions.
+```
+
+<img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/admonitions.png' width='100%'>

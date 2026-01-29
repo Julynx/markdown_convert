@@ -6,9 +6,15 @@ import re
 
 from bs4 import BeautifulSoup
 
-from .constants import YELLOW
-from .extras import create_checkbox, create_custom_span, create_highlight, create_toc
-from .utils import color
+from .extras import (
+    apply_extras,
+    ExtraFeature,
+    CheckboxExtra,
+    CustomSpanExtra,
+    HighlightExtra,
+    TocExtra,
+    VegaExtra,
+)
 
 
 def create_html_document(html_content, css_content, csp):
@@ -89,76 +95,41 @@ def render_mermaid_diagrams(html, *, nonce):
     return html
 
 
-def render_extra_features(html):
+def render_extra_features(
+    html,
+    extras: set[ExtraFeature] = (
+        CheckboxExtra,
+        CustomSpanExtra,
+        HighlightExtra,
+        TocExtra,
+        VegaExtra,
+    ),
+):
     """
-    Renders extra features like checkboxes, highlights, and custom spans in the HTML content.
-
-    Args:
-        html (str): HTML content.
-    Returns:
-        str: HTML content with extra features rendered.
+    Renders extra features by protecting specific tags, applying regex
+    transformations, and restoring the protected content.
     """
+    placeholders = {}
 
-    handlers = {
-        "checkbox": create_checkbox,
-        "highlight": create_highlight,
-        "span": create_custom_span,
-        "toc": create_toc,
-    }
+    def stash(match):
+        key = f"__PROTECTED_BLOCK_{len(placeholders)}__"
+        placeholders[key] = match.group(0)
+        return key
 
-    master_pattern = re.compile(
-        r"(?P<checkbox>\[\s\]|\[x\])|"
-        r"(?P<highlight>==(?P<hl_content>.*?)==)|"
-        r"(?P<span>(?P<cls>[a-zA-Z0-9_-]+)\{\{\s*(?P<sp_content>.*?)\s*\}\})|"
-        r"(?P<toc>\[TOC(?:\s+depth=(?P<depth>\d+))?\])"
+    # 0. Pre protection extras
+    html = apply_extras(extras, html, before_stash=True)
+
+    # 1. Protection: Replace ignored tags with unique hashes
+    ignored_pattern = re.compile(
+        r"<(code|pre|script|style)\b[^>]*>.*?</\1>", re.DOTALL | re.IGNORECASE
     )
+    html = ignored_pattern.sub(stash, html)
 
-    ignored_tags = {"code", "pre", "script", "style"}
+    # 2. Transformations: Define patterns and their replacements
+    html = apply_extras(extras, html, before_stash=False)
 
-    soup = BeautifulSoup(html, "html.parser")
-    for text_node in soup.find_all(string=True):
-        # Ignore text nodes within certain tags
-        if text_node.parent.name in ignored_tags:
-            continue
+    # 3. Restoration: Replace hashes back with original content
+    for key, original_content in placeholders.items():
+        html = html.replace(key, original_content)
 
-        # If no match, skip processing
-        content = text_node.string
-        if not master_pattern.search(content):
-            continue
-
-        new_nodes = []
-        last_end = 0
-        for match in master_pattern.finditer(content):
-            start, end = match.span()
-
-            # Append text before the match
-            if start > last_end:
-                new_nodes.append(content[last_end:start])
-
-            kind = match.lastgroup
-
-            # Call the appropriate handler
-            handler = handlers.get(kind)
-            if handler:
-                try:
-                    tag = handler(soup, match)
-                    new_nodes.append(tag)
-                except Exception as exc:
-                    print(
-                        color(
-                            YELLOW,
-                            f"WARNING: Handler for '{kind}' failed with exception: {exc}",
-                        )
-                    )
-                    new_nodes.append(match.group(0))
-
-            last_end = end
-
-        # Append any remaining text after the last match
-        if new_nodes:
-            if last_end < len(content):
-                new_nodes.append(content[last_end:])
-
-            text_node.replace_with(*new_nodes)
-
-    return str(soup)
+    return html
