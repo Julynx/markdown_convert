@@ -24,6 +24,17 @@
   --color-border-light: #ccc;
   /* Hyperlinks */
   --color-links: #09f;
+
+  /* Note */
+  --color-ad-note: oklch(70% 0.1 238.77);
+  /* Tip */
+  --color-ad-tip: oklch(70% 0.1 142.605);
+  /* Important */
+  --color-ad-important: oklch(70% 0.1 284.67);
+  /* Warning */
+  --color-ad-warning: oklch(70% 0.1 74.25);
+  /* Caution */
+  --color-ad-caution: oklch(70% 0.1 14.4);
 }
 
 /* Document */
@@ -432,4 +443,83 @@ math {
 .justify {
   display: block;
   text-align: justify;
+}
+
+/* Admonitions */
+.admonition {
+  padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  border-left: 0.25rem solid;
+  border-radius: 0.3rem;
+}
+
+.admonition header {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 0.25rem;
+  font-weight: bold;
+}
+
+.admonition strong {
+  text-transform: capitalize;
+}
+
+.admonition em:not(:empty)::before {
+  content: ": ";
+  font-weight: bold;
+}
+
+.admonition em {
+  font-weight: 600;
+  font-style: normal;
+}
+
+.admonition p {
+  margin: 0;
+}
+
+.admonition.note {
+  border-left-color: var(--color-ad-note);
+  background-color: oklch(from var(--color-ad-note) 0.97 0.015 h);
+}
+
+.admonition.note strong {
+  color: var(--color-ad-note);
+}
+
+.admonition.tip {
+  border-left-color: var(--color-ad-tip);
+  background-color: oklch(from var(--color-ad-tip) 0.97 0.015 h);
+}
+
+.admonition.tip strong {
+  color: var(--color-ad-tip);
+}
+
+.admonition.important {
+  border-left-color: var(--color-ad-important);
+  background-color: oklch(from var(--color-ad-important) 0.97 0.015 h);
+}
+
+.admonition.important strong {
+  color: var(--color-ad-important);
+}
+
+.admonition.warning {
+  border-left-color: var(--color-ad-warning);
+  background-color: oklch(from var(--color-ad-warning) 0.97 0.015 h);
+}
+
+.admonition.warning strong {
+  color: var(--color-ad-warning);
+}
+
+.admonition.caution {
+  border-left-color: var(--color-ad-caution);
+  background-color: oklch(from var(--color-ad-caution) 0.97 0.015 h);
+}
+
+.admonition.caution strong {
+  color: var(--color-ad-caution);
 }

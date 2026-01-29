@@ -22,6 +22,7 @@ MARKDOWN_EXTENSIONS = {
     "latex": True,
     "mermaid": None,
     "strike": None,
+    "admonitions": None,
 }
 
 BROWSER_ARGS = [
