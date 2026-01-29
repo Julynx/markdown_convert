@@ -63,7 +63,7 @@ Check out [mermaid.js.org/intro/#diagram-types](https://mermaid.js.org/intro/#di
         type: quantitative
         scale:
           zero: false
-      "y":
+      y:
         field: Body Mass (g)
         type: quantitative
         scale:
@@ -81,6 +81,8 @@ Check out [mermaid.js.org/intro/#diagram-types](https://mermaid.js.org/intro/#di
 <details>
 
 <summary>All supported options</summary>
+
+The diagram must be specified using YAML, as shown above.
 
 Check out [vega.github.io/vega-lite/examples](https://vega.github.io/vega-lite/examples/) for all the supported charts.
 
