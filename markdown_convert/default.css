@@ -453,14 +453,6 @@ math {
   border-radius: 0.3rem;
 }
 
-.admonition header {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  margin-bottom: 0.25rem;
-  font-weight: bold;
-}
-
 .admonition strong {
   text-transform: capitalize;
 }
