@@ -52,21 +52,28 @@ Check out [mermaid.js.org/intro/#diagram-types](https://mermaid.js.org/intro/#di
 ## Vega-Lite Charts
 
     ```vega-lite
-    $schema: https://vega.github.io/schema/vega-lite/v5.json
+    $schema: https://vega.github.io/schema/vega-lite/v6.json
+    description: A scatterplot showing body mass and flipper lengths of penguins.
     data:
-      url: https://raw.githubusercontent.com/vega/vega-datasets/next/data/movies.json
-    mark: circle
+      url: data/penguins.json
+    mark: point
     encoding:
       x:
-        bin:
-          maxbins: 10
-        field: IMDB Rating
-      y:
-        bin:
-          maxbins: 10
-        field: Rotten Tomatoes Rating
-      size:
-        aggregate: count
+        field: Flipper Length (mm)
+        type: quantitative
+        scale:
+          zero: false
+      "y":
+        field: Body Mass (g)
+        type: quantitative
+        scale:
+          zero: false
+      color:
+        field: Species
+        type: nominal
+      shape:
+        field: Species
+        type: nominal
     ```
 
 <img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/vega-chart.png' width='100%'>
