@@ -157,6 +157,7 @@ This text is hl{{highlighted}}.
 - Highlight: `highlight/hl`
 - Key: `key`
 - Positioning: `center`, `right`, `justify`
+- Size: `big`, `small`
 
 You can use any arbitrary name for a container and define a matching class in your custom CSS to style it, for example:
 

@@ -445,6 +445,14 @@ math {
   text-align: justify;
 }
 
+.small {
+  font-size: 0.75em;
+}
+
+.big {
+  font-size: 1.5em;
+}
+
 /* Admonitions */
 .admonition {
   padding: 0.5rem 1rem;
