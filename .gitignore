@@ -2,6 +2,7 @@ deploy
 clean
 test
 test*
+.ruff_cache
 
 desktop.ini
 
