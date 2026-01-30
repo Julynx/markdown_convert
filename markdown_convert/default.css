@@ -517,7 +517,8 @@ math {
 }
 
 /* Vega-Lite charts*/
-.vega-lite {
+div.vega-lite,
+div.vega {
   display: flex;
   justify-content: center;
   align-items: center;

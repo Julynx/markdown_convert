@@ -9,7 +9,6 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-import markdown2
 from playwright.sync_api import sync_playwright
 
 from .autoinstall import ensure_chromium
@@ -19,6 +18,7 @@ from .constants import (
     MARKDOWN_EXTENSIONS,
     PDF_PARAMS,
 )
+from .overrides import markdown2
 from .resources import get_code_css_path, get_css_path, get_output_path
 from .transform import (
     create_html_document,

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "markdown_convert"
-version = "1.2.52"
+version = "1.2.53"
 description = "Convert Markdown files to PDF from your command line."
 authors = [
     { name = "Julio Cabria", email = "juliocabria@tutanota.com" },
@@ -50,6 +50,7 @@ include = [
     "markdown_convert/modules/utils.py",
     "markdown_convert/modules/validate.py",
     "markdown_convert/modules/autoinstall.py",
+    "markdown_convert/modules/overrides.py",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -68,6 +69,7 @@ include = [
     "markdown_convert/modules/utils.py",
     "markdown_convert/modules/validate.py",
     "markdown_convert/modules/autoinstall.py",
+    "markdown_convert/modules/overrides.py",
 ]
 
 [dependency-groups]

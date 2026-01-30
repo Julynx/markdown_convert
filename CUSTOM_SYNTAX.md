@@ -82,7 +82,7 @@ Check out [mermaid.js.org/intro/#diagram-types](https://mermaid.js.org/intro/#di
 
 <summary>All supported options</summary>
 
-The diagram must be specified using YAML, as shown above.
+The diagram can be specified using JSON, or YAML (as shown above).
 
 Check out [vega.github.io/vega-lite/examples](https://vega.github.io/vega-lite/examples/) for all the supported charts.
 

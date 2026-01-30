@@ -3,10 +3,12 @@ Extras are defined as helper functions called by
 render_extra_features from transform.py
 """
 
-import vl_convert as vlc
-from ruamel.yaml import YAML
-from bs4 import Tag, BeautifulSoup
+import json
 import re
+
+import vl_convert as vlc
+from bs4 import BeautifulSoup, Tag
+from ruamel.yaml import YAML
 
 
 class ExtraFeature:
@@ -162,28 +164,51 @@ class TocExtra(ExtraFeature):
 
 class VegaExtra(ExtraFeature):
     """
-    Extra feature for rendering Vega-Lite diagrams from YAML.
+    Extra feature for rendering Vega-Lite diagrams from JSON or YAML.
     """
 
-    pattern = r"(?s)<pre><code>\$schema: https://vega\.github\.io(?P<content>.*?)</code></pre>"
+    pattern = (
+        r"<pre[^>]*>"
+        r"<code[^>]*class=[\"'][^\"]*language-vega[^\"]*[\"'][^>]*>"
+        r"(?P<content>.*?)"
+        r"</code>"
+        r"</pre>"
+    )
     run_before_stash = True
 
     def replace(match, html):
         """
-        Render a tag for a vega lite diagram YAML.
+        Render a tag for a vega lite diagram from JSON or YAML.
 
         Args:
-            match (re.Match): Element identified as a vega lite diagram YAML.
+            match (re.Match): Element identified as a vega lite diagram.
             html (str): The full HTML content.
 
         Returns:
             str: SVG tag representing the vega lite diagram.
         """
-        schema_line = "$schema: https://vega.github.io"
-        yaml = YAML()
-        spec = yaml.load(schema_line + match.group("content"))
-        tag = vlc.vegalite_to_svg(spec)
-        return f"<div class='vega-lite'>{tag}</div>"
+        content = match.group("content")
+        spec = None
+
+        try:
+            spec = json.loads(content)
+        except (json.JSONDecodeError, TypeError):
+            try:
+                yaml = YAML(typ="safe")
+                spec = yaml.load(content)
+            except Exception as exc:
+                print(f"WARNING: Failed to parse Vega-Lite spec: {exc}")
+                return match.group(0)
+
+        if spec is None:
+            return match.group(0)
+
+        try:
+            tag = vlc.vegalite_to_svg(spec)
+            return f"<div class='vega-lite'>{tag}</div>"
+        except Exception as exc:
+            print(f"WARNING: Failed to convert Vega-Lite spec to SVG: {exc}")
+            return match.group(0)
 
 
 def apply_extras(extras: set[ExtraFeature], html, before_stash=False):
