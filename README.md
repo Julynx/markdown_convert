@@ -64,6 +64,7 @@ Usage:
 Options:
   --mode=once|live|debug
     Convert the markdown file once (default) or live.
+    Use debug to preserve the intermediate html file.
   --css=[css_file_path]
     Use a custom CSS file.
   --out=[output_file_path]
@@ -73,7 +74,7 @@ Options:
     Supported extras:
       fenced-code-blocks,header-ids,breaks,tables,latex,mermaid,
       strike,admonitions,checkboxes,custom-spans,highlights,toc,
-      vega
+      vega-lite
 ```
 
 For example: `markdown-convert README.md --mode=live --css=style.css --out=output.pdf` will convert `README.md` to `output.pdf` using `style.css` and update the PDF live as you edit the Markdown file.

@@ -299,7 +299,12 @@ def _generate_pdf_with_playwright(
         temp_html = None
         try:
             if base_dir:
-                temp_html = base_dir / f".temp_{os.getpid()}.html"
+                temp_file = (
+                    f"{Path(output_path).stem}.html"
+                    if output_path
+                    else f".temp_{os.getpid()}.html"
+                )
+                temp_html = base_dir / temp_file
                 temp_html.write_text(full_html, encoding="utf-8")
                 page.goto(temp_html.as_uri(), wait_until="networkidle", timeout=30000)
             else:

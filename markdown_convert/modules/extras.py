@@ -184,14 +184,14 @@ class VegaExtra(ExtraFeature):
     @staticmethod
     def replace(match, html):
         """
-        Render a tag for a vega lite diagram from JSON or YAML.
+        Render a tag for a vega-lite diagram from JSON or YAML.
 
         Args:
-            match (re.Match): Element identified as a vega lite diagram.
+            match (re.Match): Element identified as a vega-lite diagram.
             html (str): The full HTML content.
 
         Returns:
-            str: SVG tag representing the vega lite diagram.
+            str: SVG tag representing the vega-lite diagram.
         """
         content = match.group("content")
         spec = None

@@ -79,7 +79,7 @@ EXTRAS = {
         "provided-by": "markdown-convert",
         "args": TocExtra,
     },
-    "vega": {
+    "vega-lite": {
         "provided-by": "markdown-convert",
         "args": VegaExtra,
     },

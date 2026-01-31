@@ -55,7 +55,7 @@ Check out [mermaid.js.org/intro/#diagram-types](https://mermaid.js.org/intro/#di
 
 ## Vega-Lite Charts
 
-> _Extra: `vega` (enabled by default)_
+> _Extra: `vega-lite` (enabled by default)_
 
     ```vega-lite
     $schema: https://vega.github.io/schema/vega-lite/v6.json

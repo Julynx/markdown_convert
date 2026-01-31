@@ -74,6 +74,7 @@ def render_mermaid_diagrams(html, *, nonce):
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
   mermaid.initialize({{
     startOnLoad: true,
+    securityLevel: 'strict',
     theme: 'default',
     themeVariables: {{}},
     fontFamily: 'arial, verdana, sans-serif'

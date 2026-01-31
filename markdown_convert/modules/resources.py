@@ -120,6 +120,7 @@ def get_usage():
         "Options:\n"
         f"  {option_one}\n"
         "    Convert the markdown file once (default) or live.\n"
+        "    Use debug to preserve the intermediate html file.\n"
         f"  {option_two}\n"
         "    Use a custom CSS file.\n"
         f"  {option_three}\n"
