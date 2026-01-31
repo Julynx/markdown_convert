@@ -178,14 +178,14 @@ This text is hl{{highlighted}}.
 You can use any arbitrary name for a container and define a matching class in your custom CSS to style it, for example:
 
 ```markdown
-This text is sm{{small text}}.
+overline{{This text}} has a line over it.
 ```
 
 ```css
 /* custom.css */
 /* Use: markdown-convert --css=custom.css */
-.sm {
-    font-size: 0.8em;
+.overline {
+  text-decoration: overline;
 }
 ```
 
