@@ -18,7 +18,7 @@ def ensure_chromium(loud=True):
     """
     with sync_playwright() as playwright:
         if is_browser_installed(playwright.chromium):
-            return
+            return True
 
         if loud:
             print(

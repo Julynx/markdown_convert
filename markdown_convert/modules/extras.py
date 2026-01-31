@@ -6,7 +6,7 @@ render_extra_features from transform.py
 import json
 import re
 
-import vl_convert as vlc
+import vl_convert
 from bs4 import BeautifulSoup, Tag
 from ruamel.yaml import YAML
 
@@ -23,7 +23,8 @@ class ExtraFeature:
     pattern = r""
     run_before_stash = False
 
-    def replace(self, match, html):
+    @staticmethod
+    def replace(match, html):
         """
         Replaces the matched pattern with the rendered extra feature.
 
@@ -47,6 +48,7 @@ class CheckboxExtra(ExtraFeature):
 
     pattern = r"(?P<checkbox>\[\s\]|\[x\])"
 
+    @staticmethod
     def replace(match, html):
         """
         Render a tag for a checkbox.
@@ -67,6 +69,7 @@ class HighlightExtra(ExtraFeature):
 
     pattern = r"==(?P<content>.*?)=="
 
+    @staticmethod
     def replace(match, html):
         """
         Render a tag for a highlight.
@@ -87,6 +90,7 @@ class CustomSpanExtra(ExtraFeature):
 
     pattern = r"(?P<cls>[a-zA-Z0-9_-]+)\{\{\s*(?P<content>.*?)\s*\}\}"
 
+    @staticmethod
     def replace(match, html):
         """
         Render a tag for a custom span.
@@ -108,6 +112,7 @@ class TocExtra(ExtraFeature):
 
     pattern = r"\[TOC(?:\s+depth=(?P<depth>\d+))?\]"
 
+    @staticmethod
     def replace(match, html):
         """
         Render a tag for a table of contents
@@ -176,6 +181,7 @@ class VegaExtra(ExtraFeature):
     )
     run_before_stash = True
 
+    @staticmethod
     def replace(match, html):
         """
         Render a tag for a vega lite diagram from JSON or YAML.
@@ -204,7 +210,7 @@ class VegaExtra(ExtraFeature):
             return match.group(0)
 
         try:
-            tag = vlc.vegalite_to_svg(spec)
+            tag = vl_convert.vegalite_to_svg(spec)
             return f"<div class='vega-lite'>{tag}</div>"
         except Exception as exc:
             print(f"WARNING: Failed to convert Vega-Lite spec to SVG: {exc}")
@@ -225,12 +231,12 @@ def apply_extras(extras: set[ExtraFeature], html, before_stash=False):
             continue
 
         # Loop until the pattern no longer matches
+        new_html = html
         while re.search(extra.pattern, html, flags=re.DOTALL):
-            new_html = html
             try:
                 new_html = re.sub(
                     extra.pattern,
-                    lambda match: extra.replace(match, html=html),
+                    lambda match, ext=extra: ext.replace(match, html=html),
                     html,
                     flags=re.DOTALL,
                 )
@@ -238,7 +244,6 @@ def apply_extras(extras: set[ExtraFeature], html, before_stash=False):
                 print(
                     f"WARNING: An exception occurred while trying to apply an extra:\n{exc}"
                 )
-                pass
 
             # Safety break:
             if new_html == html:

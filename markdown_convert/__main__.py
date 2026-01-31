@@ -9,7 +9,7 @@ from sys import exit as sys_exit
 
 from argsdict import args
 
-from .modules.constants import OPTIONS, OPTIONS_MODES, RED
+from .modules.constants import EXTRAS, OPTIONS, OPTIONS_MODES, RED
 from .modules.convert import convert, live_convert
 from .modules.resources import get_css_path, get_output_path, get_usage
 from .modules.utils import color
@@ -67,12 +67,29 @@ def main():
         except Exception as exc:
             raise IndexError(f"Invalid 'output_path' argument: {exc}") from exc
 
+        # Get the extras
+        extras = None
+        try:
+            if "--extras" in arg:
+                extras = arg["--extras"].split(",")
+                for extra in extras:
+                    if extra not in EXTRAS:
+                        raise ValueError(extra)
+        except Exception as exc:
+            raise IndexError(f"Invalid 'extras' argument: {exc}") from exc
+
         # Compile the markdown file
         print(f"\nGenerating PDF file from '{markdown_path}'...\n")
         if mode in ("once", "debug"):
-            convert(markdown_path, css_path, output_path, dump_html=mode == "debug")
+            convert(
+                markdown_path,
+                css_path,
+                output_path,
+                dump_html=mode == "debug",
+                extras=extras,
+            )
         else:
-            live_convert(markdown_path, css_path, output_path)
+            live_convert(markdown_path, css_path, output_path, extras=extras)
 
         sys_exit(0)
 

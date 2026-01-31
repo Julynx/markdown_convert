@@ -57,9 +57,24 @@ Simply run `markdown-convert file.md` to convert `file.md` to `file.pdf`.
 
 You can specify the following options:
 
-- `--mode=once|live`: Convert the markdown file once (default) or live.
-- `--css=[css_file_path]`: Use a custom CSS file.
-- `--out=[output_file_path]`: Specify the output file path.
+```text
+Usage:
+  markdown-convert [markdown_file_path] [options]
+
+Options:
+  --mode=once|live|debug
+    Convert the markdown file once (default) or live.
+  --css=[css_file_path]
+    Use a custom CSS file.
+  --out=[output_file_path]
+    Specify the output file path.
+  --extras=[extra1,extra2,...]
+    Specify the extras to use. Uses all extras if not specified.
+    Supported extras:
+      fenced-code-blocks,header-ids,breaks,tables,latex,mermaid,
+      strike,admonitions,checkboxes,custom-spans,highlights,toc,
+      vega
+```
 
 For example: `markdown-convert README.md --mode=live --css=style.css --out=output.pdf` will convert `README.md` to `output.pdf` using `style.css` and update the PDF live as you edit the Markdown file.
 

@@ -19,6 +19,8 @@ Below are the most notable features:
 
 ## LaTeX Math Equations
 
+> _Extra: `latex` (enabled by default)_
+
 ```text
 Inline equation: $E = mc^2$
 
@@ -30,6 +32,8 @@ $$\int_a^b f(x) \,dx = F(b) - F(a)$$
 <img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/math-equations.png' width='100%'>
 
 ## Mermaid Diagrams
+
+> _Extra: `mermaid` (enabled by default)_
 
     ```mermaid
     graph TD;
@@ -50,6 +54,8 @@ Check out [mermaid.js.org/intro/#diagram-types](https://mermaid.js.org/intro/#di
 </details>
 
 ## Vega-Lite Charts
+
+> _Extra: `vega` (enabled by default)_
 
     ```vega-lite
     $schema: https://vega.github.io/schema/vega-lite/v6.json
@@ -90,6 +96,8 @@ Check out [vega.github.io/vega-lite/examples](https://vega.github.io/vega-lite/e
 
 ## Syntax Highlighted Code Blocks
 
+> _Extra: `fenced-code-blocks` (enabled by default)_
+
     ```python
     def greet(name):
         return f"Hello, {name}!"
@@ -98,6 +106,8 @@ Check out [vega.github.io/vega-lite/examples](https://vega.github.io/vega-lite/e
 <img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/syntax-highlighted-code.png' width='100%'>
 
 ## Pipe Tables
+
+> _Extra: `tables` (enabled by default)_
 
 ```text
 | Name    | Age | City          |
@@ -110,6 +120,8 @@ Check out [vega.github.io/vega-lite/examples](https://vega.github.io/vega-lite/e
 <img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/pipe-table.png' width='100%'>
 
 ## Image alt-text attributes
+
+> _Provided by the default CSS_
 
 ```markdown
 ![Flower ::shadow:: ::tiny::](assets/flower.png)
@@ -134,6 +146,8 @@ Check out [vega.github.io/vega-lite/examples](https://vega.github.io/vega-lite/e
 
 ## Image captions
 
+> _Provided by the default CSS_
+
 ```markdown
 ![Flower](assets/flower2.png)_A beautiful flower._
 ```
@@ -141,6 +155,8 @@ Check out [vega.github.io/vega-lite/examples](https://vega.github.io/vega-lite/e
 <img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/image-caption.png' width='100%'>
 
 ## Custom Containers
+
+> _Extra: `custom-spans` (enabled by default)_
 
 ```markdown
 This text is hl{{highlighted}}.
@@ -177,6 +193,8 @@ This text is sm{{small text}}.
 
 ## Page Breaks
 
+> _Provided by the default CSS_
+
 ```markdown
 Two consecutive horizontal rules insert a page break:
 
@@ -191,6 +209,8 @@ This text is rendered on a new page.
 
 ## Table of Contents
 
+> _Extra `toc` (enabled by default)_
+
 ```markdown
 Use `[TOC]` to insert a dynamic Table of Contents with links into the PDF file.
 You can specify a maximum depth by using `[TOC depth=3]`.
@@ -201,6 +221,8 @@ You can specify a maximum depth by using `[TOC depth=3]`.
 <img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/toc.png' width='100%'>
 
 ## Admonitions
+
+> _Extra `admonitions` (enabled by default)_
 
 ```markdown
 .. note::

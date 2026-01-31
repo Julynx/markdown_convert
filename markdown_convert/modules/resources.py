@@ -13,7 +13,7 @@ except ImportError:
     # Fallback for older Python versions
     from importlib_resources import files
 
-from .constants import BLUE, CYAN, GREEN, OPTIONS, OPTIONS_MODES, YELLOW
+from .constants import BLUE, CYAN, EXTRAS, GREEN, OPTIONS, OPTIONS_MODES, YELLOW
 from .utils import color
 
 
@@ -72,6 +72,31 @@ def get_usage():
     Returns:
         str: The usage message.
     """
+
+    def _wrap_by_length(items: list, max_len=20, indent="  "):
+        if not items:
+            return ""
+
+        lines = []
+        current_line = []
+        current_length = 0
+
+        for item in items:
+            item_len = len(item) + (1 if current_line else 0)
+
+            if current_length + item_len > max_len and current_line:
+                lines.append(",".join(current_line) + ",")
+                current_line = [item]
+                current_length = len(item)
+            else:
+                current_line.append(item)
+                current_length += item_len
+
+        if current_line:
+            lines.append(",".join(current_line))
+
+        return indent + f"\n{indent}".join(lines)
+
     commd = (
         f"{color(GREEN, 'markdown-convert')} "
         f"[{color(YELLOW, OPTIONS[0])}] [{color(BLUE, 'options')}]"
@@ -84,6 +109,8 @@ def get_usage():
         f"{color(BLUE, OPTIONS[2])}{color(CYAN, '=')}[{color(CYAN, 'css_file_path')}]"
     )
     option_three = f"{color(BLUE, OPTIONS[3])}{color(CYAN, '=')}[{color(CYAN, 'output_file_path')}]"
+    option_four = f"{color(BLUE, OPTIONS[4])}{color(CYAN, '=')}[{color(CYAN, 'extra1,extra2,...')}]"
+    extras_str = _wrap_by_length(list(EXTRAS.keys()), max_len=60, indent="      ")
 
     usage = (
         "\n"
@@ -97,5 +124,8 @@ def get_usage():
         "    Use a custom CSS file.\n"
         f"  {option_three}\n"
         "    Specify the output file path.\n"
+        f"  {option_four}\n"
+        "    Specify the extras to use. Uses all extras if not specified.\n"
+        f"    Supported extras:\n{extras_str}\n"
     )
     return usage

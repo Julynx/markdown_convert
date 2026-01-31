@@ -6,15 +6,7 @@ import re
 
 from bs4 import BeautifulSoup
 
-from .extras import (
-    apply_extras,
-    ExtraFeature,
-    CheckboxExtra,
-    CustomSpanExtra,
-    HighlightExtra,
-    TocExtra,
-    VegaExtra,
-)
+from .extras import ExtraFeature, apply_extras
 
 
 def create_html_document(html_content, css_content, csp):
@@ -95,16 +87,7 @@ def render_mermaid_diagrams(html, *, nonce):
     return html
 
 
-def render_extra_features(
-    html,
-    extras: set[ExtraFeature] = (
-        CheckboxExtra,
-        CustomSpanExtra,
-        HighlightExtra,
-        TocExtra,
-        VegaExtra,
-    ),
-):
+def render_extra_features(html, extras: set[ExtraFeature]):
     """
     Renders extra features by protecting specific tags, applying regex
     transformations, and restoring the protected content.
