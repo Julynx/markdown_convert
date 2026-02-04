@@ -135,6 +135,10 @@ ul ul {
   padding-left: var(--left-margin);
 }
 
+li:has(ul, ol) p {
+  margin-bottom: 0;
+}
+
 /* Code blocks */
 pre {
   padding: 0;

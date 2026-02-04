@@ -180,7 +180,7 @@ wheels = [
 
 [[package]]
 name = "markdown-convert"
-version = "1.2.55"
+version = "1.2.56"
 source = { editable = "." }
 dependencies = [
     { name = "argsdict" },
