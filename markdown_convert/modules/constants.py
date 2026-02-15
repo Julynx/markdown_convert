@@ -103,7 +103,7 @@ CSP_TEMPLATE = (
     "script-src-elem 'nonce-{nonce}' https://cdn.jsdelivr.net; "
     "style-src 'unsafe-inline'; "
     "img-src data: https: file:; "
-    "font-src data: https:; "
+    "font-src data: https: file:; "
     "connect-src https://cdn.jsdelivr.net;"
 )
 
