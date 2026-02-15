@@ -9,7 +9,7 @@ from sys import exit as sys_exit
 
 from argsdict import args
 
-from .modules.constants import EXTRAS, OPTIONS, OPTIONS_MODES, RED
+from .modules.constants import EXTRAS, OPTIONS, OPTIONS_MODES, OPTIONS_SECURITY, RED
 from .modules.convert import convert, live_convert
 from .modules.resources import get_css_path, get_output_path, get_usage
 from .modules.utils import color
@@ -78,6 +78,16 @@ def main():
         except Exception as exc:
             raise IndexError(f"Invalid 'extras' argument: {exc}") from exc
 
+        # Get the security level
+        try:
+            security_level = arg["--security"]
+            if security_level not in OPTIONS_SECURITY:
+                raise ValueError(f"Invalid security level: '{security_level}'")
+        except KeyError:
+            security_level = "default"
+        except Exception as exc:
+            raise IndexError(f"Invalid 'security' argument: {exc}") from exc
+
         # Compile the markdown file
         print(f"\nGenerating PDF file from '{markdown_path}'...\n")
         if mode in ("once", "debug"):
@@ -87,9 +97,16 @@ def main():
                 output_path,
                 dump_html=mode == "debug",
                 extras=extras,
+                security_level=security_level,
             )
         else:
-            live_convert(markdown_path, css_path, output_path, extras=extras)
+            live_convert(
+                markdown_path,
+                css_path,
+                output_path,
+                extras=extras,
+                security_level=security_level,
+            )
 
         sys_exit(0)
 

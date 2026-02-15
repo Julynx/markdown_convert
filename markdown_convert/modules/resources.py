@@ -13,7 +13,16 @@ except ImportError:
     # Fallback for older Python versions
     from importlib_resources import files
 
-from .constants import BLUE, CYAN, EXTRAS, GREEN, OPTIONS, OPTIONS_MODES, YELLOW
+from .constants import (
+    BLUE,
+    CYAN,
+    EXTRAS,
+    GREEN,
+    OPTIONS,
+    OPTIONS_MODES,
+    OPTIONS_SECURITY,
+    YELLOW,
+)
 from .utils import color
 
 
@@ -110,7 +119,8 @@ def get_usage():
     )
     option_three = f"{color(BLUE, OPTIONS[3])}{color(CYAN, '=')}[{color(CYAN, 'output_file_path')}]"
     option_four = f"{color(BLUE, OPTIONS[4])}{color(CYAN, '=')}[{color(CYAN, 'extra1,extra2,...')}]"
-    extras_str = _wrap_by_length(list(EXTRAS.keys()), max_len=60, indent="      ")
+    extras_str = _wrap_by_length(list(EXTRAS.keys()), max_len=60, indent="        ")
+    option_five = f"{color(BLUE, OPTIONS[5])}{color(CYAN, '=')}{color(CYAN, '|'.join(OPTIONS_SECURITY))}"
 
     usage = (
         "\n"
@@ -119,14 +129,19 @@ def get_usage():
         "\n"
         "Options:\n"
         f"  {option_one}\n"
-        "    Convert the markdown file once (default) or live.\n"
-        "    Use debug to preserve the intermediate html file.\n"
+        "      Convert the markdown file once (default) or live.\n"
+        "      Use debug to preserve the intermediate html file.\n"
         f"  {option_two}\n"
-        "    Use a custom CSS file.\n"
+        "      Use a custom CSS file.\n"
         f"  {option_three}\n"
-        "    Specify the output file path.\n"
+        "      Specify the output file path.\n"
         f"  {option_four}\n"
-        "    Specify the extras to use. Uses all extras if not specified.\n"
-        f"    Supported extras:\n{extras_str}\n"
+        "      Specify the extras to use. Uses all extras if not specified.\n"
+        f"      Supported extras:\n{extras_str}\n"
+        f"  {option_five}\n"
+        "      Specify the security level.\n"
+        "      Strict mode disables inline HTML, internet access and JS,\n"
+        "      but local files can still be referenced.\n"
+        "      This improves security, but will break some extras.\n"
     )
     return usage

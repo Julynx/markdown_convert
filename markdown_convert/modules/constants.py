@@ -24,11 +24,14 @@ OPTIONS = (
     "--css",
     "--out",
     "--extras",
+    "--security",
     "-h",
     "--help",
 )
 
 OPTIONS_MODES = ("once", "live", "debug")
+
+OPTIONS_SECURITY = ("default", "strict")
 
 EXTRAS = {
     "fenced-code-blocks": {
@@ -96,7 +99,7 @@ BROWSER_ARGS = [
 
 CSP_TEMPLATE = (
     "default-src 'none'; "
-    "script-src 'nonce-{nonce}' https://cdn.jsdelivr.net; "  # <- Script for Mermaid diagrams
+    "script-src 'nonce-{nonce}' https://cdn.jsdelivr.net; "  # <- Script for Mermaid
     "script-src-elem 'nonce-{nonce}' https://cdn.jsdelivr.net; "
     "style-src 'unsafe-inline'; "
     "img-src data: https: file:; "

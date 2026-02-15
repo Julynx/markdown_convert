@@ -36,6 +36,7 @@ def convert(
     extend_default_css=True,
     dump_html=False,
     extras=None,
+    security_level="default",
 ):
     """
     Convert a markdown file to a pdf file.
@@ -47,6 +48,8 @@ def convert(
         extend_default_css (bool=True): Extend the default CSS file.
         dump_html (bool=False): Dump the intermediate HTML to a file.
         extras (list=None): List of extras to use.
+        security_level (str=None): Security level to use.
+          "strict" disables JS, inline HTML and internet access.
     """
     markdown_text = (
         Path(markdown_path).read_text(encoding="utf-8")
@@ -70,6 +73,7 @@ def convert(
         extend_default_css=extend_default_css,
         dump_html=dump_html,
         extras=extras,
+        security_level=security_level,
     )
 
 
@@ -80,6 +84,7 @@ def live_convert(
     *,
     extend_default_css=True,
     extras=None,
+    security_level="default",
 ):
     """
     Convert a markdown file to a pdf file and watch for changes.
@@ -90,6 +95,8 @@ def live_convert(
         output_path (str=None): Path to the output file.
         extend_default_css (bool=True): Extend the default CSS file.
         extras (list=None): List of extras to use.
+        security_level (str=None): Security level to use.
+          "strict" disables JS, inline HTML and internet access.
     """
     if css_path is None:
         css_path = get_css_path()
@@ -104,6 +111,7 @@ def live_convert(
         extend_default_css=extend_default_css,
         loud=True,
         extras=extras,
+        security_level=security_level,
     )
     live_converter.observe()
 
@@ -117,6 +125,7 @@ def convert_text(
     extend_default_css=True,
     dump_html=False,
     extras=None,
+    security_level="default",
 ):
     """
     Convert markdown text to a pdf file.
@@ -129,6 +138,8 @@ def convert_text(
         extend_default_css (bool=True): Extend the default CSS file.
         dump_html (bool=False): Dump the intermediate HTML to a file.
         extras (list=None): List of extras to use.
+        security_level (str=None): Security level to use.
+          "strict" disables JS, inline HTML and internet access.
 
     Returns:
         PDF file as bytes if output_path is None, else None.
@@ -147,7 +158,11 @@ def convert_text(
     try:
         nonce = secrets.token_urlsafe(16)
         extras = resolve_extras(extras)
-        html = markdown2.markdown(markdown_text, extras=extras["markdown2_extras"])
+        html = markdown2.markdown(
+            markdown_text,
+            extras=extras["markdown2_extras"],
+            safe_mode=security_level == "strict",
+        )
         html = create_sections(html)
         if "mermaid" in extras["markdown2_extras"]:
             html = render_mermaid_diagrams(html, nonce=nonce)
@@ -160,6 +175,7 @@ def convert_text(
             base_dir=base_dir,
             dump_html=dump_html,
             nonce=nonce,
+            security_level=security_level,
         )
 
     except Exception as exc:
@@ -180,6 +196,7 @@ class LiveConverter:
         extend_default_css=True,
         loud=False,
         extras=None,
+        security_level="default",
     ):
         """
         Initialize the LiveConverter class.
@@ -190,6 +207,8 @@ class LiveConverter:
             output_path (str): Path to the output file.
             extend_default_css (bool): Extend the default CSS file.
             extras (list=None): List of extras to use.
+            security_level (str=None): Security level to use.
+              "strict" disables JS, inline HTML and internet access.
         """
         self.md_path = Path(markdown_path).absolute()
         self.css_path = Path(css_path).absolute()
@@ -197,6 +216,7 @@ class LiveConverter:
         self.extend_default_css = extend_default_css
         self.loud = loud
         self.extras = extras
+        self.security_level = security_level
 
         self.md_last_modified = None
         self.css_last_modified = None
@@ -223,6 +243,7 @@ class LiveConverter:
             self.output_path,
             extend_default_css=self.extend_default_css,
             extras=self.extras,
+            security_level=self.security_level,
         )
         if self.loud:
             print(f"- PDF file updated: {datetime.now()}", flush=True)
@@ -266,6 +287,7 @@ def _generate_pdf_with_playwright(
     base_dir=None,
     dump_html=False,
     nonce=None,
+    security_level="default",
 ):
     """
     Generate a PDF from HTML content using Playwright.
@@ -277,6 +299,8 @@ def _generate_pdf_with_playwright(
         base_dir (Path, optional): Base directory for resolving relative paths in HTML.
         dump_html (bool, optional): Whether to dump the HTML content to a file.
         nonce (str, optional): Nonce for Content Security Policy.
+        security_level (str=None): Security level to use.
+          "strict" disables JS, inline HTML and internet access.
     """
     if nonce is None:
         raise ValueError("A nonce must be provided for CSP generation.")
@@ -289,10 +313,11 @@ def _generate_pdf_with_playwright(
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(headless=True, args=BROWSER_ARGS)
         context = browser.new_context(
-            java_script_enabled=True,
+            java_script_enabled=security_level != "strict",
             permissions=[],
             geolocation=None,
             accept_downloads=False,
+            offline=security_level == "strict",
         )
         page = context.new_page()
 

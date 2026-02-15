@@ -15,7 +15,7 @@ _Convert Markdown files to PDF from your command line._
 
 <br>
 
-----
+---
 
 - [markdown-convert](#markdown-convert)
   - [Why `markdown-convert`?](#why-markdown-convert)
@@ -63,18 +63,23 @@ Usage:
 
 Options:
   --mode=once|live|debug
-    Convert the markdown file once (default) or live.
-    Use debug to preserve the intermediate html file.
+      Convert the markdown file once (default) or live.
+      Use debug to preserve the intermediate html file.
   --css=[css_file_path]
-    Use a custom CSS file.
+      Use a custom CSS file.
   --out=[output_file_path]
-    Specify the output file path.
+      Specify the output file path.
   --extras=[extra1,extra2,...]
-    Specify the extras to use. Uses all extras if not specified.
-    Supported extras:
-      fenced-code-blocks,header-ids,breaks,tables,latex,mermaid,
-      strike,admonitions,checkboxes,custom-spans,highlights,toc,
-      vega-lite
+      Specify the extras to use. Uses all extras if not specified.
+      Supported extras:
+        fenced-code-blocks,header-ids,breaks,tables,latex,mermaid,
+        strike,admonitions,checkboxes,custom-spans,highlights,toc,
+        vega-lite
+  --security=default|strict
+      Specify the security level.
+      Strict mode disables inline HTML, internet access and JS,
+      but local files can still be referenced.
+      This improves security, but will break some extras.
 ```
 
 For example: `markdown-convert README.md --mode=live --css=style.css --out=output.pdf` will convert `README.md` to `output.pdf` using `style.css` and update the PDF live as you edit the Markdown file.
