@@ -74,7 +74,7 @@ Options:
       Supported extras:
         fenced-code-blocks,header-ids,breaks,tables,latex,mermaid,
         strike,admonitions,checkboxes,custom-spans,highlights,toc,
-        vega-lite
+        vega-lite,schemdraw
   --security=default|strict
       Specify the security level.
       Strict mode disables inline HTML, internet access and JS,

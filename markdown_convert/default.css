@@ -538,3 +538,13 @@ div.vega {
   margin-top: 1em;
   margin-bottom: 1em;
 }
+
+/* Schemdraw diagrams */
+div.schemdraw {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}

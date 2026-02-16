@@ -9,6 +9,7 @@ import re
 import vl_convert
 from bs4 import BeautifulSoup, Tag
 from ruamel.yaml import YAML
+from yaml_to_schemdraw import from_yaml_string
 
 
 class ExtraFeature:
@@ -214,6 +215,41 @@ class VegaExtra(ExtraFeature):
             return f"<div class='vega-lite'>{tag}</div>"
         except Exception as exc:
             print(f"WARNING: Failed to convert Vega-Lite spec to SVG: {exc}")
+            return match.group(0)
+
+
+class SchemDrawExtra(ExtraFeature):
+    """
+    Extra feature for rendering schemdraw diagrams from JSON or YAML.
+    """
+
+    pattern = (
+        r"<pre[^>]*>"
+        r"<code[^>]*class=[\"'][^\"]*language-schemdraw[^\"]*[\"'][^>]*>"
+        r"(?P<content>.*?)"
+        r"</code>"
+        r"</pre>"
+    )
+    run_before_stash = True
+
+    @staticmethod
+    def replace(match, html):
+        """
+        Render a tag for a schemdraw diagram from JSON or YAML.
+
+        Args:
+            match (re.Match): Element identified as a schemdraw diagram.
+            html (str): The full HTML content.
+
+        Returns:
+            str: SVG tag representing the schemdraw diagram.
+        """
+        content = match.group("content")
+        try:
+            diagram = from_yaml_string(content)
+            return f"<div class='schemdraw'>{diagram.get_imagedata('svg').decode('utf-8')}</div>"
+        except Exception as exc:
+            print(f"WARNING: Failed to convert schemdraw diagram: {exc}")
             return match.group(0)
 
 

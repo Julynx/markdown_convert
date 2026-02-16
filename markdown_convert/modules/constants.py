@@ -7,6 +7,7 @@ from .extras import (
     CheckboxExtra,
     CustomSpanExtra,
     HighlightExtra,
+    SchemDrawExtra,
     TocExtra,
     VegaExtra,
 )
@@ -85,6 +86,10 @@ EXTRAS = {
     "vega-lite": {
         "provided-by": "markdown-convert",
         "args": VegaExtra,
+    },
+    "schemdraw": {
+        "provided-by": "markdown-convert",
+        "args": SchemDrawExtra,
     },
 }
 
