@@ -1,37 +1,61 @@
 name: 🚀 Feature request
-description: Suggest a new feature/idea for this project 💡
+description: Suggest a new feature or idea for this project 💡
 labels: ["feature"]
 assignees:
   - Julynx
 body:
   - type: checkboxes
-    id: cat-preferences
+    id: self-check
     attributes:
       label: Self Check
       options:
-        - label: I have taken a look for similar feature requests in existing GitHub Issues.
+        - label: I have searched for similar feature requests in existing GitHub Issues.
           required: true
-        - label: I have taken a look at the documentation, and the requested feature does not already exist.
+        - label: I have checked the documentation and confirmed this feature does not already exist.
           required: true
+
   - type: textarea
-    attributes:
-      label: Describe the proposed feature.
-      placeholder: A clear and brief description of the feature, preferably in a single sentence.
+    id: description
     validations:
       required: true
-  - type: textarea
     attributes:
-      label: How would you use the program if it had this feature?
-      placeholder: Ex. If the program had this feature I would be able to call... Then, I could pass in the value(s)... The program would then...
+      label: Description
+      description: >
+        A clear and brief description of the feature in one or two sentences.
+        If you know of any real-world examples, like programs or tools that already
+        have this feature, please mention them here.
+      placeholder: Add support for rendering PlantUML diagrams in Markdown files. Pandoc and Typora already support this.
+
   - type: textarea
+    id: use-case
+    validations:
+      required: true
     attributes:
-      label: Can I achieve the same result with currently existing functionality? How? (If possible)
-      placeholder: With current functionality, even though I can do... I can't actually achieve...
+      label: Use Case
+      description: Describe how you would use this feature and what problem it solves.
+      placeholder: |
+        I am writing technical documentation that includes PlantUML diagrams.
+        Currently, I have to render them separately and embed them as images.
+        With this feature, I could write the diagram inline and have it rendered automatically.
+
   - type: textarea
+    id: proposed-solution
     attributes:
-      label: Additional context
-      placeholder: Any other context, screenshots, or conversations about the feature request. If you know of other projects that have this feature, please link them here.
+      label: Proposed Solution
+      description: If you have a specific idea for how this could work, describe it here.
+      placeholder: |
+        A new code block type (e.g. ```plantuml) that gets rendered to SVG during conversion,
+        similar to how Mermaid diagrams are currently handled.
+
   - type: textarea
+    id: alternatives
     attributes:
-      label: Related Issues
-      placeholder: Links to any open or closed issues related to this feature request.
+      label: Alternatives Considered
+      description: Workarounds or alternative approaches you have tried or considered.
+      placeholder: I currently render diagrams externally and embed them as PNG images, but this is tedious.
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other context, screenshots, or references. Link similar features in other projects if applicable.
