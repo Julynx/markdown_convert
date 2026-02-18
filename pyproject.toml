@@ -4,11 +4,9 @@ build-backend = "hatchling.build"
 
 [project]
 name = "markdown_convert"
-version = "1.2.58"
+version = "1.2.59"
 description = "Convert Markdown files to PDF from your command line."
-authors = [
-    { name = "Julio Cabria", email = "juliocabria@tutanota.com" },
-]
+authors = [{ name = "Julio Cabria", email = "juliocabria@tutanota.com" }]
 license = { text = "GPL-2.0-only" }
 readme = "README.md"
 requires-python = ">=3.11,<3.15"
@@ -27,7 +25,7 @@ dependencies = [
     "install-playwright>=1.0.0",
     "vl-convert-python>=1.9.0.post1",
     "ruamel-yaml>=0.19.1",
-    "yaml-to-schemdraw>=0.1.0",
+    "yaml-to-schemdraw>=0.1.1",
 ]
 
 [project.urls]
@@ -74,9 +72,4 @@ include = [
 ]
 
 [dependency-groups]
-dev = [
-    "black>=25.11.0",
-    "pylint>=3.3.9",
-    "ruff>=0.14.11",
-    "yina>=0.1.6",
-]
+dev = ["black>=25.11.0", "pylint>=3.3.9", "ruff>=0.14.11", "yina>=0.1.6"]

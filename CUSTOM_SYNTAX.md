@@ -101,43 +101,36 @@ Check out [vega.github.io/vega-lite/examples](https://vega.github.io/vega-lite/e
 
     ```schemdraw
     V1:
-      - elements
-      - SourceV
+      - elements.SourceV
       - label: ["5V"]
 
     line1:
-      - elements
-      - Line
+      - elements.Line
       - right: [0.75]
 
     S1:
-      - elements
-      - SwitchSpdt2: [{ action: close }]
+      - elements.SwitchSpdt2: [{ action: close }]
       - up
       - anchor: ["b"]
       - label: ["$t=0$", { loc: rgt }]
 
     line2:
-      - elements
-      - Line
+      - elements.Line
       - right: [0.75]
       - at: ["S1.c"]
 
     R1:
-      - elements
-      - Resistor
+      - elements.Resistor
       - down
       - label: ["$100\\Omega$"]
       - label: [["+", "$v_o$", "-"], { loc: bot }]
 
     line3:
-      - elements
-      - Line
+      - elements.Line
       - to: ["V1.start"]
 
     C1:
-      - elements
-      - Capacitor
+      - elements.Capacitor
       - at: ["S1.a"]
       - toy: ["V1.start"]
       - label: ["1$\\mu$F"]
