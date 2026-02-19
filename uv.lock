@@ -185,7 +185,7 @@ wheels = [
 
 [[package]]
 name = "markdown-convert"
-version = "1.2.59"
+version = "1.2.60"
 source = { editable = "." }
 dependencies = [
     { name = "argsdict" },
@@ -219,7 +219,7 @@ requires-dist = [
     { name = "pygments", specifier = ">=2.17.2,<3" },
     { name = "ruamel-yaml", specifier = ">=0.19.1" },
     { name = "vl-convert-python", specifier = ">=1.9.0.post1" },
-    { name = "yaml-to-schemdraw", specifier = ">=0.1.1" },
+    { name = "yaml-to-schemdraw", specifier = ">=0.1.2" },
 ]
 
 [package.metadata.requires-dev]
@@ -524,15 +524,15 @@ wheels = [
 
 [[package]]
 name = "yaml-to-schemdraw"
-version = "0.1.1"
+version = "0.1.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ruamel-yaml" },
     { name = "schemdraw" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/94/b1/578b5ed0b7c1c4f0bb0dcbed2fa1ddbadcf952f627ae965f29d10f733cab/yaml_to_schemdraw-0.1.1.tar.gz", hash = "sha256:c7de756ad92db07f41ece429fb26edd4e04d63d299bf589015e028de221a1f8a", size = 5899, upload-time = "2026-02-18T22:27:17.138Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/63/d1/270eaf7e12730f3487af87f9310fd4f147172700c76d9a67e1f63bb50e12/yaml_to_schemdraw-0.1.2.tar.gz", hash = "sha256:5abd2ff5cdf8b9eae9317659e7d6a6434eb7a2eaeda651c00ec57cf3bd52b55c", size = 9396, upload-time = "2026-02-19T20:38:09.641Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4d/a3/cdcff524b22e0c9b0855b54e6cf6e9978f2e36a7f2b1b2f17c649a62d161/yaml_to_schemdraw-0.1.1-py3-none-any.whl", hash = "sha256:c8749931dadf8bc30eb54ce6cb80dbcc136b0016dd59a525b16f0cbd9aa5c860", size = 6426, upload-time = "2026-02-18T22:27:15.702Z" },
+    { url = "https://files.pythonhosted.org/packages/38/5d/aa44c6f4f6352ff2c801169a50dc59479debbd04b01d2993138223cc3479/yaml_to_schemdraw-0.1.2-py3-none-any.whl", hash = "sha256:d0bb3b6e330df667a760fbf59fee7b26cf5f13c63af00a08d96b6ddfa094e595", size = 8151, upload-time = "2026-02-19T20:38:08.303Z" },
 ]
 
 [[package]]
