@@ -130,7 +130,7 @@ def render_extra_features(html, extras: set[ExtraFeature]):
                 )
                 if any(cls in classes for cls in bypass_stashing_classes):
                     return text
-            except Exception:
+            except LookupError:
                 pass
 
             key = f"__PROTECTED_BLOCK_{len(placeholders)}__"
