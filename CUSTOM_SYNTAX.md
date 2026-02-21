@@ -349,19 +349,19 @@ You can specify a maximum depth by using `[TOC depth=3]`.
 
 ```markdown
 .. note::
-Useful information that users should know, even when skimming content.
+   Useful information that users should know, even when skimming content.
 
 .. tip::
-Helpful advice for doing things better or more easily.
+   Helpful advice for doing things better or more easily.
 
 .. important:: Read this
-Key information users need to know to achieve their goal.
+   Key information users need to know to achieve their goal.
 
 .. warning::
-Urgent info that needs immediate user attention to avoid problems.
+   Urgent info that needs immediate user attention to avoid problems.
 
 .. caution::
-Advises about risks or negative outcomes of certain actions.
+   Advises about risks or negative outcomes of certain actions.
 ```
 
 <img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/admonitions.png' width='100%'>
