@@ -92,6 +92,37 @@ Check out [mermaid.js.org/intro/#diagram-types](https://mermaid.js.org/intro/#di
 
 The diagram can be specified using JSON, or YAML (as shown above).
 
+With the `dynamic-tables` and `dynamic-queries` extras (enabled by default), you can use a table as the source for a chart:
+
+    | department  | employees | satisfaction |
+    | ----------- | --------- | ------------ |
+    | Engineering | 45        | 8.2          |
+    | Sales       | 30        | 7.5          |
+    | Marketing   | 15        | 8.9          |
+    | HR          | 8         | 9.1          |
+
+    > [company_stats] Department statistics for 2026
+
+    ```vega
+    $schema: https://vega.github.io/schema/vega-lite/v5.json
+    width: 400
+    height: 300
+    description: A bar chart showing employees per department
+    data:
+      query: "SELECT department, employees FROM company_stats ORDER BY employees DESC"
+    mark: bar
+    encoding:
+      x:
+        field: department
+        type: nominal
+        axis: {labelAngle: 0}
+      y:
+        field: employees
+        type: quantitative
+    ```
+
+<img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/vega-chart-with-query.png' width='100%'>
+
 Check out [vega.github.io/vega-lite/examples](https://vega.github.io/vega-lite/examples/) for all the supported charts.
 
 </details>

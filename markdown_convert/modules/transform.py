@@ -99,12 +99,27 @@ def render_extra_features(html, extras: set[ExtraFeature]):
         placeholders = {}
 
         def stash(match):
+            text = match.group(0)
+            if "language-vega" in text:
+                return text
+
             key = f"__PROTECTED_BLOCK_{len(placeholders)}__"
-            placeholders[key] = match.group(0)
+            placeholders[key] = text
             return key
 
-        # 0. Pre protection extras
-        html = apply_extras(extras, html, before_stash=True)
+        # Sort extras by phase
+        sorted_extras = sorted(extras, key=lambda e: getattr(e, "execution_phase", 100))
+
+        # Partition into pre-stash and post-stash groups
+        pre_stash_extras = [
+            e for e in sorted_extras if getattr(e, "execution_phase", 100) < 50
+        ]
+        post_stash_extras = [
+            e for e in sorted_extras if getattr(e, "execution_phase", 100) >= 50
+        ]
+
+        # 0. Pre protection extras (e.g., Diagrams)
+        html = apply_extras(pre_stash_extras, html)
 
         # 1. Protection: Replace ignored tags with unique hashes
         ignored_pattern = re.compile(
@@ -113,7 +128,7 @@ def render_extra_features(html, extras: set[ExtraFeature]):
         html = ignored_pattern.sub(stash, html)
 
         # 2. Transformations: Define patterns and their replacements
-        html = apply_extras(extras, html, before_stash=False)
+        html = apply_extras(post_stash_extras, html)
 
         # 3. Restoration: Replace hashes back with original content
         for key, original_content in placeholders.items():

@@ -25,13 +25,16 @@ class ExtraFeature:
 
     Attributes:
         pattern (str): Regex pattern to match the extra feature in the HTML.
-        run_before_stash (bool): Whether to run this extra before stashing code blocks.
+        execution_phase (int): Determines the order of execution. Lower values run first.
+            0-49: Runs before code blocks are protected (e.g., diagrams).
+            50-99: Runs after protection, but before query execution (e.g., table extraction).
+            100+: Runs after protection and table extraction (e.g., inline queries, highlighters).
         memory (dict): Shared ephemeral state across all extras during a single
             document conversion. Managed by render_extra_features in transform.py.
     """
 
     pattern = r""
-    run_before_stash = False
+    execution_phase = 100
     memory: dict = {}
 
     @staticmethod
@@ -180,7 +183,7 @@ class VegaExtra(ExtraFeature):
         r"</code>"
         r"</pre>"
     )
-    run_before_stash = True
+    execution_phase = 60
 
     @staticmethod
     def replace(match, html_content):
@@ -194,6 +197,31 @@ class VegaExtra(ExtraFeature):
         Returns:
             str: SVG tag representing the vega-lite diagram.
         """
+
+        def _replace_duckdb_query(spec):
+            data_spec = spec.get("data", {})
+            if isinstance(data_spec, dict) and "query" in data_spec:
+                query = data_spec.pop("query")
+                try:
+                    conn = _get_duckdb_connection()
+                    result_df = conn.execute(query).df()
+
+                    # Handle dates for JSON serialization
+                    for col in result_df.select_dtypes(
+                        include=["datetime", "datetimetz"]
+                    ).columns:
+                        result_df[col] = result_df[col].astype(str)
+
+                    data_spec["values"] = result_df.to_dict(orient="records")
+                    return True
+                except Exception:
+                    logger.warning(
+                        "Failed to execute DuckDB query in Vega-Lite spec",
+                        exc_info=True,
+                    )
+                    return False
+            return True
+
         content = match.group("content")
         spec = None
 
@@ -208,6 +236,10 @@ class VegaExtra(ExtraFeature):
                 return match.group(0)
 
         if spec is None:
+            return match.group(0)
+
+        # Dynamic query support
+        if not _replace_duckdb_query(spec):
             return match.group(0)
 
         try:
@@ -228,7 +260,7 @@ class SchemDrawExtra(ExtraFeature):
         r"</code>"
         r"</pre>"
     )
-    run_before_stash = True
+    execution_phase = 0
 
     @staticmethod
     def replace(match, html_content):
@@ -267,7 +299,7 @@ class DuckDBTableExtra(ExtraFeature):
         r"\s*(?P<description>.*?)"
         r"</p>\s*</blockquote>"
     )
-    run_before_stash = True
+    execution_phase = 50
 
     @staticmethod
     def replace(match, html_content):
@@ -314,6 +346,7 @@ class DuckDBQueryExtra(ExtraFeature):
     """
 
     pattern = r"\[query:\s*(?P<expression>.+?)\]"
+    execution_phase = 60
 
     @staticmethod
     def replace(match, html_content):
@@ -380,22 +413,18 @@ def _render_html_table(columns, rows):
     )
 
 
-def apply_extras(extras: set[ExtraFeature], html_content, before_stash=False):
+def apply_extras(extras: list[ExtraFeature], html_content):
     """
-    Applies extra features to an html string.
+    Applies extra features to an html string in the order they are provided.
 
     Args:
-        extras: set[ExtraFeature] Extra features to apply.
+        extras: list[ExtraFeature] Extra features to apply.
         html_content: Complete html text, used by some extras like TOC.
-        before_stash: Whether to run extras marked for pre-stash processing.
 
     Returns:
         str: The updated html.
     """
     for extra in extras:
-        if extra.run_before_stash != before_stash:
-            continue
-
         new_html = html_content
         while re.search(extra.pattern, html_content, flags=re.DOTALL):
             try:

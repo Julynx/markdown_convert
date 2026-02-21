@@ -41,6 +41,9 @@ install-playwright>=1.0.0
 vl-convert-python>=1.9.0.post1
 ruamel-yaml>=0.19.1
 yaml-to-schemdraw>=0.1.2
+duckdb>=1.4.4
+pandas>=3.0.1
+lxml>=6.0.2
 ```
 
 ## 3. Directory Structure
@@ -50,6 +53,7 @@ markdown-convert/
 ├── assets
     ├── admonitions.png
     ├── custom-container.png
+    ├── dynamic-tables.png
     ├── effects.png
     ├── flower.png
     ├── flower2.png
@@ -85,7 +89,6 @@ markdown-convert/
 ├── CUSTOM_SYNTAX.md
 ├── LICENSE
 ├── README.md
-├── TODO.md
 ├── pyproject.toml
 └── uv.lock
 ```
@@ -153,20 +156,24 @@ markdown-convert/
 
 ```text
 - class ExtraFeature
-  - def replace(match, html)
+  - def replace(match, html_content)
 - class CheckboxExtra(ExtraFeature)
-  - def replace(match, html)
+  - def replace(match, html_content)
 - class HighlightExtra(ExtraFeature)
-  - def replace(match, html)
+  - def replace(match, html_content)
 - class CustomSpanExtra(ExtraFeature)
-  - def replace(match, html)
+  - def replace(match, html_content)
 - class TocExtra(ExtraFeature)
-  - def replace(match, html)
+  - def replace(match, html_content)
 - class VegaExtra(ExtraFeature)
-  - def replace(match, html)
+  - def replace(match, html_content)
 - class SchemDrawExtra(ExtraFeature)
-  - def replace(match, html)
-- def apply_extras(extras: set[ExtraFeature], html, before_stash)
+  - def replace(match, html_content)
+- class DuckDBTableExtra(ExtraFeature)
+  - def replace(match, html_content)
+- class DuckDBQueryExtra(ExtraFeature)
+  - def replace(match, html_content)
+- def apply_extras(extras: set[ExtraFeature], html_content, before_stash)
 ```
 
 ### markdown_convert\modules\overrides.py
