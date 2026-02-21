@@ -25,16 +25,24 @@ class ExtraFeature:
 
     Attributes:
         pattern (str): Regex pattern to match the extra feature in the HTML.
-        execution_phase (int): Determines the order of execution. Lower values run first.
-            0-49: Runs before code blocks are protected (e.g., diagrams).
-            50-99: Runs after protection, but before query execution (e.g., table extraction).
-            100+: Runs after protection and table extraction (e.g., inline queries, highlighters).
+        execution_phase (int): Determines the order of execution.
+                               Lower values run first.
+            0-49: Runs before code blocks are protected
+                  (e.g., anything that interacts with code blocks, like diagrams).
+            50-99: Runs after protection, but before query execution
+                  (e.g., table extraction).
+            100+: Runs after protection and table extraction
+                  (e.g., inline queries, highlighters).
+        bypass_stashing_class (str): If the code contains this class, it will not be
+                                     stashed during the protection phase.
         memory (dict): Shared ephemeral state across all extras during a single
-            document conversion. Managed by render_extra_features in transform.py.
+                       document conversion. Managed by render_extra_features in
+                       transform.py.
     """
 
     pattern = r""
     execution_phase = 100
+    bypass_stashing_class = None
     memory: dict = {}
 
     @staticmethod
@@ -184,6 +192,7 @@ class VegaExtra(ExtraFeature):
         r"</pre>"
     )
     execution_phase = 60
+    bypass_stashing_class = "language-vega"
 
     @staticmethod
     def replace(match, html_content):
@@ -202,51 +211,47 @@ class VegaExtra(ExtraFeature):
             data_spec = spec.get("data", {})
             if isinstance(data_spec, dict) and "query" in data_spec:
                 query = data_spec.pop("query")
-                try:
-                    conn = _get_duckdb_connection()
-                    result_df = conn.execute(query).df()
+                conn = _get_duckdb_connection()
+                table = conn.execute(query).df()
 
-                    # Handle dates for JSON serialization
-                    for col in result_df.select_dtypes(
-                        include=["datetime", "datetimetz"]
-                    ).columns:
-                        result_df[col] = result_df[col].astype(str)
+                # Handle dates for JSON serialization
+                for col in table.select_dtypes(
+                    include=["datetime", "datetimetz"]
+                ).columns:
+                    table[col] = table[col].astype(str)
 
-                    data_spec["values"] = result_df.to_dict(orient="records")
-                    return True
-                except Exception:
-                    logger.warning(
-                        "Failed to execute DuckDB query in Vega-Lite spec",
-                        exc_info=True,
-                    )
-                    return False
-            return True
+                data_spec["values"] = table.to_dict(orient="records")
 
         content = match.group("content")
         spec = None
 
+        # Parse JSON or YAML
         try:
             spec = json.loads(content)
         except (json.JSONDecodeError, TypeError):
             try:
                 yaml = YAML(typ="safe")
                 spec = yaml.load(content)
-            except Exception:
-                logger.warning("Failed to parse Vega-Lite spec", exc_info=True)
+            except Exception as exc:
+                logger.warning("Failed to parse Vega-Lite spec: %s", exc)
                 return match.group(0)
 
         if spec is None:
             return match.group(0)
 
         # Dynamic query support
-        if not _replace_duckdb_query(spec):
+        try:
+            _replace_duckdb_query(spec)
+        except Exception as exc:
+            logger.warning("Failed to execute query in Vega-Lite spec: %s", exc)
             return match.group(0)
 
+        # Convert to SVG
         try:
             tag = vl_convert.vegalite_to_svg(spec)
             return f"<div class='vega-lite'>{tag}</div>"
-        except Exception:
-            logger.warning("Failed to convert Vega-Lite spec to SVG", exc_info=True)
+        except Exception as exc:
+            logger.warning("Failed to convert Vega-Lite spec to SVG: %s", exc)
             return match.group(0)
 
 
@@ -277,13 +282,14 @@ class SchemDrawExtra(ExtraFeature):
         content = match.group("content")
         try:
             diagram = from_yaml_string(content)
-            return f"<div class='schemdraw'>{diagram.get_imagedata('svg').decode('utf-8')}</div>"
-        except Exception:
-            logger.warning("Failed to convert schemdraw diagram", exc_info=True)
+            svg_string = diagram.get_imagedata("svg").decode("utf-8")
+            return f"<div class='schemdraw'>{svg_string}</div>"
+        except Exception as exc:
+            logger.warning("Failed to convert schemdraw diagram: %s", exc)
             return match.group(0)
 
 
-class DuckDBTableExtra(ExtraFeature):
+class DynamicTableExtra(ExtraFeature):
     """
     Extra feature for registering HTML tables as named DuckDB tables.
 
@@ -317,17 +323,16 @@ class DuckDBTableExtra(ExtraFeature):
         table_name = match.group("name")
 
         try:
-            dfs = pd.read_html(StringIO(table_html))
-            if not dfs:
+            tables = pd.read_html(StringIO(table_html))
+            if not tables:
                 raise ValueError("No tables found in HTML")
 
-            df = dfs[-1]
+            table = tables[-1]
             conn = _get_duckdb_connection()
-            conn.register(table_name, df)
-            logger.info("Registered DuckDB table '%s' (%d rows)", table_name, len(df))
-        except Exception:
+            conn.register(table_name, table)
+        except Exception as exc:
             logger.warning(
-                "Failed to register table '%s' in DuckDB", table_name, exc_info=True
+                "Failed to register table '%s' in DuckDB: %s", table_name, exc
             )
 
         description = match.group("description").strip()
@@ -336,7 +341,7 @@ class DuckDBTableExtra(ExtraFeature):
         return table_html
 
 
-class DuckDBQueryExtra(ExtraFeature):
+class DynamicQueryExtra(ExtraFeature):
     """
     Extra feature for executing inline DuckDB SQL expressions.
 
@@ -371,10 +376,8 @@ class DuckDBQueryExtra(ExtraFeature):
                 return str(rows[0][0])
 
             return _render_html_table(columns, rows)
-        except Exception:
-            logger.warning(
-                "Failed to execute DuckDB query: %s", expression, exc_info=True
-            )
+        except Exception as exc:
+            logger.warning("Failed to execute DuckDB query: %s", exc)
             return match.group(0)
 
 
@@ -430,16 +433,15 @@ def apply_extras(extras: list[ExtraFeature], html_content):
             try:
                 new_html = re.sub(
                     extra.pattern,
-                    lambda match, ext=extra: ext.replace(
-                        match, html_content=html_content
+                    lambda match, html_content=html_content, ext=extra: ext.replace(
+                        match,
+                        html_content=html_content,
                     ),
                     html_content,
                     flags=re.DOTALL,
                 )
-            except Exception:
-                logger.warning(
-                    "An exception occurred while applying an extra", exc_info=True
-                )
+            except Exception as exc:
+                logger.warning("An exception occurred while applying an extra: %s", exc)
 
             if new_html == html_content:
                 break

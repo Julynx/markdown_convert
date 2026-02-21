@@ -117,10 +117,19 @@ def get_usage():
     option_two = (
         f"{color(BLUE, OPTIONS[2])}{color(CYAN, '=')}[{color(CYAN, 'css_file_path')}]"
     )
-    option_three = f"{color(BLUE, OPTIONS[3])}{color(CYAN, '=')}[{color(CYAN, 'output_file_path')}]"
-    option_four = f"{color(BLUE, OPTIONS[4])}{color(CYAN, '=')}[{color(CYAN, 'extra1,extra2,...')}]"
-    extras_str = _wrap_by_length(list(EXTRAS.keys()), max_len=60, indent="        ")
-    option_five = f"{color(BLUE, OPTIONS[5])}{color(CYAN, '=')}{color(CYAN, '|'.join(OPTIONS_SECURITY))}"
+    option_three = (
+        f"{color(BLUE, OPTIONS[3])}{color(CYAN, '=')}"
+        f"[{color(CYAN, 'output_file_path')}]"
+    )
+    option_four = (
+        f"{color(BLUE, OPTIONS[4])}{color(CYAN, '=')}"
+        f"[{color(CYAN, 'extra1,extra2,...')}]"
+    )
+    extras_str = _wrap_by_length(list(EXTRAS.keys()), max_len=60, indent=8 * " ")
+    option_five = (
+        f"{color(BLUE, OPTIONS[5])}{color(CYAN, '=')}"
+        f"{color(CYAN, '|'.join(OPTIONS_SECURITY))}"
+    )
 
     usage = (
         "\n"

@@ -330,7 +330,7 @@ wheels = [
 
 [[package]]
 name = "markdown-convert"
-version = "1.2.62"
+version = "1.2.63"
 source = { editable = "." }
 dependencies = [
     { name = "argsdict" },
@@ -344,6 +344,7 @@ dependencies = [
     { name = "playwright" },
     { name = "pygments" },
     { name = "ruamel-yaml" },
+    { name = "string-grab" },
     { name = "vl-convert-python" },
     { name = "yaml-to-schemdraw" },
 ]
@@ -369,6 +370,7 @@ requires-dist = [
     { name = "playwright", specifier = ">=1.57.0" },
     { name = "pygments", specifier = ">=2.17.2,<3" },
     { name = "ruamel-yaml", specifier = ">=0.19.1" },
+    { name = "string-grab", specifier = ">=1.3.0" },
     { name = "vl-convert-python", specifier = ">=1.9.0.post1" },
     { name = "yaml-to-schemdraw", specifier = ">=0.1.2" },
 ]
@@ -738,6 +740,12 @@ sdist = { url = "https://files.pythonhosted.org/packages/7b/ae/2d9c981590ed9999a
 wheels = [
     { url = "https://files.pythonhosted.org/packages/46/2c/1462b1d0a634697ae9e55b3cecdcb64788e8b7d63f54d923fcd0bb140aed/soupsieve-2.8.3-py3-none-any.whl", hash = "sha256:ed64f2ba4eebeab06cc4962affce381647455978ffc1e36bb79a545b91f45a95", size = 37016, upload-time = "2026-01-20T04:27:01.012Z" },
 ]
+
+[[package]]
+name = "string-grab"
+version = "1.3.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/23/47/32c62af90539147a7271eb6f36d53d1e6bf61c7a9dc62ee67fb459a2c2d2/string_grab-1.3.0.tar.gz", hash = "sha256:67ad57c44ed0fcf15338e10e13f8de519f4169e60d3534fafe8c6d3bb2154fa0", size = 9888, upload-time = "2023-09-11T17:19:07.746Z" }
 
 [[package]]
 name = "tomli"

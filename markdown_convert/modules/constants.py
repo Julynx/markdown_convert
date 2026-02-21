@@ -6,8 +6,8 @@ Author: @julynx
 from .extras import (
     CheckboxExtra,
     CustomSpanExtra,
-    DuckDBQueryExtra,
-    DuckDBTableExtra,
+    DynamicQueryExtra,
+    DynamicTableExtra,
     HighlightExtra,
     SchemDrawExtra,
     TocExtra,
@@ -65,6 +65,10 @@ EXTRAS = {
         "provided-by": "markdown2",
         "args": None,
     },
+    "middle-word-em": {
+        "provided-by": "markdown2",
+        "args": False,
+    },
     "admonitions": {
         "provided-by": "markdown2",
         "args": None,
@@ -95,11 +99,11 @@ EXTRAS = {
     },
     "dynamic-tables": {
         "provided-by": "markdown-convert",
-        "args": DuckDBTableExtra,
+        "args": DynamicTableExtra,
     },
     "dynamic-queries": {
         "provided-by": "markdown-convert",
-        "args": DuckDBQueryExtra,
+        "args": DynamicQueryExtra,
     },
 }
 
@@ -143,7 +147,8 @@ def resolve_extras(extras_list=None):
         extras_list (list=None): List of extras to use. If None, all extras are used.
 
     Returns:
-        dict: A dictionary containing the keys "markdown2_extras" and "markdown_convert_extras"
+        dict: A dictionary containing the keys "markdown2_extras" and
+              "markdown_convert_extras"
     """
     if extras_list is None:
         selected_extras = EXTRAS

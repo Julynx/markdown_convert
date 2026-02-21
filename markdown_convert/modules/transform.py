@@ -5,13 +5,15 @@ Module for transforming HTML content.
 import re
 
 from bs4 import BeautifulSoup
+from string_grab import grab
 
 from .extras import ExtraFeature, apply_extras
 
 
 def create_html_document(html_content, css_content, csp):
     """
-    Creates a complete HTML document with the given content, CSS, and Content Security Policy.
+    Creates a complete HTML document with the given content, CSS, and
+    Content Security Policy.
     Args:
         html_content (str): The HTML content to include in the body.
         css_content (str): The CSS styles to include in the head.
@@ -98,25 +100,42 @@ def render_extra_features(html, extras: set[ExtraFeature]):
     try:
         placeholders = {}
 
+        # Sort extras by phase
+        sorted_extras = sorted(extras, key=lambda e: getattr(e, "execution_phase", 100))
+        bypass_stashing_classes = [
+            extra.bypass_stashing_class
+            for extra in extras
+            if extra.bypass_stashing_class
+        ]
+
+        # Partition into pre-stash and post-stash groups
+        pre_stash_extras = [
+            extra
+            for extra in sorted_extras
+            if getattr(extra, "execution_phase", 100) < 50
+        ]
+        post_stash_extras = [
+            extra
+            for extra in sorted_extras
+            if getattr(extra, "execution_phase", 100) >= 50
+        ]
+
         def stash(match):
             text = match.group(0)
-            if "language-vega" in text:
-                return text
+            try:
+                classes = grab(
+                    text,
+                    start='<pre><code class="',
+                    end='"',
+                )
+                if any(cls in classes for cls in bypass_stashing_classes):
+                    return text
+            except Exception:
+                pass
 
             key = f"__PROTECTED_BLOCK_{len(placeholders)}__"
             placeholders[key] = text
             return key
-
-        # Sort extras by phase
-        sorted_extras = sorted(extras, key=lambda e: getattr(e, "execution_phase", 100))
-
-        # Partition into pre-stash and post-stash groups
-        pre_stash_extras = [
-            e for e in sorted_extras if getattr(e, "execution_phase", 100) < 50
-        ]
-        post_stash_extras = [
-            e for e in sorted_extras if getattr(e, "execution_phase", 100) >= 50
-        ]
 
         # 0. Pre protection extras (e.g., Diagrams)
         html = apply_extras(pre_stash_extras, html)

@@ -33,30 +33,29 @@ def ensure_chromium(loud=True):
 
             if loud:
                 if result:
-                    print(
-                        color(
-                            GREEN,
-                            "The Playwright Chromium browser was successfully installed.\n",
-                        )
+                    msg = color(
+                        GREEN,
+                        "The Playwright Chromium browser was successfully installed.\n",
                     )
+                    print(msg)
                 else:
-                    print(
-                        color(
-                            RED,
-                            "ERROR: The Playwright Chromium browser could not be automatically installed."
-                            "\nPlease manually run 'playwright install' and try again.\n",
-                        )
+                    msg = color(
+                        RED,
+                        "ERROR: The Playwright Chromium browser could not be"
+                        " automatically installed."
+                        "\nPlease manually run 'playwright install' and try again.\n",
                     )
+                    print(msg)
 
             return result
 
         except Exception as exc:
-            print(
-                color(
-                    RED,
-                    f"ERROR: There was an exception while trying to install the Playwright Chromium browser:\n{exc}",
-                )
+            msg = color(
+                RED,
+                "ERROR: There was an exception while trying to install the"
+                f" Playwright Chromium browser:\n{exc}",
             )
+            print(msg)
             return False
 
 

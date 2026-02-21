@@ -169,9 +169,9 @@ markdown-convert/
   - def replace(match, html_content)
 - class SchemDrawExtra(ExtraFeature)
   - def replace(match, html_content)
-- class DuckDBTableExtra(ExtraFeature)
+- class DynamicTableExtra(ExtraFeature)
   - def replace(match, html_content)
-- class DuckDBQueryExtra(ExtraFeature)
+- class DynamicQueryExtra(ExtraFeature)
   - def replace(match, html_content)
 - def apply_extras(extras: set[ExtraFeature], html_content, before_stash)
 ```
