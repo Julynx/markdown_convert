@@ -93,27 +93,36 @@ def render_extra_features(html, extras: set[ExtraFeature]):
     Renders extra features by protecting specific tags, applying regex
     transformations, and restoring the protected content.
     """
-    placeholders = {}
+    ExtraFeature.memory = {}
 
-    def stash(match):
-        key = f"__PROTECTED_BLOCK_{len(placeholders)}__"
-        placeholders[key] = match.group(0)
-        return key
+    try:
+        placeholders = {}
 
-    # 0. Pre protection extras
-    html = apply_extras(extras, html, before_stash=True)
+        def stash(match):
+            key = f"__PROTECTED_BLOCK_{len(placeholders)}__"
+            placeholders[key] = match.group(0)
+            return key
 
-    # 1. Protection: Replace ignored tags with unique hashes
-    ignored_pattern = re.compile(
-        r"<(code|pre|script|style)\b[^>]*>.*?</\1>", re.DOTALL | re.IGNORECASE
-    )
-    html = ignored_pattern.sub(stash, html)
+        # 0. Pre protection extras
+        html = apply_extras(extras, html, before_stash=True)
 
-    # 2. Transformations: Define patterns and their replacements
-    html = apply_extras(extras, html, before_stash=False)
+        # 1. Protection: Replace ignored tags with unique hashes
+        ignored_pattern = re.compile(
+            r"<(code|pre|script|style)\b[^>]*>.*?</\1>", re.DOTALL | re.IGNORECASE
+        )
+        html = ignored_pattern.sub(stash, html)
 
-    # 3. Restoration: Replace hashes back with original content
-    for key, original_content in placeholders.items():
-        html = html.replace(key, original_content)
+        # 2. Transformations: Define patterns and their replacements
+        html = apply_extras(extras, html, before_stash=False)
 
-    return html
+        # 3. Restoration: Replace hashes back with original content
+        for key, original_content in placeholders.items():
+            html = html.replace(key, original_content)
+
+        return html
+
+    finally:
+        conn = ExtraFeature.memory.get("duckdb")
+        if conn:
+            conn.close()
+        ExtraFeature.memory = {}

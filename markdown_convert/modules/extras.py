@@ -3,13 +3,20 @@ Extras are defined as helper functions called by
 render_extra_features from transform.py
 """
 
+import html
 import json
+import logging
 import re
+from io import StringIO
 
+import duckdb
+import pandas as pd
 import vl_convert
 from bs4 import BeautifulSoup, Tag
 from ruamel.yaml import YAML
 from yaml_to_schemdraw import from_yaml_string
+
+logger = logging.getLogger(__name__)
 
 
 class ExtraFeature:
@@ -19,19 +26,22 @@ class ExtraFeature:
     Attributes:
         pattern (str): Regex pattern to match the extra feature in the HTML.
         run_before_stash (bool): Whether to run this extra before stashing code blocks.
+        memory (dict): Shared ephemeral state across all extras during a single
+            document conversion. Managed by render_extra_features in transform.py.
     """
 
     pattern = r""
     run_before_stash = False
+    memory: dict = {}
 
     @staticmethod
-    def replace(match, html):
+    def replace(match, html_content):
         """
         Replaces the matched pattern with the rendered extra feature.
 
         Args:
             match (re.Match): The regex match object.
-            html (str): The full HTML content.
+            html_content (str): The full HTML content.
 
         Returns:
             str: The replacement string.
@@ -43,63 +53,57 @@ class ExtraFeature:
 
 
 class CheckboxExtra(ExtraFeature):
-    """
-    Extra feature for rendering checkboxes.
-    """
+    """Extra feature for rendering checkboxes."""
 
     pattern = r"(?P<checkbox>\[\s\]|\[x\])"
 
     @staticmethod
-    def replace(match, html):
+    def replace(match, html_content):
         """
         Render a tag for a checkbox.
 
         Args:
-            match: Element identified as a checkbox
+            match: Element identified as a checkbox.
         Returns:
-            str: tag representing the checkbox
+            str: Tag representing the checkbox.
         """
         status = "checked" if "[x]" in match.group("checkbox") else ""
         return f'<input type="checkbox" {status}>'
 
 
 class HighlightExtra(ExtraFeature):
-    """
-    Extra feature for rendering highlighted text.
-    """
+    """Extra feature for rendering highlighted text."""
 
     pattern = r"==(?P<content>.*?)=="
 
     @staticmethod
-    def replace(match, html):
+    def replace(match, html_content):
         """
         Render a tag for a highlight.
 
         Args:
-            match: Element identified as a highlight
+            match: Element identified as a highlight.
         Returns:
-            str: tag representing the highlight
+            str: Tag representing the highlight.
         """
         content = match.group("content")
         return f'<span class="highlight">{content}</span>'
 
 
 class CustomSpanExtra(ExtraFeature):
-    """
-    Extra feature for rendering custom spans with specific classes.
-    """
+    """Extra feature for rendering custom spans with specific classes."""
 
     pattern = r"(?P<cls>[a-zA-Z0-9_-]+)\{\{\s*(?P<content>.*?)\s*\}\}"
 
     @staticmethod
-    def replace(match, html):
+    def replace(match, html_content):
         """
         Render a tag for a custom span.
 
         Args:
-            match: Element identified as a custom span
+            match: Element identified as a custom span.
         Returns:
-            str: tag representing the custom span
+            str: Tag representing the custom span.
         """
         cls = match.group("cls")
         content = match.group("content")
@@ -107,23 +111,21 @@ class CustomSpanExtra(ExtraFeature):
 
 
 class TocExtra(ExtraFeature):
-    """
-    Extra feature for rendering a Table of Contents.
-    """
+    """Extra feature for rendering a Table of Contents."""
 
     pattern = r"\[TOC(?:\s+depth=(?P<depth>\d+))?\]"
 
     @staticmethod
-    def replace(match, html):
+    def replace(match, html_content):
         """
-        Render a tag for a table of contents
+        Render a tag for a table of contents.
 
         Args:
-            match: Element identified as a table of contents
+            match: Element identified as a table of contents.
         Returns:
-            str: tag representing the table of contents
+            str: Tag representing the table of contents.
         """
-        soup = BeautifulSoup(html, "html.parser")
+        soup = BeautifulSoup(html_content, "html.parser")
         max_level = match.group("depth")
         max_level = 3 if max_level is None else int(max_level)
 
@@ -169,9 +171,7 @@ class TocExtra(ExtraFeature):
 
 
 class VegaExtra(ExtraFeature):
-    """
-    Extra feature for rendering Vega-Lite diagrams from JSON or YAML.
-    """
+    """Extra feature for rendering Vega-Lite diagrams from JSON or YAML."""
 
     pattern = (
         r"<pre[^>]*>"
@@ -183,13 +183,13 @@ class VegaExtra(ExtraFeature):
     run_before_stash = True
 
     @staticmethod
-    def replace(match, html):
+    def replace(match, html_content):
         """
         Render a tag for a vega-lite diagram from JSON or YAML.
 
         Args:
             match (re.Match): Element identified as a vega-lite diagram.
-            html (str): The full HTML content.
+            html_content (str): The full HTML content.
 
         Returns:
             str: SVG tag representing the vega-lite diagram.
@@ -203,8 +203,8 @@ class VegaExtra(ExtraFeature):
             try:
                 yaml = YAML(typ="safe")
                 spec = yaml.load(content)
-            except Exception as exc:
-                print(f"WARNING: Failed to parse Vega-Lite spec: {exc}")
+            except Exception:
+                logger.warning("Failed to parse Vega-Lite spec", exc_info=True)
                 return match.group(0)
 
         if spec is None:
@@ -213,15 +213,13 @@ class VegaExtra(ExtraFeature):
         try:
             tag = vl_convert.vegalite_to_svg(spec)
             return f"<div class='vega-lite'>{tag}</div>"
-        except Exception as exc:
-            print(f"WARNING: Failed to convert Vega-Lite spec to SVG: {exc}")
+        except Exception:
+            logger.warning("Failed to convert Vega-Lite spec to SVG", exc_info=True)
             return match.group(0)
 
 
 class SchemDrawExtra(ExtraFeature):
-    """
-    Extra feature for rendering schemdraw diagrams from JSON or YAML.
-    """
+    """Extra feature for rendering schemdraw diagrams from JSON or YAML."""
 
     pattern = (
         r"<pre[^>]*>"
@@ -233,13 +231,13 @@ class SchemDrawExtra(ExtraFeature):
     run_before_stash = True
 
     @staticmethod
-    def replace(match, html):
+    def replace(match, html_content):
         """
         Render a tag for a schemdraw diagram from JSON or YAML.
 
         Args:
             match (re.Match): Element identified as a schemdraw diagram.
-            html (str): The full HTML content.
+            html_content (str): The full HTML content.
 
         Returns:
             str: SVG tag representing the schemdraw diagram.
@@ -248,42 +246,174 @@ class SchemDrawExtra(ExtraFeature):
         try:
             diagram = from_yaml_string(content)
             return f"<div class='schemdraw'>{diagram.get_imagedata('svg').decode('utf-8')}</div>"
-        except Exception as exc:
-            print(f"WARNING: Failed to convert schemdraw diagram: {exc}")
+        except Exception:
+            logger.warning("Failed to convert schemdraw diagram", exc_info=True)
             return match.group(0)
 
 
-def apply_extras(extras: set[ExtraFeature], html, before_stash=False):
+class DuckDBTableExtra(ExtraFeature):
+    """
+    Extra feature for registering HTML tables as named DuckDB tables.
+
+    Matches a <table> immediately followed by a <blockquote> containing a
+    bracketed name like [students]. The table data is parsed and loaded into
+    an in-memory DuckDB connection with filesystem access disabled.
+    """
+
+    pattern = (
+        r"(?P<table><table\b[^>]*>(?:(?!<table\b).)*?</table>)"
+        r"\s*<blockquote>\s*<p>"
+        r"\[(?P<name>[a-zA-Z_]\w*)\]"
+        r"\s*(?P<description>.*?)"
+        r"</p>\s*</blockquote>"
+    )
+    run_before_stash = True
+
+    @staticmethod
+    def replace(match, html_content):
+        """
+        Parse the matched HTML table and register it in DuckDB.
+
+        Args:
+            match (re.Match): The regex match containing the table HTML and name.
+            html_content (str): The full HTML content.
+
+        Returns:
+            str: The original table HTML without the blockquote naming tag.
+        """
+        table_html = match.group("table")
+        table_name = match.group("name")
+
+        try:
+            dfs = pd.read_html(StringIO(table_html))
+            if not dfs:
+                raise ValueError("No tables found in HTML")
+
+            df = dfs[-1]
+            conn = _get_duckdb_connection()
+            conn.register(table_name, df)
+            logger.info("Registered DuckDB table '%s' (%d rows)", table_name, len(df))
+        except Exception:
+            logger.warning(
+                "Failed to register table '%s' in DuckDB", table_name, exc_info=True
+            )
+
+        description = match.group("description").strip()
+        if description:
+            return f"{table_html}\n<blockquote><p>{description}</p></blockquote>"
+        return table_html
+
+
+class DuckDBQueryExtra(ExtraFeature):
+    """
+    Extra feature for executing inline DuckDB SQL expressions.
+
+    Matches [query: <SQL>] anywhere in the document, executes the SQL against
+    the shared DuckDB connection, and replaces the match with the result.
+    Scalar results are injected inline; table-like results become HTML tables.
+    """
+
+    pattern = r"\[query:\s*(?P<expression>.+?)\]"
+
+    @staticmethod
+    def replace(match, html_content):
+        """
+        Execute the matched SQL expression and return the result.
+
+        Args:
+            match (re.Match): The regex match containing the SQL expression.
+            html_content (str): The full HTML content.
+
+        Returns:
+            str: The query result as text or an HTML table.
+        """
+        expression = html.unescape(match.group("expression"))
+        try:
+            conn = _get_duckdb_connection()
+            result = conn.execute(expression)
+            columns = [desc[0] for desc in result.description]
+            rows = result.fetchall()
+
+            if len(rows) == 1 and len(columns) == 1:
+                return str(rows[0][0])
+
+            return _render_html_table(columns, rows)
+        except Exception:
+            logger.warning(
+                "Failed to execute DuckDB query: %s", expression, exc_info=True
+            )
+            return match.group(0)
+
+
+def _get_duckdb_connection():
+    """
+    Lazily initialize and return a sandboxed in-memory DuckDB connection.
+
+    The connection is stored in ExtraFeature.memory and reused across all
+    extras during a single document conversion.
+    """
+    if "duckdb" not in ExtraFeature.memory:
+        conn = duckdb.connect(":memory:")
+        conn.execute("SET enable_external_access = false")
+        ExtraFeature.memory["duckdb"] = conn
+    return ExtraFeature.memory["duckdb"]
+
+
+def _render_html_table(columns, rows):
+    """
+    Render a list of column names and row tuples into an HTML table string.
+
+    Args:
+        columns (list[str]): Column header names.
+        rows (list[tuple]): Row data as tuples of values.
+
+    Returns:
+        str: An HTML <table> string.
+    """
+    header_cells = "".join(f"<th>{col}</th>" for col in columns)
+    body_rows = "".join(
+        "<tr>" + "".join(f"<td>{val}</td>" for val in row) + "</tr>" for row in rows
+    )
+    return (
+        f"<table><thead><tr>{header_cells}</tr></thead>"
+        f"<tbody>{body_rows}</tbody></table>"
+    )
+
+
+def apply_extras(extras: set[ExtraFeature], html_content, before_stash=False):
     """
     Applies extra features to an html string.
+
     Args:
-        extras: set[ExtraFeature] Extra features to apply
-        html: complete html text, used by some extras like TOC.
+        extras: set[ExtraFeature] Extra features to apply.
+        html_content: Complete html text, used by some extras like TOC.
+        before_stash: Whether to run extras marked for pre-stash processing.
+
     Returns:
         str: The updated html.
     """
     for extra in extras:
-        if not extra.run_before_stash == before_stash:
+        if extra.run_before_stash != before_stash:
             continue
 
-        # Loop until the pattern no longer matches
-        new_html = html
-        while re.search(extra.pattern, html, flags=re.DOTALL):
+        new_html = html_content
+        while re.search(extra.pattern, html_content, flags=re.DOTALL):
             try:
                 new_html = re.sub(
                     extra.pattern,
-                    lambda match, ext=extra: ext.replace(match, html=html),
-                    html,
+                    lambda match, ext=extra: ext.replace(
+                        match, html_content=html_content
+                    ),
+                    html_content,
                     flags=re.DOTALL,
                 )
-            except Exception as exc:
-                print(
-                    f"WARNING: An exception occurred while trying to apply an extra:\n{exc}"
+            except Exception:
+                logger.warning(
+                    "An exception occurred while applying an extra", exc_info=True
                 )
 
-            # Safety break:
-            if new_html == html:
+            if new_html == html_content:
                 break
-            html = new_html
+            html_content = new_html
 
-    return html
+    return html_content

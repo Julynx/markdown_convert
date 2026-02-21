@@ -6,6 +6,8 @@ Author: @julynx
 from .extras import (
     CheckboxExtra,
     CustomSpanExtra,
+    DuckDBQueryExtra,
+    DuckDBTableExtra,
     HighlightExtra,
     SchemDrawExtra,
     TocExtra,
@@ -90,6 +92,14 @@ EXTRAS = {
     "schemdraw": {
         "provided-by": "markdown-convert",
         "args": SchemDrawExtra,
+    },
+    "dynamic-tables": {
+        "provided-by": "markdown-convert",
+        "args": DuckDBTableExtra,
+    },
+    "dynamic-queries": {
+        "provided-by": "markdown-convert",
+        "args": DuckDBQueryExtra,
     },
 }
 

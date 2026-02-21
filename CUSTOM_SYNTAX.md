@@ -7,8 +7,9 @@
   - [Schemdraw Diagrams](#schemdraw-diagrams)
   - [Syntax Highlighted Code Blocks](#syntax-highlighted-code-blocks)
   - [Pipe Tables](#pipe-tables)
-  - [Image alt-text attributes](#image-alt-text-attributes)
-  - [Image captions](#image-captions)
+  - [Dynamic Tables and Queries](#dynamic-tables-and-queries)
+  - [Image Alt-text Attributes](#image-alt-text-attributes)
+  - [Image Captions](#image-captions)
   - [Custom Containers](#custom-containers)
   - [Page Breaks](#page-breaks)
   - [Table of Contents](#table-of-contents)
@@ -187,13 +188,36 @@ Check out [schemdraw.readthedocs.io](https://schemdraw.readthedocs.io/en/stable/
 
 <img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/pipe-table.png' width='100%'>
 
-## Image alt-text attributes
+## Dynamic Tables and Queries
+
+> _Extra: `dynamic-tables` and `dynamic-queries` (enabled by default)_
+
+```markdown
+| Product | Price | Quantity |
+| ------- | ----- | -------- |
+| Apple   | 1     | 10       |
+| Banana  | 2     | 20       |
+| Orange  | 3     | 30       |
+
+> [sales] Sales data for fruits
+
+- The average price is [query: select avg(price) from sales] dollars.
+- The total quantity is [query: select sum(quantity) from sales].
+
+Fruits with price > 2:
+
+[query: select * from sales where price > 2]
+```
+
+<img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/dynamic-tables.png' width='100%'>
+
+## Image Alt-text Attributes
 
 > _Provided by the default CSS_
 
 ```markdown
 ![Flower ::shadow:: ::tiny::](assets/flower.png)
-```
+````
 
 <img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/image-attributes.png' width='100%'>
 
@@ -212,7 +236,7 @@ Check out [schemdraw.readthedocs.io](https://schemdraw.readthedocs.io/en/stable/
 
 </details>
 
-## Image captions
+## Image Captions
 
 > _Provided by the default CSS_
 
@@ -294,19 +318,19 @@ You can specify a maximum depth by using `[TOC depth=3]`.
 
 ```markdown
 .. note::
-   Useful information that users should know, even when skimming content.
+Useful information that users should know, even when skimming content.
 
 .. tip::
-   Helpful advice for doing things better or more easily.
+Helpful advice for doing things better or more easily.
 
 .. important:: Read this
-   Key information users need to know to achieve their goal.
+Key information users need to know to achieve their goal.
 
 .. warning::
-   Urgent info that needs immediate user attention to avoid problems.
+Urgent info that needs immediate user attention to avoid problems.
 
 .. caution::
-   Advises about risks or negative outcomes of certain actions.
+Advises about risks or negative outcomes of certain actions.
 ```
 
 <img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/admonitions.png' width='100%'>

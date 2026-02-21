@@ -313,6 +313,17 @@ td {
   white-space: normal;
 }
 
+/* Table footers */
+table + blockquote {
+    text-align: center;
+    font-size: 1rem;
+    font-style: italic;
+    display: block;
+    margin: 0 auto;
+    border-left: 0;
+    padding-left: 0;
+}
+
 /* Horizontal rulers */
 hr {
   height: 1px;

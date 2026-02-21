@@ -40,7 +40,7 @@ beautifulsoup4>=4.14.3
 install-playwright>=1.0.0
 vl-convert-python>=1.9.0.post1
 ruamel-yaml>=0.19.1
-yaml-to-schemdraw>=0.1.0
+yaml-to-schemdraw>=0.1.2
 ```
 
 ## 3. Directory Structure
@@ -85,6 +85,7 @@ markdown-convert/
 ├── CUSTOM_SYNTAX.md
 ├── LICENSE
 ├── README.md
+├── TODO.md
 ├── pyproject.toml
 └── uv.lock
 ```
