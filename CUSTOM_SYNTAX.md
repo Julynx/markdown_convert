@@ -235,9 +235,9 @@ Check out [schemdraw.readthedocs.io](https://schemdraw.readthedocs.io/en/stable/
 - The average price is [query: select avg(price) from sales] dollars.
 - The total quantity is [query: select sum(quantity) from sales].
 
-Fruits with price > 2:
+Fruits with price >= 2:
 
-[query: select * from sales where price > 2]
+[query: select * from sales where price >= 2]
 ```
 
 <img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/dynamic-tables.png' width='100%'>
