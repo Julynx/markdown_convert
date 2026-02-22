@@ -160,18 +160,28 @@ def convert_text(
         nonce = secrets.token_urlsafe(16)
         extras = resolve_extras(extras)
 
-        markdown = MarkdownIt("js-default", {"breaks": True, "html": True})
+        # Configure markdown-it
+        markdown = MarkdownIt(
+            "js-default",
+            {
+                "breaks": True,
+                "html": security_level != "strict",
+            },
+        )
         for extra in extras["markdown_it_extras"]:
             markdown.use(extra)
 
+        # Render Markdown to HTML
         html = markdown.render(markdown_text)
 
+        # Render extras
         html = create_sections(html)
 
         if MermaidExtra in extras["markdown_convert_extras"]:
             html = render_mermaid_diagrams(html, nonce=nonce)
         html = render_extra_features(html, extras=extras["markdown_convert_extras"])
 
+        # Generate PDF
         return _generate_pdf_with_playwright(
             html,
             output_path,
