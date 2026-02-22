@@ -95,7 +95,7 @@ def render_extra_features(html, extras: set[ExtraFeature]):
     Renders extra features by protecting specific tags, applying regex
     transformations, and restoring the protected content.
     """
-    ExtraFeature.memory = {}
+    memory = {}
 
     try:
         placeholders = {}
@@ -138,7 +138,7 @@ def render_extra_features(html, extras: set[ExtraFeature]):
             return key
 
         # 0. Pre protection extras (e.g., Diagrams)
-        html = apply_extras(pre_stash_extras, html)
+        html = apply_extras(pre_stash_extras, html, memory)
 
         # 1. Protection: Replace ignored tags with unique hashes
         ignored_pattern = re.compile(
@@ -147,7 +147,7 @@ def render_extra_features(html, extras: set[ExtraFeature]):
         html = ignored_pattern.sub(stash, html)
 
         # 2. Transformations: Define patterns and their replacements
-        html = apply_extras(post_stash_extras, html)
+        html = apply_extras(post_stash_extras, html, memory)
 
         # 3. Restoration: Replace hashes back with original content
         for key, original_content in placeholders.items():
@@ -156,7 +156,7 @@ def render_extra_features(html, extras: set[ExtraFeature]):
         return html
 
     finally:
-        conn = ExtraFeature.memory.get("duckdb")
+        conn = memory.get("duckdb")
         if conn:
             conn.close()
-        ExtraFeature.memory = {}
+        memory = {}

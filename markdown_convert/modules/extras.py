@@ -43,10 +43,9 @@ class ExtraFeature:
     pattern = r""
     execution_phase = 100
     bypass_stashing_class = None
-    memory: dict = {}
 
     @staticmethod
-    def replace(match, html_content):
+    def replace(match, html_content, memory=None):
         """
         Replaces the matched pattern with the rendered extra feature.
 
@@ -69,7 +68,7 @@ class CheckboxExtra(ExtraFeature):
     pattern = r"(?P<checkbox>\[\s\]|\[x\])"
 
     @staticmethod
-    def replace(match, html_content):
+    def replace(match, html_content, memory=None):
         """
         Render a tag for a checkbox.
 
@@ -88,7 +87,7 @@ class HighlightExtra(ExtraFeature):
     pattern = r"==(?P<content>.*?)=="
 
     @staticmethod
-    def replace(match, html_content):
+    def replace(match, html_content, memory=None):
         """
         Render a tag for a highlight.
 
@@ -107,7 +106,7 @@ class CustomSpanExtra(ExtraFeature):
     pattern = r"(?P<cls>[a-zA-Z0-9_-]+)\{\{\s*(?P<content>.*?)\s*\}\}"
 
     @staticmethod
-    def replace(match, html_content):
+    def replace(match, html_content, memory=None):
         """
         Render a tag for a custom span.
 
@@ -127,7 +126,7 @@ class TocExtra(ExtraFeature):
     pattern = r"\[TOC(?:\s+depth=(?P<depth>\d+))?\]"
 
     @staticmethod
-    def replace(match, html_content):
+    def replace(match, html_content, memory=None):
         """
         Render a tag for a table of contents.
 
@@ -195,7 +194,7 @@ class VegaExtra(ExtraFeature):
     bypass_stashing_class = "language-vega"
 
     @staticmethod
-    def replace(match, html_content):
+    def replace(match, html_content, memory=None):
         """
         Render a tag for a vega-lite diagram from JSON or YAML.
 
@@ -211,7 +210,7 @@ class VegaExtra(ExtraFeature):
             data_spec = spec.get("data", {})
             if isinstance(data_spec, dict) and "query" in data_spec:
                 query = data_spec.pop("query")
-                conn = _get_duckdb_connection()
+                conn = _get_duckdb_connection(memory)
                 table = conn.execute(query).df()
 
                 # Handle dates for JSON serialization
@@ -268,7 +267,7 @@ class SchemDrawExtra(ExtraFeature):
     execution_phase = 0
 
     @staticmethod
-    def replace(match, html_content):
+    def replace(match, html_content, memory=None):
         """
         Render a tag for a schemdraw diagram from JSON or YAML.
 
@@ -308,7 +307,7 @@ class DynamicTableExtra(ExtraFeature):
     execution_phase = 50
 
     @staticmethod
-    def replace(match, html_content):
+    def replace(match, html_content, memory=None):
         """
         Parse the matched HTML table and register it in DuckDB.
 
@@ -328,7 +327,7 @@ class DynamicTableExtra(ExtraFeature):
                 raise ValueError("No tables found in HTML")
 
             table = tables[-1]
-            conn = _get_duckdb_connection()
+            conn = _get_duckdb_connection(memory)
             conn.register(table_name, table)
         except Exception as exc:
             logger.warning(
@@ -354,7 +353,7 @@ class DynamicQueryExtra(ExtraFeature):
     execution_phase = 60
 
     @staticmethod
-    def replace(match, html_content):
+    def replace(match, html_content, memory=None):
         """
         Execute the matched SQL expression and return the result.
 
@@ -367,7 +366,7 @@ class DynamicQueryExtra(ExtraFeature):
         """
         expression = html.unescape(match.group("expression"))
         try:
-            conn = _get_duckdb_connection()
+            conn = _get_duckdb_connection(memory)
             result = conn.execute(expression)
             columns = [desc[0] for desc in result.description]
             rows = result.fetchall()
@@ -381,18 +380,25 @@ class DynamicQueryExtra(ExtraFeature):
             return match.group(0)
 
 
-def _get_duckdb_connection():
+def _get_duckdb_connection(memory):
     """
     Lazily initialize and return a sandboxed in-memory DuckDB connection.
 
-    The connection is stored in ExtraFeature.memory and reused across all
+    The connection is stored in memory and reused across all
     extras during a single document conversion.
+
+    Args:
+        memory (dict): Shared ephemeral state across all extras during a single
+                       document conversion.
+
+    Returns:
+        duckdb.DuckDB: The DuckDB connection.
     """
-    if "duckdb" not in ExtraFeature.memory:
+    if "duckdb" not in memory:
         conn = duckdb.connect(":memory:")
         conn.execute("SET enable_external_access = false")
-        ExtraFeature.memory["duckdb"] = conn
-    return ExtraFeature.memory["duckdb"]
+        memory["duckdb"] = conn
+    return memory["duckdb"]
 
 
 def _render_html_table(columns, rows):
@@ -416,7 +422,7 @@ def _render_html_table(columns, rows):
     )
 
 
-def apply_extras(extras: list[ExtraFeature], html_content):
+def apply_extras(extras: list[ExtraFeature], html_content, memory=None):
     """
     Applies extra features to an html string in the order they are provided.
 
@@ -433,9 +439,12 @@ def apply_extras(extras: list[ExtraFeature], html_content):
             try:
                 new_html = re.sub(
                     extra.pattern,
-                    lambda match, html_content=html_content, ext=extra: ext.replace(
-                        match,
-                        html_content=html_content,
+                    lambda match, html_content=html_content, ext=extra, memory=memory: (
+                        ext.replace(
+                            match,
+                            html_content=html_content,
+                            memory=memory,
+                        )
                     ),
                     html_content,
                     flags=re.DOTALL,
