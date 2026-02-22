@@ -72,9 +72,9 @@ Options:
   --extras=[extra1,extra2,...]
       Specify the extras to use. Uses all extras if not specified.
       Supported extras:
-        fenced-code-blocks,header-ids,breaks,tables,latex,mermaid,
-        strike,admonitions,checkboxes,custom-spans,highlights,toc,
-        vega-lite,schemdraw,dynamic-tables,dynamic-queries
+        admonitions,anchors,task-lists,math,custom-spans,highlights,
+        syntax-highlighting,table-of-contents,vega-lite,inline-math,
+        block-math,schemdraw,mermaid,dynamic-tables,dynamic-queries
   --security=default|strict
       Specify the security level.
       Strict mode disables inline HTML, internet access and JS,

@@ -10,9 +10,14 @@ import re
 from io import StringIO
 
 import duckdb
+import latex2mathml.converter as mathml
 import pandas as pd
 import vl_convert
 from bs4 import BeautifulSoup, Tag
+from pygments import highlight
+from pygments.formatters import HtmlFormatter
+from pygments.lexers import get_lexer_by_name
+from pygments.util import ClassNotFound
 from ruamel.yaml import YAML
 from yaml_to_schemdraw import from_yaml_string
 
@@ -62,25 +67,6 @@ class ExtraFeature:
         raise NotImplementedError("Subclasses must implement the replace method.")
 
 
-class CheckboxExtra(ExtraFeature):
-    """Extra feature for rendering checkboxes."""
-
-    pattern = r"(?P<checkbox>\[\s\]|\[x\])"
-
-    @staticmethod
-    def replace(match, html_content, memory=None):
-        """
-        Render a tag for a checkbox.
-
-        Args:
-            match: Element identified as a checkbox.
-        Returns:
-            str: Tag representing the checkbox.
-        """
-        status = "checked" if "[x]" in match.group("checkbox") else ""
-        return f'<input type="checkbox" {status}>'
-
-
 class HighlightExtra(ExtraFeature):
     """Extra feature for rendering highlighted text."""
 
@@ -98,6 +84,38 @@ class HighlightExtra(ExtraFeature):
         """
         content = match.group("content")
         return f'<span class="highlight">{content}</span>'
+
+
+class SyntaxHighlightExtra(ExtraFeature):
+    """Extra feature for rendering syntax highlighted code blocks."""
+
+    pattern = (
+        r"<pre[^>]*>\s*"
+        r"<code[^>]*class=[\"'](?![^>]*highlighted)[^\"]*language-"
+        r"(?P<lang>[a-zA-Z0-9_-]+)[^\"]*[\"'][^>]*>"
+        r"(?P<code>.*?)"
+        r"</code>\s*"
+        r"</pre>"
+    )
+    execution_phase = 0
+
+    @staticmethod
+    def replace(match, html_content, memory=None):
+        lang = match.group("lang")
+        code = match.group("code")
+
+        try:
+            highlighted = highlight(
+                code,
+                get_lexer_by_name(lang),
+                HtmlFormatter(nowrap=True, classprefix="pygments-"),
+            )
+        except ClassNotFound:
+            highlighted = code
+
+        return (
+            f'<pre><code class="language-{lang} highlighted">{highlighted}</code></pre>'
+        )
 
 
 class CustomSpanExtra(ExtraFeature):
@@ -118,6 +136,48 @@ class CustomSpanExtra(ExtraFeature):
         cls = match.group("cls")
         content = match.group("content")
         return f'<span class="{cls}">{content}</span>'
+
+
+class InlineMathExtra(ExtraFeature):
+    """Extra feature for rendering LaTeX math expressions."""
+
+    # <eq> ... </eq> Inline equations
+    pattern = r"<eq>(?P<content>.*?)</eq>"
+
+    @staticmethod
+    def replace(match, html_content, memory=None):
+        """
+        Render a tag for a LaTeX math expression.
+
+        Args:
+            match: Element identified as a LaTeX math expression.
+        Returns:
+            str: Tag representing the LaTeX math expression.
+        """
+        content = match.group("content")
+        converted = mathml.convert(content)
+        return converted
+
+
+class BlockMathExtra(ExtraFeature):
+    """Extra feature for rendering LaTeX math expressions."""
+
+    # <eqn> ... </eqn> Block equations
+    pattern = r"<eqn>(?P<content>.*?)</eqn>"
+
+    @staticmethod
+    def replace(match, html_content, memory=None):
+        """
+        Render a tag for a LaTeX math expression.
+
+        Args:
+            match: Element identified as a LaTeX math expression.
+        Returns:
+            str: Tag representing the LaTeX math expression.
+        """
+        content = match.group("content")
+        converted = mathml.convert(content, display="block")
+        return converted
 
 
 class TocExtra(ExtraFeature):
@@ -178,6 +238,35 @@ class TocExtra(ExtraFeature):
             last_list_element[level] = list_item
 
         return tag.prettify()
+
+
+class MermaidExtra(ExtraFeature):
+    """Extra feature for rendering mermaid diagrams."""
+
+    pattern = (
+        r"<pre[^>]*>"
+        r"<code[^>]*class=[\"'][^\"]*language-mermaid[^\"]*[\"'][^>]*>"
+        r"(?P<content>.*?)"
+        r"</code>"
+        r"</pre>"
+    )
+    execution_phase = 60
+    bypass_stashing_class = "language-mermaid"
+
+    @staticmethod
+    def replace(match, html_content, memory=None):
+        """
+        Render a tag for a mermaid diagram.
+
+        Args:
+            match (re.Match): Element identified as a mermaid diagram.
+            html_content (str): The full HTML content.
+
+        Returns:
+            str: SVG tag representing the mermaid diagram.
+        """
+        content = match.group("content")
+        return f'<div class="mermaid">{content}</div>'
 
 
 class VegaExtra(ExtraFeature):

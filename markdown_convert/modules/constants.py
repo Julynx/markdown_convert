@@ -3,13 +3,21 @@ This module contains the constants used in the markdown_convert package.
 Author: @julynx
 """
 
+from mdit_py_plugins.admon import admon_plugin
+from mdit_py_plugins.anchors import anchors_plugin
+from mdit_py_plugins.tasklists import tasklists_plugin
+from mdit_py_plugins.texmath import texmath_plugin
+
 from .extras import (
-    CheckboxExtra,
+    BlockMathExtra,
     CustomSpanExtra,
     DynamicQueryExtra,
     DynamicTableExtra,
     HighlightExtra,
+    InlineMathExtra,
+    MermaidExtra,
     SchemDrawExtra,
+    SyntaxHighlightExtra,
     TocExtra,
     VegaExtra,
 )
@@ -37,41 +45,21 @@ OPTIONS_MODES = ("once", "live", "debug")
 OPTIONS_SECURITY = ("default", "strict")
 
 EXTRAS = {
-    "fenced-code-blocks": {
-        "provided-by": "markdown2",
-        "args": None,
-    },
-    "header-ids": {
-        "provided-by": "markdown2",
-        "args": True,
-    },
-    "breaks": {
-        "provided-by": "markdown2",
-        "args": {"on_newline": True},
-    },
-    "tables": {
-        "provided-by": "markdown2",
-        "args": True,
-    },
-    "latex": {
-        "provided-by": "markdown2",
-        "args": True,
-    },
-    "mermaid": {
-        "provided-by": "markdown2",
-        "args": None,
-    },
-    "strike": {
-        "provided-by": "markdown2",
-        "args": None,
-    },
     "admonitions": {
-        "provided-by": "markdown2",
-        "args": None,
+        "provided-by": "markdown-it",
+        "args": admon_plugin,
     },
-    "checkboxes": {
-        "provided-by": "markdown-convert",
-        "args": CheckboxExtra,
+    "anchors": {
+        "provided-by": "markdown-it",
+        "args": anchors_plugin,
+    },
+    "task-lists": {
+        "provided-by": "markdown-it",
+        "args": tasklists_plugin,
+    },
+    "math": {
+        "provided-by": "markdown-it",
+        "args": texmath_plugin,
     },
     "custom-spans": {
         "provided-by": "markdown-convert",
@@ -81,7 +69,11 @@ EXTRAS = {
         "provided-by": "markdown-convert",
         "args": HighlightExtra,
     },
-    "toc": {
+    "syntax-highlighting": {
+        "provided-by": "markdown-convert",
+        "args": SyntaxHighlightExtra,
+    },
+    "table-of-contents": {
         "provided-by": "markdown-convert",
         "args": TocExtra,
     },
@@ -89,9 +81,21 @@ EXTRAS = {
         "provided-by": "markdown-convert",
         "args": VegaExtra,
     },
+    "inline-math": {
+        "provided-by": "markdown-convert",
+        "args": InlineMathExtra,
+    },
+    "block-math": {
+        "provided-by": "markdown-convert",
+        "args": BlockMathExtra,
+    },
     "schemdraw": {
         "provided-by": "markdown-convert",
         "args": SchemDrawExtra,
+    },
+    "mermaid": {
+        "provided-by": "markdown-convert",
+        "args": MermaidExtra,
     },
     "dynamic-tables": {
         "provided-by": "markdown-convert",
@@ -143,7 +147,7 @@ def resolve_extras(extras_list=None):
         extras_list (list=None): List of extras to use. If None, all extras are used.
 
     Returns:
-        dict: A dictionary containing the keys "markdown2_extras" and
+        dict: A dictionary containing the keys "markdown_it_extras" and
               "markdown_convert_extras"
     """
     if extras_list is None:
@@ -153,10 +157,10 @@ def resolve_extras(extras_list=None):
             key: value for key, value in EXTRAS.items() if key in extras_list
         }
 
-    markdown2_extras = {
-        extra: config["args"]
-        for extra, config in selected_extras.items()
-        if config["provided-by"] == "markdown2"
+    markdown_it_extras = {
+        config["args"]
+        for _, config in selected_extras.items()
+        if config["provided-by"] == "markdown-it"
     }
 
     markdown_convert_extras = {
@@ -166,6 +170,6 @@ def resolve_extras(extras_list=None):
     }
 
     return {
-        "markdown2_extras": markdown2_extras,
+        "markdown_it_extras": markdown_it_extras,
         "markdown_convert_extras": markdown_convert_extras,
     }

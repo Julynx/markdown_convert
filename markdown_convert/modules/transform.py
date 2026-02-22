@@ -83,8 +83,7 @@ def render_mermaid_diagrams(html, *, nonce):
   }});
 </script>
 """
-
-    if '<div class="mermaid">' in html:
+    if '<code class="language-mermaid">' in html:
         html = mermaid_script + html
 
     return html

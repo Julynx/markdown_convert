@@ -476,18 +476,9 @@ math {
   border-radius: 0.3rem;
 }
 
-.admonition strong {
+.admonition .admonition-title {
   text-transform: capitalize;
-}
-
-.admonition em:not(:empty)::before {
-  content: ": ";
   font-weight: bold;
-}
-
-.admonition em {
-  font-weight: 600;
-  font-style: normal;
 }
 
 .admonition p {
@@ -499,7 +490,7 @@ math {
   background-color: oklch(from var(--color-ad-note) 0.97 0.015 h);
 }
 
-.admonition.note strong {
+.admonition.note .admonition-title {
   color: var(--color-ad-note);
 }
 
@@ -508,7 +499,7 @@ math {
   background-color: oklch(from var(--color-ad-tip) 0.97 0.015 h);
 }
 
-.admonition.tip strong {
+.admonition.tip .admonition-title {
   color: var(--color-ad-tip);
 }
 
@@ -517,7 +508,7 @@ math {
   background-color: oklch(from var(--color-ad-important) 0.97 0.015 h);
 }
 
-.admonition.important strong {
+.admonition.important .admonition-title {
   color: var(--color-ad-important);
 }
 
@@ -526,7 +517,7 @@ math {
   background-color: oklch(from var(--color-ad-warning) 0.97 0.015 h);
 }
 
-.admonition.warning strong {
+.admonition.warning .admonition-title {
   color: var(--color-ad-warning);
 }
 
@@ -535,7 +526,7 @@ math {
   background-color: oklch(from var(--color-ad-caution) 0.97 0.015 h);
 }
 
-.admonition.caution strong {
+.admonition.caution .admonition-title {
   color: var(--color-ad-caution);
 }
 

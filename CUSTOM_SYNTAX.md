@@ -21,7 +21,7 @@ Below are the most notable features:
 
 ## LaTeX Math Equations
 
-> _Extra: `latex` (enabled by default)_
+> _Extra: `math`, `inline-math` and `block-math` (enabled by default)_
 
 ```text
 Inline equation: $E = mc^2$
@@ -196,7 +196,7 @@ Check out [schemdraw.readthedocs.io](https://schemdraw.readthedocs.io/en/stable/
 
 ## Syntax Highlighted Code Blocks
 
-> _Extra: `fenced-code-blocks` (enabled by default)_
+> _Extra: `syntax-highlighting` (enabled by default)_
 
     ```python
     def greet(name):
@@ -207,7 +207,7 @@ Check out [schemdraw.readthedocs.io](https://schemdraw.readthedocs.io/en/stable/
 
 ## Pipe Tables
 
-> _Extra: `tables` (enabled by default)_
+> _Supported by default_
 
 ```text
 | Name    | Age | City          |
@@ -332,7 +332,7 @@ This text is rendered on a new page.
 
 ## Table of Contents
 
-> _Extra `toc` (enabled by default)_
+> _Extra `table-of-contents` (enabled by default)_
 
 ```markdown
 Use `[TOC]` to insert a dynamic Table of Contents with links into the PDF file.
@@ -348,20 +348,20 @@ You can specify a maximum depth by using `[TOC depth=3]`.
 > _Extra `admonitions` (enabled by default)_
 
 ```markdown
-.. note::
-   Useful information that users should know, even when skimming content.
+!!! note
+    Useful information that users should know, even when skimming content.
 
-.. tip::
-   Helpful advice for doing things better or more easily.
+!!! tip
+    Helpful advice for doing things better or more easily.
 
-.. important:: Read this
-   Key information users need to know to achieve their goal.
+!!! important "Read this"
+    Key information users need to know to achieve their goal.
 
-.. warning::
-   Urgent info that needs immediate user attention to avoid problems.
+!!! warning
+    Urgent info that needs immediate user attention to avoid problems.
 
-.. caution::
-   Advises about risks or negative outcomes of certain actions.
+!!! caution
+    Advises about risks or negative outcomes of certain actions.
 ```
 
 <img src='https://raw.githubusercontent.com/Julynx/markdown_convert/refs/heads/main/assets/admonitions.png' width='100%'>

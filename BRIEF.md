@@ -32,7 +32,6 @@ _Convert Markdown files to PDF from your command line._
 
 ```text
 argsdict==1.0.0
-markdown2>=2.4.13,<3
 pygments>=2.17.2,<3
 latex2mathml>=3.78.1
 playwright>=1.57.0
@@ -44,6 +43,9 @@ yaml-to-schemdraw>=0.1.2
 duckdb>=1.4.4
 pandas>=3.0.1
 lxml>=6.0.2
+string-grab>=1.3.0
+markdown-it-py>=4.0.0
+mdit-py-plugins>=0.5.0
 ```
 
 ## 3. Directory Structure
@@ -67,6 +69,7 @@ markdown-convert/
     ├── size-attributes.png
     ├── syntax-highlighted-code.png
     ├── toc.png
+    ├── vega-chart-with-query.png
     └── vega-chart.png
 ├── markdown_convert
     ├── modules
@@ -75,7 +78,6 @@ markdown-convert/
         ├── constants.py
         ├── convert.py
         ├── extras.py
-        ├── overrides.py
         ├── resources.py
         ├── transform.py
         ├── utils.py
@@ -105,7 +107,7 @@ markdown-convert/
         - markdown_convert\modules\constants.py (...)
         - markdown_convert\modules\utils.py
       - markdown_convert\modules\constants.py (...)
-      - markdown_convert\modules\overrides.py
+      - markdown_convert\modules\extras.py
       - markdown_convert\modules\resources.py
         - markdown_convert\modules\constants.py (...)
         - markdown_convert\modules\utils.py
@@ -156,30 +158,30 @@ markdown-convert/
 
 ```text
 - class ExtraFeature
-  - def replace(match, html_content)
-- class CheckboxExtra(ExtraFeature)
-  - def replace(match, html_content)
+  - def replace(match, html_content, memory)
 - class HighlightExtra(ExtraFeature)
-  - def replace(match, html_content)
+  - def replace(match, html_content, memory)
+- class SyntaxHighlightExtra(ExtraFeature)
+  - def replace(match, html_content, memory)
 - class CustomSpanExtra(ExtraFeature)
-  - def replace(match, html_content)
+  - def replace(match, html_content, memory)
+- class InlineMathExtra(ExtraFeature)
+  - def replace(match, html_content, memory)
+- class BlockMathExtra(ExtraFeature)
+  - def replace(match, html_content, memory)
 - class TocExtra(ExtraFeature)
-  - def replace(match, html_content)
+  - def replace(match, html_content, memory)
+- class MermaidExtra(ExtraFeature)
+  - def replace(match, html_content, memory)
 - class VegaExtra(ExtraFeature)
-  - def replace(match, html_content)
+  - def replace(match, html_content, memory)
 - class SchemDrawExtra(ExtraFeature)
-  - def replace(match, html_content)
+  - def replace(match, html_content, memory)
 - class DynamicTableExtra(ExtraFeature)
-  - def replace(match, html_content)
+  - def replace(match, html_content, memory)
 - class DynamicQueryExtra(ExtraFeature)
-  - def replace(match, html_content)
-- def apply_extras(extras: set[ExtraFeature], html_content, before_stash)
-```
-
-### markdown_convert\modules\overrides.py
-
-```text
-- def tags(self, lexer_name: str) -> tuple[str, str]
+  - def replace(match, html_content, memory)
+- def apply_extras(extras: list[ExtraFeature], html_content, memory)
 ```
 
 ### markdown_convert\modules\resources.py

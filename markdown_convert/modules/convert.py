@@ -9,6 +9,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 
+from markdown_it import MarkdownIt
 from playwright.sync_api import sync_playwright
 
 from .autoinstall import ensure_chromium
@@ -18,7 +19,7 @@ from .constants import (
     PDF_PARAMS,
     resolve_extras,
 )
-from .overrides import markdown2
+from .extras import MermaidExtra
 from .resources import get_code_css_path, get_css_path, get_output_path
 from .transform import (
     create_html_document,
@@ -158,13 +159,16 @@ def convert_text(
     try:
         nonce = secrets.token_urlsafe(16)
         extras = resolve_extras(extras)
-        html = markdown2.markdown(
-            markdown_text,
-            extras=extras["markdown2_extras"],
-            safe_mode=security_level == "strict",
-        )
+
+        markdown = MarkdownIt("js-default", {"breaks": True, "html": True})
+        for extra in extras["markdown_it_extras"]:
+            markdown.use(extra)
+
+        html = markdown.render(markdown_text)
+
         html = create_sections(html)
-        if "mermaid" in extras["markdown2_extras"]:
+
+        if MermaidExtra in extras["markdown_convert_extras"]:
             html = render_mermaid_diagrams(html, nonce=nonce)
         html = render_extra_features(html, extras=extras["markdown_convert_extras"])
 
