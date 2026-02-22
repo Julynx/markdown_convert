@@ -65,10 +65,6 @@ EXTRAS = {
         "provided-by": "markdown2",
         "args": None,
     },
-    "middle-word-em": {
-        "provided-by": "markdown2",
-        "args": False,
-    },
     "admonitions": {
         "provided-by": "markdown2",
         "args": None,
