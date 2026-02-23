@@ -38,7 +38,7 @@ Unlike other similar tools, `markdown-convert`:
   | **LaTeX Math Equations**                              | `$E=mc^2$` is rendered as a math equation.                                                         |
   | **Mermaid, Vega-Lite and Schemdraw Diagrams**         | ` ```mermaid ...` is rendered as a diagram.                                                        |
   | **Syntax-Highlighted Code Blocks**                    | ` ```python ...` gets syntax highlighting.                                                         |
-  | **Admonitions**                                       | `!!! note` is styled as a note box.                                                                |
+  | **Admonitions**                                       | `!!! note ...` is styled as a note box.                                                                |
   | **Dynamic Table of Contents**                         | `[TOC]` inserts a Table of Contents.                                                               |
   | **Image Attributes**                                  | `![::shadow::](sky.png)` shows a shadow behind the image.                                          |
   | **Captions**                                          | `![sky](sky.png)_A beautiful sky_` shows a caption, centered below the image.                      |
