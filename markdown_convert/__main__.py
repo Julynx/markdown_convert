@@ -11,7 +11,7 @@ from argsdict import args
 
 from .modules.constants import EXTRAS, OPTIONS, OPTIONS_MODES, OPTIONS_SECURITY, RED
 from .modules.convert import convert, live_convert
-from .modules.resources import get_css_path, get_output_path, get_usage
+from .modules.resources import get_output_path, get_usage
 from .modules.utils import color
 from .modules.validate import (
     validate_css_path,
