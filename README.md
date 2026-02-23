@@ -32,12 +32,17 @@ Unlike other similar tools, `markdown-convert`:
 - Can be fully installed via `pip install markdown-convert`, with no external system-level dependencies.
 - Comes with a sensible default CSS stylesheet out of the box.
 - Supports:
-  - **LaTeX math equations:** `$...$` for inline and `$$...$$` for block equations.
-  - **Mermaid diagrams:** ` ```mermaid ...``` ` code blocks get rendered as diagrams.
-  - **Syntax highlighting for code blocks:** Applied automatically based on the specified language.
+  - **LaTeX Math Equations:** `$E=mc^2$` is rendered as a math equation.
+  - **Mermaid, Vega-Lite and Schemdraw Diagrams:** ```mermaid ...``` is rendered as a diagram.
+  - **Syntax-Highlighted Code Blocks:** ```python ...``` gets syntax highlighting.
+  - **Admonitions:** `!!! note` is styled as a note box.
+  - **Dynamic Table of Contents:** `[TOC]` inserts a Table of Contents.
+  - **Image Attributes:** `![::shadow::](sky.png)` shows a shadow behind the image.
+  - **Captions:** `![sky](sky.png)_A beautiful sky_` shows a caption, centered below the image.
+  - **Tables and Queries:** `> [my_table]` under your table gives it a name, `[query:select ... from my_table]` queries it.
   - **Live conversion:** `markdown-convert file.md --mode=live` updates the PDF every time the Markdown file changes.
-  - **Custom CSS** `markdown-convert file.md --css=style.css` extends the default CSS with your own stylesheet.
-  - **Pipe tables, checkboxes, header links, CSS paged media features and more!**
+  - **Custom CSS:** `markdown-convert file.md --css=style.css` extends the default CSS with your own stylesheet.
+  - **Task lists, custom containers, CSS paged media features and more!**
 
 Check out [CUSTOM_SYNTAX.md](https://github.com/Julynx/markdown_convert/blob/main/CUSTOM_SYNTAX.md) for all the extra features and how to use them.
 
