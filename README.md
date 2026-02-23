@@ -45,7 +45,7 @@ Unlike other similar tools, `markdown-convert`:
   | **Tables and Queries**                                | `> [my_table]` under your table gives it a name,<br>`[query:select ... from my_table]` queries it. |
   | **Live Conversion**                                   | `markdown-convert file.md --mode=live` updates the PDF every time the Markdown file changes.       |
   | **Custom CSS**                                        | `markdown-convert file.md --css=style.css` extends the default CSS with your own stylesheet.       |
-  | **Task lists, containers, CSS paged media and more!** | ...                                                                                                |
+  | **Task Lists, Containers, CSS Paged Media and more!** | ...                                                                                                |
 
   Check out [CUSTOM_SYNTAX.md](https://github.com/Julynx/markdown_convert/blob/main/CUSTOM_SYNTAX.md) for all the extra features and how to use them.
 
