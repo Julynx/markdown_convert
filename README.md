@@ -47,8 +47,7 @@ Unlike other similar tools, `markdown-convert`:
   | **Custom CSS**                                        | `markdown-convert file.md --css=style.css` extends the default CSS with your own stylesheet.       |
   | **Task lists, containers, CSS paged media and more!** | ...                                                                                                |
 
-  > [!NOTE]
-  > Check out [CUSTOM_SYNTAX.md](https://github.com/Julynx/markdown_convert/blob/main/CUSTOM_SYNTAX.md) for all the extra features and how to use them.
+  Check out [CUSTOM_SYNTAX.md](https://github.com/Julynx/markdown_convert/blob/main/CUSTOM_SYNTAX.md) for all the extra features and how to use them.
 
 ## Installation
 
