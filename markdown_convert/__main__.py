@@ -49,10 +49,9 @@ def main():
 
         # Get the CSS path
         try:
-            css_path = arg["--css"]
-            validate_css_path(css_path)
-        except KeyError:
-            css_path = get_css_path()
+            css_path = arg.get("--css")
+            if css_path is not None:
+                validate_css_path(css_path)
         except Exception as exc:
             raise IndexError(f"Invalid 'css_file_path' argument: {exc}") from exc
 

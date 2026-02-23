@@ -169,7 +169,7 @@ def convert_text(
             },
         )
         for extra in extras["markdown_it_extras"]:
-            markdown.use(extra)
+            markdown.use(extra["extra"], **extra.get("args", {}))
 
         # Render Markdown to HTML
         html = markdown.render(markdown_text)
@@ -177,9 +177,12 @@ def convert_text(
         # Render extras
         html = create_sections(html)
 
-        if MermaidExtra in extras["markdown_convert_extras"]:
+        unpacked_extras = [
+            extra["extra"] for extra in extras["markdown_convert_extras"]
+        ]
+        if MermaidExtra in unpacked_extras:
             html = render_mermaid_diagrams(html, nonce=nonce)
-        html = render_extra_features(html, extras=extras["markdown_convert_extras"])
+        html = render_extra_features(html, extras=unpacked_extras)
 
         # Generate PDF
         return _generate_pdf_with_playwright(
@@ -225,7 +228,7 @@ class LiveConverter:
               "strict" disables JS, inline HTML and internet access.
         """
         self.md_path = Path(markdown_path).absolute()
-        self.css_path = Path(css_path).absolute()
+        self.css_path = Path(css_path).absolute() if css_path else None
         self.output_path = output_path
         self.extend_default_css = extend_default_css
         self.loud = loud
@@ -270,12 +273,18 @@ class LiveConverter:
         self.write_pdf()
 
         self.md_last_modified = self.get_last_modified_date(self.md_path)
-        self.css_last_modified = self.get_last_modified_date(self.css_path)
+        self.css_last_modified = (
+            self.get_last_modified_date(self.css_path) if self.css_path else None
+        )
 
         try:
             while True:
                 markdown_modified = self.get_last_modified_date(self.md_path)
-                css_modified = self.get_last_modified_date(self.css_path)
+                css_modified = (
+                    self.get_last_modified_date(self.css_path)
+                    if self.css_path
+                    else None
+                )
 
                 if (
                     markdown_modified != self.md_last_modified

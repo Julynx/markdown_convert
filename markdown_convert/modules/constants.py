@@ -5,8 +5,8 @@ Author: @julynx
 
 from mdit_py_plugins.admon import admon_plugin
 from mdit_py_plugins.anchors import anchors_plugin
+from mdit_py_plugins.dollarmath import dollarmath_plugin
 from mdit_py_plugins.tasklists import tasklists_plugin
-from mdit_py_plugins.texmath import texmath_plugin
 
 from .extras import (
     BlockMathExtra,
@@ -47,63 +47,66 @@ OPTIONS_SECURITY = ("default", "strict")
 EXTRAS = {
     "admonitions": {
         "provided-by": "markdown-it",
-        "args": admon_plugin,
+        "extra": admon_plugin,
     },
     "anchors": {
         "provided-by": "markdown-it",
-        "args": anchors_plugin,
+        "extra": anchors_plugin,
     },
     "task-lists": {
         "provided-by": "markdown-it",
-        "args": tasklists_plugin,
+        "extra": tasklists_plugin,
     },
     "math": {
         "provided-by": "markdown-it",
-        "args": texmath_plugin,
+        "extra": dollarmath_plugin,
+        "args": {
+            "double_inline": True,
+        },
     },
     "custom-spans": {
         "provided-by": "markdown-convert",
-        "args": CustomSpanExtra,
+        "extra": CustomSpanExtra,
     },
     "highlights": {
         "provided-by": "markdown-convert",
-        "args": HighlightExtra,
+        "extra": HighlightExtra,
     },
     "syntax-highlighting": {
         "provided-by": "markdown-convert",
-        "args": SyntaxHighlightExtra,
+        "extra": SyntaxHighlightExtra,
     },
     "table-of-contents": {
         "provided-by": "markdown-convert",
-        "args": TocExtra,
+        "extra": TocExtra,
     },
     "vega-lite": {
         "provided-by": "markdown-convert",
-        "args": VegaExtra,
+        "extra": VegaExtra,
     },
     "inline-math": {
         "provided-by": "markdown-convert",
-        "args": InlineMathExtra,
+        "extra": InlineMathExtra,
     },
     "block-math": {
         "provided-by": "markdown-convert",
-        "args": BlockMathExtra,
+        "extra": BlockMathExtra,
     },
     "schemdraw": {
         "provided-by": "markdown-convert",
-        "args": SchemDrawExtra,
+        "extra": SchemDrawExtra,
     },
     "mermaid": {
         "provided-by": "markdown-convert",
-        "args": MermaidExtra,
+        "extra": MermaidExtra,
     },
     "dynamic-tables": {
         "provided-by": "markdown-convert",
-        "args": DynamicTableExtra,
+        "extra": DynamicTableExtra,
     },
     "dynamic-queries": {
         "provided-by": "markdown-convert",
-        "args": DynamicQueryExtra,
+        "extra": DynamicQueryExtra,
     },
 }
 
@@ -157,17 +160,16 @@ def resolve_extras(extras_list=None):
             key: value for key, value in EXTRAS.items() if key in extras_list
         }
 
-    markdown_it_extras = {
-        config["args"]
-        for _, config in selected_extras.items()
-        if config["provided-by"] == "markdown-it"
-    }
-
-    markdown_convert_extras = {
-        config["args"]
-        for _, config in selected_extras.items()
-        if config["provided-by"] == "markdown-convert"
-    }
+    markdown_it_extras = tuple(
+        value
+        for value in selected_extras.values()
+        if value["provided-by"] == "markdown-it"
+    )
+    markdown_convert_extras = tuple(
+        value
+        for value in selected_extras.values()
+        if value["provided-by"] == "markdown-convert"
+    )
 
     return {
         "markdown_it_extras": markdown_it_extras,

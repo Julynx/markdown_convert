@@ -141,8 +141,11 @@ class CustomSpanExtra(ExtraFeature):
 class InlineMathExtra(ExtraFeature):
     """Extra feature for rendering LaTeX math expressions."""
 
-    # <eq> ... </eq> Inline equations
-    pattern = r"<eq>(?P<content>.*?)</eq>"
+    pattern = (
+        r"<span class=\"math inline\">"
+        r"(?P<content>.*?)"
+        r"</span>"
+    )
 
     @staticmethod
     def replace(match, html_content, memory=None):
@@ -162,8 +165,11 @@ class InlineMathExtra(ExtraFeature):
 class BlockMathExtra(ExtraFeature):
     """Extra feature for rendering LaTeX math expressions."""
 
-    # <eqn> ... </eqn> Block equations
-    pattern = r"<eqn>(?P<content>.*?)</eqn>"
+    pattern = (
+        r"<div class=\"math (?:inline|block)\">"
+        r"(?P<content>.*?)"
+        r"</div>"
+    )
 
     @staticmethod
     def replace(match, html_content, memory=None):
