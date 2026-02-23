@@ -332,6 +332,15 @@ def _generate_pdf_with_playwright(
     csp = CSP_TEMPLATE.format(nonce=nonce)
     full_html = create_html_document(html_content, css_content, csp)
 
+    if dump_html:
+        temp_file = (
+            f"{Path(output_path).stem}.html"
+            if output_path
+            else f".temp_{os.getpid()}.html"
+        )
+        temp_html = base_dir / temp_file
+        temp_html.write_text(full_html, encoding="utf-8")
+
     ensure_chromium()
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(headless=True, args=BROWSER_ARGS)
@@ -344,19 +353,11 @@ def _generate_pdf_with_playwright(
         )
         page = context.new_page()
 
-        temp_html = None
         try:
             if base_dir:
-                temp_file = (
-                    f"{Path(output_path).stem}.html"
-                    if output_path
-                    else f".temp_{os.getpid()}.html"
-                )
-                temp_html = base_dir / temp_file
-                temp_html.write_text(full_html, encoding="utf-8")
-                page.goto(temp_html.as_uri(), wait_until="networkidle", timeout=30000)
-            else:
-                page.set_content(full_html, wait_until="networkidle", timeout=30000)
+                page.goto(base_dir.as_uri())
+
+            page.set_content(full_html, wait_until="networkidle", timeout=30000)
 
             pdf_params = {
                 **PDF_PARAMS,
@@ -368,5 +369,3 @@ def _generate_pdf_with_playwright(
 
         finally:
             browser.close()
-            if temp_html and temp_html.exists() and not dump_html:
-                temp_html.unlink()

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "markdown_convert"
-version = "2.0.5"
+version = "2.0.6"
 description = "Convert Markdown files to PDF from your command line."
 authors = [{ name = "Julio Cabria", email = "juliocabria@tutanota.com" }]
 license = { text = "GPL-2.0-only" }

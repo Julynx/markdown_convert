@@ -117,6 +117,20 @@ BROWSER_ARGS = [
     "--disable-gpu",
     "--no-first-run",
     "--no-default-browser-check",
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--no-zygote",
+    "--disable-background-networking",
+    "--disable-default-apps",
+    "--disable-sync",
+    "--disable-translate",
+    "--hide-scrollbars",
+    "--metrics-recording-only",
+    "--mute-audio",
+    "--safebrowsing-disable-auto-update",
+    "--disable-backgrounding-occluded-windows",
+    "--disable-renderer-backgrounding",
+    "--disable-background-timer-throttling",
 ]
 
 CSP_TEMPLATE = (
