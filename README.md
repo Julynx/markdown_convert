@@ -43,7 +43,7 @@ Unlike other similar tools, `markdown-convert`:
   | **Image Attributes**                                  | `![::shadow::](sky.png)` shows a shadow behind the image.                                          |
   | **Captions**                                          | `![sky](sky.png)_A beautiful sky_` shows a caption, centered below the image.                      |
   | **Tables and Queries**                                | `> [my_table]` under your table gives it a name,<br>`[query:select ... from my_table]` queries it. |
-  | **Live conversion**                                   | `markdown-convert file.md --mode=live` updates the PDF every time the Markdown file changes.       |
+  | **Live Conversion**                                   | `markdown-convert file.md --mode=live` updates the PDF every time the Markdown file changes.       |
   | **Custom CSS**                                        | `markdown-convert file.md --css=style.css` extends the default CSS with your own stylesheet.       |
   | **Task lists, containers, CSS paged media and more!** | ...                                                                                                |
 
