@@ -106,7 +106,7 @@ class SyntaxHighlightExtra(ExtraFeature):
 
         try:
             highlighted = highlight(
-                code,
+                html.unescape(code),
                 get_lexer_by_name(lang),
                 HtmlFormatter(nowrap=True, classprefix="pygments-"),
             )
@@ -158,7 +158,7 @@ class InlineMathExtra(ExtraFeature):
             str: Tag representing the LaTeX math expression.
         """
         content = match.group("content")
-        converted = mathml.convert(content)
+        converted = mathml.convert(html.unescape(content))
         return converted
 
 
@@ -182,7 +182,7 @@ class BlockMathExtra(ExtraFeature):
             str: Tag representing the LaTeX math expression.
         """
         content = match.group("content")
-        converted = mathml.convert(content, display="block")
+        converted = mathml.convert(html.unescape(content), display="block")
         return converted
 
 
@@ -272,6 +272,7 @@ class MermaidExtra(ExtraFeature):
             str: SVG tag representing the mermaid diagram.
         """
         content = match.group("content")
+        content = html.unescape(content)
         return f'<div class="mermaid">{content}</div>'
 
 
@@ -317,6 +318,7 @@ class VegaExtra(ExtraFeature):
                 data_spec["values"] = table.to_dict(orient="records")
 
         content = match.group("content")
+        content = html.unescape(content)
         spec = None
 
         # Parse JSON or YAML
@@ -374,6 +376,7 @@ class SchemDrawExtra(ExtraFeature):
             str: SVG tag representing the schemdraw diagram.
         """
         content = match.group("content")
+        content = html.unescape(content)
         try:
             diagram = from_yaml_string(content)
             svg_string = diagram.get_imagedata("svg").decode("utf-8")
