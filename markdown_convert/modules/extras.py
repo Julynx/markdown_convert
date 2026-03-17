@@ -237,7 +237,7 @@ class TocExtra(ExtraFeature):
 
             list_item = soup.new_tag("li")
             link = soup.new_tag("a", href=f"#{header['id']}")
-            link.string = header.get_text(strip=True)
+            link.string = header.get_text(strip=True, separator=" ")
             list_item.append(link)
 
             active_list[level].append(list_item)
