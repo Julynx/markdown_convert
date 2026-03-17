@@ -52,6 +52,9 @@ EXTRAS = {
     "anchors": {
         "provided-by": "markdown-it",
         "extra": anchors_plugin,
+        "args": {
+            "max_level": 6,
+        },
     },
     "task-lists": {
         "provided-by": "markdown-it",
