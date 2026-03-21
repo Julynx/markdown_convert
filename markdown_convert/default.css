@@ -145,7 +145,7 @@ pre {
   white-space: pre-wrap;
 }
 
-pre>code {
+pre > code {
   display: block;
   padding: 1em;
   margin-top: 0;
@@ -183,7 +183,7 @@ blockquote {
   color: var(--color-text-light);
 }
 
-blockquote>blockquote {
+blockquote > blockquote {
   padding-left: var(--left-margin-small);
 }
 
@@ -198,7 +198,7 @@ img {
 }
 
 /* Image footers */
-p>img+em {
+p > img + em {
   text-align: center;
   font-size: 1rem;
   font-style: italic;
@@ -315,13 +315,13 @@ td {
 
 /* Table footers */
 table + blockquote {
-    text-align: center;
-    font-size: 1rem;
-    font-style: italic;
-    display: block;
-    margin: 0 auto;
-    border-left: 0;
-    padding-left: 0;
+  text-align: center;
+  font-size: 1rem;
+  font-style: italic;
+  display: block;
+  margin: 0 auto;
+  border-left: 0;
+  padding-left: 0;
 }
 
 /* Horizontal rulers */
@@ -336,7 +336,7 @@ hr:has(+ hr) {
   visibility: hidden;
 }
 
-hr+hr {
+hr + hr {
   clear: both;
   visibility: hidden;
   page-break-after: always;
@@ -466,6 +466,11 @@ math {
 
 .big {
   font-size: 1.5em;
+}
+
+.br::after {
+  content: "\A";
+  white-space: pre;
 }
 
 /* Admonitions */
