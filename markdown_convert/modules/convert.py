@@ -6,8 +6,10 @@ Author: @julynx
 import os
 import secrets
 import time
+import urllib.request
 from datetime import datetime
 from pathlib import Path
+from urllib.parse import urlparse
 
 from markdown_it import MarkdownIt
 from playwright.sync_api import sync_playwright
@@ -50,7 +52,21 @@ def convert(
         dump_html (bool=False): Dump the intermediate HTML to a file.
         extras (list=None): List of extras to use.
         security_level (str=None): Security level to use.
-          "strict" disables JS, inline HTML and internet access.
+            Basic:
+                - Inline HTML:   No restrictions.
+                - JS:            Restricted to extras.
+                - Remote files:  Restricted to images and fonts via https.
+                - Local files:   No restrictions.
+            Default:
+                - Inline HTML:   Disabled.
+                - JS:            Restricted to extras.
+                - Remote files:  Restricted to images and fonts via https.
+                - Local files:   Restricted to files inside the base directory.
+            Strict:
+                - Inline HTML:   Disabled.
+                - JS:            Disabled (may break some extras).
+                - Remote files:  Disabled (internet access completely disabled).
+                - Local files:   Restricted to files inside the base directory.
     """
     markdown_text = (
         Path(markdown_path).read_text(encoding="utf-8")
@@ -97,7 +113,21 @@ def live_convert(
         extend_default_css (bool=True): Extend the default CSS file.
         extras (list=None): List of extras to use.
         security_level (str=None): Security level to use.
-          "strict" disables JS, inline HTML and internet access.
+            Basic:
+                - Inline HTML:   No restrictions.
+                - JS:            Restricted to extras.
+                - Remote files:  Restricted to images and fonts via https.
+                - Local files:   No restrictions.
+            Default:
+                - Inline HTML:   Disabled.
+                - JS:            Restricted to extras.
+                - Remote files:  Restricted to images and fonts via https.
+                - Local files:   Restricted to files inside the base directory.
+            Strict:
+                - Inline HTML:   Disabled.
+                - JS:            Disabled (may break some extras).
+                - Remote files:  Disabled (internet access completely disabled).
+                - Local files:   Restricted to files inside the base directory.
     """
     if css_path is None:
         css_path = get_css_path()
@@ -140,7 +170,21 @@ def convert_text(
         dump_html (bool=False): Dump the intermediate HTML to a file.
         extras (list=None): List of extras to use.
         security_level (str=None): Security level to use.
-          "strict" disables JS, inline HTML and internet access.
+            Basic:
+                - Inline HTML:   No restrictions.
+                - JS:            Restricted to extras.
+                - Remote files:  Restricted to images and fonts via https.
+                - Local files:   No restrictions.
+            Default:
+                - Inline HTML:   Disabled.
+                - JS:            Restricted to extras.
+                - Remote files:  Restricted to images and fonts via https.
+                - Local files:   Restricted to files inside the base directory.
+            Strict:
+                - Inline HTML:   Disabled.
+                - JS:            Disabled (may break some extras).
+                - Remote files:  Disabled (internet access completely disabled).
+                - Local files:   Restricted to files inside the base directory.
 
     Returns:
         PDF file as bytes if output_path is None, else None.
@@ -165,7 +209,7 @@ def convert_text(
             "js-default",
             {
                 "breaks": True,
-                "html": security_level != "strict",
+                "html": security_level == "basic",
             },
         )
         for extra in extras["markdown_it_extras"]:
@@ -225,7 +269,21 @@ class LiveConverter:
             extend_default_css (bool): Extend the default CSS file.
             extras (list=None): List of extras to use.
             security_level (str=None): Security level to use.
-              "strict" disables JS, inline HTML and internet access.
+                Basic:
+                    - Inline HTML:   No restrictions.
+                    - JS:            Restricted to extras.
+                    - Remote files:  Restricted to images and fonts via https.
+                    - Local files:   No restrictions.
+                Default:
+                    - Inline HTML:   Disabled.
+                    - JS:            Restricted to extras.
+                    - Remote files:  Restricted to images and fonts via https.
+                    - Local files:   Restricted to files inside the base directory.
+                Strict:
+                    - Inline HTML:   Disabled.
+                    - JS:            Disabled (may break some extras).
+                    - Remote files:  Disabled (internet access completely disabled).
+                    - Local files:   Restricted to files inside the base directory.
         """
         self.md_path = Path(markdown_path).absolute()
         self.css_path = Path(css_path).absolute() if css_path else None
@@ -323,7 +381,21 @@ def _generate_pdf_with_playwright(
         dump_html (bool, optional): Whether to dump the HTML content to a file.
         nonce (str, optional): Nonce for Content Security Policy.
         security_level (str=None): Security level to use.
-          "strict" disables JS, inline HTML and internet access.
+            Basic:
+                - Inline HTML:   No restrictions.
+                - JS:            Restricted to extras.
+                - Remote files:  Restricted to images and fonts via https.
+                - Local files:   No restrictions.
+            Default:
+                - Inline HTML:   Disabled.
+                - JS:            Restricted to extras.
+                - Remote files:  Restricted to images and fonts via https.
+                - Local files:   Restricted to files inside the base directory.
+            Strict:
+                - Inline HTML:   Disabled.
+                - JS:            Disabled (may break some extras).
+                - Remote files:  Disabled (internet access completely disabled).
+                - Local files:   Restricted to files inside the base directory.
     """
     if nonce is None:
         raise ValueError("A nonce must be provided for CSP generation.")
@@ -355,6 +427,11 @@ def _generate_pdf_with_playwright(
 
         try:
             if base_dir:
+                if security_level != "basic":
+                    resolved_base = base_dir.resolve()
+                    page.route(
+                        "**/*", lambda route: _route_handler(route, resolved_base)
+                    )
                 page.goto(base_dir.as_uri())
 
             page.set_content(full_html, wait_until="networkidle", timeout=30000)
@@ -369,3 +446,24 @@ def _generate_pdf_with_playwright(
 
         finally:
             browser.close()
+
+
+def _route_handler(route, resolved_base):
+    """
+    Route handler to prevent access to files outside the base directory.
+
+    Args:
+        route (Route): Route to handle.
+        resolved_base (Path): Base directory for resolving relative paths in HTML.
+    """
+    parsed = urlparse(route.request.url)
+
+    if parsed.scheme == "file":
+        try:
+            file_path = Path(urllib.request.url2pathname(parsed.path)).resolve()
+            if not file_path.is_relative_to(resolved_base):
+                return route.abort("accessdenied")
+        except Exception:
+            return route.abort("accessdenied")
+
+    route.continue_()

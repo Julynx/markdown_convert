@@ -105,6 +105,9 @@ class SyntaxHighlightExtra(ExtraFeature):
         code = match.group("code")
 
         try:
+            # Unescape is used here because markdown-it escapes "stray" > characters
+            # when html is enabled (security_level=basic) and code blocks can contain
+            # these characters.
             highlighted = highlight(
                 html.unescape(code),
                 get_lexer_by_name(lang),
@@ -158,6 +161,9 @@ class InlineMathExtra(ExtraFeature):
             str: Tag representing the LaTeX math expression.
         """
         content = match.group("content")
+
+        # Unescape is used here because markdown-it escapes "stray" > characters when
+        # html is enabled (security_level=basic) and math contains these characters.
         converted = mathml.convert(html.unescape(content))
         return converted
 
@@ -182,6 +188,9 @@ class BlockMathExtra(ExtraFeature):
             str: Tag representing the LaTeX math expression.
         """
         content = match.group("content")
+
+        # Unescape is used here because markdown-it escapes "stray" > characters when
+        # html is enabled (security_level=basic) and math contains these characters.
         converted = mathml.convert(html.unescape(content), display="block")
         return converted
 
@@ -272,6 +281,9 @@ class MermaidExtra(ExtraFeature):
             str: SVG tag representing the mermaid diagram.
         """
         content = match.group("content")
+
+        # Unescape is used here because markdown-it escapes "stray" > characters when
+        # html is enabled (security_level=basic) and mermaid relies on these characters.
         content = html.unescape(content)
         return f'<div class="mermaid">{content}</div>'
 
@@ -318,6 +330,10 @@ class VegaExtra(ExtraFeature):
                 data_spec["values"] = table.to_dict(orient="records")
 
         content = match.group("content")
+
+        # Unescape is used here because markdown-it escapes "stray" > characters
+        # when html is enabled (security_level=basic) and vega-lite specs can contain
+        # these characters.
         content = html.unescape(content)
         spec = None
 
@@ -376,6 +392,10 @@ class SchemDrawExtra(ExtraFeature):
             str: SVG tag representing the schemdraw diagram.
         """
         content = match.group("content")
+
+        # Unescape is used here because markdown-it escapes "stray" > characters
+        # when html is enabled (security_level=basic) and schemdraw specs can contain
+        # these characters.
         content = html.unescape(content)
         try:
             diagram = from_yaml_string(content)
@@ -462,6 +482,10 @@ class DynamicQueryExtra(ExtraFeature):
         Returns:
             str: The query result as text or an HTML table.
         """
+
+        # Unescape is used here because markdown-it escapes "stray" > characters
+        # when html is enabled (security_level=basic) and sql queries can contain
+        # these characters.
         expression = html.unescape(match.group("expression"))
         try:
             conn = _get_duckdb_connection(memory)
@@ -510,9 +534,10 @@ def _render_html_table(columns, rows):
     Returns:
         str: An HTML <table> string.
     """
-    header_cells = "".join(f"<th>{col}</th>" for col in columns)
+    header_cells = "".join(f"<th>{html.escape(str(col))}</th>" for col in columns)
     body_rows = "".join(
-        "<tr>" + "".join(f"<td>{val}</td>" for val in row) + "</tr>" for row in rows
+        "<tr>" + "".join(f"<td>{html.escape(str(val))}</td>" for val in row) + "</tr>"
+        for row in rows
     )
     return (
         f"<table><thead><tr>{header_cells}</tr></thead>"

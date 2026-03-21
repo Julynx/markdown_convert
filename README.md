@@ -38,7 +38,7 @@ Unlike other similar tools, `markdown-convert`:
   | **LaTeX Math Equations**                              | `$E=mc^2$` is rendered as a math equation.                                                         |
   | **Mermaid, Vega-Lite and Schemdraw Diagrams**         | ` ```mermaid ...` is rendered as a diagram.                                                        |
   | **Syntax-Highlighted Code Blocks**                    | ` ```python ...` gets syntax highlighting.                                                         |
-  | **Admonitions**                                       | `!!! note ...` is styled as a note box.                                                                |
+  | **Admonitions**                                       | `!!! note ...` is styled as a note box.                                                            |
   | **Dynamic Table of Contents**                         | `[TOC]` inserts a Table of Contents.                                                               |
   | **Image Attributes**                                  | `![::shadow::](sky.png)` shows a shadow behind the image.                                          |
   | **Captions**                                          | `![sky](sky.png)_A beautiful sky_` shows a caption, centered below the image.                      |
@@ -83,11 +83,23 @@ Options:
         admonitions,anchors,task-lists,math,custom-spans,highlights,
         syntax-highlighting,table-of-contents,vega-lite,inline-math,
         block-math,schemdraw,mermaid,dynamic-tables,dynamic-queries
-  --security=default|strict
+  --security=basic|default|strict
       Specify the security level.
-      Strict mode disables inline HTML, internet access and JS,
-      but local files can still be referenced.
-      This improves security, but will break some extras.
+      Basic:
+        - Inline HTML:   No restrictions.
+        - JS:            Restricted to extras.
+        - Remote files:  Restricted to images and fonts via https.
+        - Local files:   No restrictions.
+      Default:
+        - Inline HTML:   Disabled.
+        - JS:            Restricted to extras.
+        - Remote files:  Restricted to images and fonts via https.
+        - Local files:   Restricted to files inside the base directory.
+      Strict:
+        - Inline HTML:   Disabled.
+        - JS:            Disabled (may break some extras).
+        - Remote files:  Disabled (internet access completely disabled).
+        - Local files:   Restricted to files inside the base directory.
 ```
 
 For example: `markdown-convert README.md --mode=live --css=style.css --out=output.pdf` will convert `README.md` to `output.pdf` using `style.css` and update the PDF live as you edit the Markdown file.

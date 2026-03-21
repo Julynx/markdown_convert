@@ -42,7 +42,7 @@ OPTIONS = (
 
 OPTIONS_MODES = ("once", "live", "debug")
 
-OPTIONS_SECURITY = ("default", "strict")
+OPTIONS_SECURITY = ("basic", "default", "strict")
 
 EXTRAS = {
     "admonitions": {
