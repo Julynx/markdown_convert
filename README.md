@@ -6,13 +6,13 @@ _Convert Markdown files to PDF from your command line._
 
 <br>
 
-> [!IMPORTANT]
-> `markdown-convert` now has a GUI app!<br>You can check it out [here](https://github.com/julynx/markdown-convert-gui).
+[![Button Hover](https://img.shields.io/badge/Github-c9510c?style=for-the-badge)](https://github.com/Julynx/markdown-convert)
+[![Button Hover](https://img.shields.io/badge/PyPi-006dad?style=for-the-badge)](https://pypi.org/project/markdown_convert)
 
 <br>
 
-[![Button Hover](https://img.shields.io/badge/Github-c9510c?style=for-the-badge)](https://github.com/Julynx/markdown-convert)
-[![Button Hover](https://img.shields.io/badge/PyPi-006dad?style=for-the-badge)](https://pypi.org/project/markdown_convert)
+> [!IMPORTANT]
+> `markdown-convert` now has a GUI app!<br>You can check it out [here](https://github.com/julynx/markdown-convert-gui).
 
 <br>
 
