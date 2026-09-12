@@ -9,6 +9,7 @@ from sys import exit as sys_exit
 
 from argsdict import args
 
+from .modules import overrides  # noqa: F401
 from .modules.constants import EXTRAS, OPTIONS, OPTIONS_MODES, OPTIONS_SECURITY, RED
 from .modules.convert import convert, live_convert
 from .modules.resources import get_output_path, get_usage
