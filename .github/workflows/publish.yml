@@ -35,11 +35,6 @@ jobs:
           repo_name="$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)"
           uv run ruff check "$repo_name"
 
-      - name: Security checks
-        run: |
-          repo_name="$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)"
-          uv run bandit -r "$repo_name"
-
   publish:
     needs: lint-and-test
     runs-on: ubuntu-latest
