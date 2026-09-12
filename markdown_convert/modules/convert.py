@@ -445,6 +445,18 @@ def _generate_pdf_with_playwright(
             return None if output_path else pdf_bytes
 
         finally:
+            try:
+                page.unroute_all(behavior="ignoreErrors")
+            except Exception:
+                pass
+            try:
+                page.close()
+            except Exception:
+                pass
+            try:
+                context.close()
+            except Exception:
+                pass
             browser.close()
 
 
@@ -456,14 +468,19 @@ def _route_handler(route, resolved_base):
         route (Route): Route to handle.
         resolved_base (Path): Base directory for resolving relative paths in HTML.
     """
-    parsed = urlparse(route.request.url)
+    try:
+        parsed = urlparse(route.request.url)
 
-    if parsed.scheme == "file":
-        try:
-            file_path = Path(urllib.request.url2pathname(parsed.path)).resolve()
-            if not file_path.is_relative_to(resolved_base):
-                return route.abort("accessdenied")
-        except Exception:
-            return route.abort("accessdenied")
+        if parsed.scheme == "file":
+            try:
+                file_path = Path(urllib.request.url2pathname(parsed.path)).resolve()
+                if not file_path.is_relative_to(resolved_base):
+                    route.abort("accessdenied")
+                    return
+            except Exception:
+                route.abort("accessdenied")
+                return
 
-    route.continue_()
+        route.continue_()
+    except Exception:
+        pass

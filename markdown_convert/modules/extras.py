@@ -144,11 +144,7 @@ class CustomSpanExtra(ExtraFeature):
 class InlineMathExtra(ExtraFeature):
     """Extra feature for rendering LaTeX math expressions."""
 
-    pattern = (
-        r"<span class=\"math inline\">"
-        r"(?P<content>.*?)"
-        r"</span>"
-    )
+    pattern = r"<span class=\"math inline\">" r"(?P<content>.*?)" r"</span>"
 
     @staticmethod
     def replace(match, html_content, memory=None):
@@ -171,11 +167,7 @@ class InlineMathExtra(ExtraFeature):
 class BlockMathExtra(ExtraFeature):
     """Extra feature for rendering LaTeX math expressions."""
 
-    pattern = (
-        r"<div class=\"math (?:inline|block)\">"
-        r"(?P<content>.*?)"
-        r"</div>"
-    )
+    pattern = r"<div class=\"math (?:inline|block)\">" r"(?P<content>.*?)" r"</div>"
 
     @staticmethod
     def replace(match, html_content, memory=None):
@@ -545,6 +537,39 @@ def _render_html_table(columns, rows):
     )
 
 
+def _safely_replace_extra(match, html_content, extra, memory, extra_name):
+    """
+    Safely execute replacement for a single extra match, returning the original
+    text as fallback if an exception occurs.
+
+    Args:
+        match (re.Match): The regex match object.
+        html_content (str): The full HTML content.
+        extra (ExtraFeature): Extra feature instance or class.
+        memory (dict): Ephemeral shared memory.
+        extra_name (str): The name of the extra feature for logging.
+
+    Returns:
+        str: Replacement HTML string.
+    """
+    try:
+        return extra.replace(
+            match,
+            html_content=html_content,
+            memory=memory,
+        )
+    except Exception as exc:
+        error_message = (
+            f"{type(exc).__name__}: {exc}" if str(exc).strip() else type(exc).__name__
+        )
+        logger.warning(
+            "An exception occurred while applying extra '%s': %s",
+            extra_name,
+            error_message,
+        )
+        return match.group(0)
+
+
 def apply_extras(extras: list[ExtraFeature], html_content, memory=None):
     """
     Applies extra features to an html string in the order they are provided.
@@ -557,23 +582,35 @@ def apply_extras(extras: list[ExtraFeature], html_content, memory=None):
         str: The updated html.
     """
     for extra in extras:
+        extra_name = getattr(extra, "__name__", type(extra).__name__)
         new_html = html_content
         while re.search(extra.pattern, html_content, flags=re.DOTALL):
             try:
                 new_html = re.sub(
                     extra.pattern,
-                    lambda match, html_content=html_content, ext=extra, memory=memory: (
-                        ext.replace(
+                    lambda match, html_content=html_content, ext=extra, memory=memory, name=extra_name: (
+                        _safely_replace_extra(
                             match,
-                            html_content=html_content,
-                            memory=memory,
+                            html_content,
+                            ext,
+                            memory,
+                            name,
                         )
                     ),
                     html_content,
                     flags=re.DOTALL,
                 )
             except Exception as exc:
-                logger.warning("An exception occurred while applying an extra: %s", exc)
+                error_message = (
+                    f"{type(exc).__name__}: {exc}"
+                    if str(exc).strip()
+                    else type(exc).__name__
+                )
+                logger.warning(
+                    "An exception occurred while applying extra '%s': %s",
+                    extra_name,
+                    error_message,
+                )
 
             if new_html == html_content:
                 break

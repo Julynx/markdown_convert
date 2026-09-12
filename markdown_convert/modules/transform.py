@@ -3,6 +3,7 @@ Module for transforming HTML content.
 """
 
 import re
+import uuid
 
 from bs4 import BeautifulSoup
 from string_grab import grab
@@ -132,7 +133,7 @@ def render_extra_features(html, extras: set[ExtraFeature]):
             except LookupError:
                 pass
 
-            key = f"__PROTECTED_BLOCK_{len(placeholders)}__"
+            key = f"__PROTECTED_BLOCK_{uuid.uuid4().hex}__"
             placeholders[key] = text
             return key
 
@@ -149,8 +150,11 @@ def render_extra_features(html, extras: set[ExtraFeature]):
         html = apply_extras(post_stash_extras, html, memory)
 
         # 3. Restoration: Replace hashes back with original content
-        for key, original_content in placeholders.items():
-            html = html.replace(key, original_content)
+        restoration_pattern = re.compile(r"__PROTECTED_BLOCK_[a-f0-9]+__")
+        html = restoration_pattern.sub(
+            lambda match: placeholders.get(match.group(0), match.group(0)),
+            html,
+        )
 
         return html
 
