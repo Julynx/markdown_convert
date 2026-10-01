@@ -9,7 +9,7 @@ import time
 import urllib.request
 from datetime import datetime
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 from markdown_it import MarkdownIt
 from playwright.sync_api import sync_playwright
@@ -415,7 +415,11 @@ def _generate_pdf_with_playwright(
 
     ensure_chromium()
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=True, args=BROWSER_ARGS)
+        browser = playwright.chromium.launch(
+            headless=True,
+            args=BROWSER_ARGS,
+            proxy=_get_playwright_proxy_settings(),
+        )
         context = browser.new_context(
             java_script_enabled=security_level != "strict",
             permissions=[],
@@ -484,3 +488,36 @@ def _route_handler(route, resolved_base):
         route.continue_()
     except Exception:
         pass
+
+
+def _get_playwright_proxy_settings():
+    """
+    Helper function to get valid proxy settings for playwright, to allow for proxied
+    connections. (See Issue #4)
+    """
+    proxy_url = (
+        os.environ.get("HTTPS_PROXY")
+        or os.environ.get("https_proxy")
+        or os.environ.get("HTTP_PROXY")
+        or os.environ.get("http_proxy")
+    )
+    if not proxy_url:
+        return None
+
+    if "://" not in proxy_url:
+        proxy_url = f"http://{proxy_url}"
+
+    parsed_proxy = urlparse(proxy_url)
+    proxy_settings = {
+        "server": f"{parsed_proxy.scheme}://{parsed_proxy.netloc.rsplit('@', 1)[-1]}"
+    }
+    if parsed_proxy.username is not None:
+        proxy_settings["username"] = unquote(parsed_proxy.username)
+    if parsed_proxy.password is not None:
+        proxy_settings["password"] = unquote(parsed_proxy.password)
+
+    bypass = os.environ.get("NO_PROXY") or os.environ.get("no_proxy")
+    if bypass:
+        proxy_settings["bypass"] = bypass
+
+    return proxy_settings
