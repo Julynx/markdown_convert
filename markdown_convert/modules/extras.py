@@ -124,7 +124,7 @@ class SyntaxHighlightExtra(ExtraFeature):
 class CustomSpanExtra(ExtraFeature):
     """Extra feature for rendering custom spans with specific classes."""
 
-    pattern = r"(?P<cls>[a-zA-Z0-9_-]+)\{\{\s*(?P<content>.*?)\s*\}\}"
+    pattern = r"(?s)(?P<cls>[a-zA-Z0-9_-]+)\{\{\s*(?P<content>.*?)\s*\}\}"
 
     @staticmethod
     def replace(match, html_content, memory=None):
